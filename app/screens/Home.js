@@ -5,6 +5,8 @@ import globalStyles from "../styles/globalStyles";
 import Button from "../components/Button";
 import SpeechBubble from "../components/SpeechBubble";
 
+import images from "../../assets/images";
+
 const Home = () => {
   return (
     <View style={globalStyles.container}>
@@ -12,7 +14,7 @@ const Home = () => {
       <SpeechBubble text="¿Qué querés hacer hoy?" />
 
       <View style={styles.buttons}>
-        <Button title="Contarte como estoy" variant="secondary" />
+        <Button title="Contarte como estoy" variant="secondary" style={styles.small} />
 
         <Button title="Informarme" variant="secondary" style={styles.small} />
         <Button title="Repasar" variant="secondary" style={styles.small} />
@@ -20,7 +22,7 @@ const Home = () => {
       </View>
 
       <Image
-        source={{ uri: "TU_IMAGEN" }}
+        source={images.confusedRiku}
         style={styles.pet}
       />
 
