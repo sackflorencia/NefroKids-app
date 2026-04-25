@@ -18,7 +18,7 @@ export default SpeechBubble;
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
-    marginTop: 40,
+    marginTop: 20,
   },
 
   bubble: {
@@ -45,5 +45,8 @@ const styles = StyleSheet.create({
     borderRightColor: "transparent",
     borderTopColor: "#FFFFFF",
     marginTop: -5,
+    position: "absolute",
+    bottom: -10,
+    right: 70,
   },
 });

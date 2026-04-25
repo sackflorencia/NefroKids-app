@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Image, StyleSheet } from "react-native";
 
+import { SafeAreaView } from "react-native-safe-area-context";
 import globalStyles from "../styles/globalStyles";
 import Button from "../components/Button";
 import SpeechBubble from "../components/SpeechBubble";
@@ -9,7 +10,7 @@ import images from "../../assets/images";
 
 const Home = () => {
   return (
-    <View style={globalStyles.container}>
+    <SafeAreaView style={globalStyles.container}>
 
       <SpeechBubble text="¿Qué querés hacer hoy?" />
 
@@ -26,7 +27,7 @@ const Home = () => {
         style={styles.pet}
       />
 
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -35,8 +36,8 @@ export default Home;
 const styles = StyleSheet.create({
   buttons: {
     paddingHorizontal: 20,
-    marginTop: 20,
-    gap: 12,
+    marginTop: 10,
+    gap: 15,
   },
 
   small: {
@@ -45,9 +46,9 @@ const styles = StyleSheet.create({
 
   pet: {
     position: "absolute",
-    right: -20,
-    bottom: 80,
-    width: 220,
-    height: 220,
-  },
+    right: -10,
+    bottom: 130,
+    width: 260,
+    height: 340,
+  }
 });
