@@ -1,4 +1,4 @@
-import React from "react";
+import React, { use } from "react";
 import { View, Image, StyleSheet } from "react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -7,8 +7,10 @@ import Button from "../components/Button";
 import SpeechBubble from "../components/SpeechBubble";
 
 import images from "../../assets/images";
+import { useNavigation } from "@react-navigation/native";
 
 const Home = () => {
+  const navigation = useNavigation();
   return (
     <SafeAreaView style={globalStyles.container}>
 
@@ -19,7 +21,12 @@ const Home = () => {
 
         <Button title="Informarme" variant="secondary" style={styles.small} />
         <Button title="Repasar" variant="secondary" style={styles.small} />
-        <Button title="Jugar" variant="secondary" style={styles.small} />
+        <Button
+          title="Jugar"
+          variant="secondary"
+          style={styles.small}
+          onPress={() => navigation.navigate("Levels")}
+        />
       </View>
 
       <Image
