@@ -1,38 +1,42 @@
 import React from "react";
-import { View, StyleSheet, SafeAreaView } from "react-native";
+import { View, StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+
 import LevelNode from "../components/LevelNode";
 import SectionHeader from "../components/SectionHeader";
-// import globalStyles from "../styles/globalStyles";
 import colors from "../styles/colors";
 
 export default function Levels() {
+  const LEVELS = [
+    { id: 1, top: 40, left: 220, unlocked: true },
+    { id: 2, top: 140, left: 80, unlocked: true },
+    { id: 3, top: 260, left: 220, unlocked: true },
+    { id: 4, top: 380, left: 100, unlocked: false },
+  ];
   return (
-    <SafeAreaView>
-      
+    <SafeAreaView style={{ flex: 1 }}>
+
       <SectionHeader
         section={1}
         title="Introducción a la diálisis peritoneal manual"
       />
 
       <View style={styles.mapContainer}>
-        {/* conexión simple */}
-        <View style={styles.line} />
 
-        <View style={[styles.node, { top: 40, left: 220 }]}>
-          <LevelNode number={1} unlocked />
-        </View>
-
-        <View style={[styles.node, { top: 140, left: 80 }]}>
-          <LevelNode number={2} unlocked />
-        </View>
-
-        <View style={[styles.node, { top: 260, left: 220 }]}>
-          <LevelNode number={3} unlocked />
-        </View>
-
-        <View style={[styles.node, { top: 380, left: 100 }]}>
-          <LevelNode number={4} unlocked={false} />
-        </View>
+        {LEVELS.map((level) => (
+          <View
+            key={level.id}
+            style={[
+              styles.node,
+              { top: level.top, left: level.left },
+            ]}
+          >
+            <LevelNode
+              number={level.id}
+              unlocked={level.unlocked}
+            />
+          </View>
+        ))}
       </View>
     </SafeAreaView>
   );
@@ -45,14 +49,5 @@ const styles = StyleSheet.create({
   },
   node: {
     position: "absolute",
-  },
-  line: {
-    position: "absolute",
-    top: 90,
-    left: 120,
-    width: 140,
-    height: 260,
-    backgroundColor: colors.primary,
-    borderRadius: 70,
   },
 });

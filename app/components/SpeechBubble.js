@@ -8,6 +8,7 @@ const SpeechBubble = ({ text }) => {
       <View style={styles.bubble}>
         <Text style={styles.text}>{text}</Text>
       </View>
+      <View style={styles.tailBorder} />
       <View style={styles.tail} />
     </View>
   );
@@ -35,6 +36,21 @@ const styles = StyleSheet.create({
     color: colors.textDark,
   },
 
+  tailBorder: {
+    width: 0,
+    height: 0,
+    borderLeftWidth: 17,
+    borderRightWidth: 17,
+    borderTopWidth: 22,
+    borderLeftColor: "transparent",
+    borderRightColor: "transparent",
+    borderTopColor: colors.primaryShadow, // 👈 borde
+
+    position: "absolute",
+    bottom: -12,
+    right: 118,
+  },
+
   tail: {
     width: 0,
     height: 0,
@@ -44,9 +60,9 @@ const styles = StyleSheet.create({
     borderLeftColor: "transparent",
     borderRightColor: "transparent",
     borderTopColor: "#FFFFFF",
-    marginTop: -5,
+
     position: "absolute",
     bottom: -10,
-    right: 70,
+    right: 120,
   },
 });
