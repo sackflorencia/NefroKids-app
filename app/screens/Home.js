@@ -20,7 +20,7 @@ const Home = () => {
         <Button title="Contarte como estoy" variant="secondary" style={styles.small} />
 
         <Button title="Informarme" variant="secondary" style={styles.small} />
-        <Button title="Repasar" variant="secondary" style={styles.small} />
+        <Button title="Repasar" variant="secondary" style={styles.small} onPress={() => navigation.navigate("CheckIn")}/>
         <Button
           title="Jugar"
           variant="secondary"
