@@ -1,42 +1,33 @@
 import { SQLiteProvider } from 'expo-sqlite';
+import { usersTable } from './schemas/userSchema';
+await db.execAsync(usersTable);
+import { alertsTable } from './schemas/alertsSchema';
+await db.execAsync(alertsTable);
+import { symptomLogsTable } from './schemas/symptomsSchema';
+await db.execAsync(symptomLogsTable);
+import { gameTable } from './schemas/gameSchema';
+await db.execAsync(gameTable);
+import { progressTable } from './schemas/progressSchema';
+await db.execAsync(progressTable);
+import { rankDefinitionsTable  } from './schemas/rankDefinitionsSchema';
+await db.execAsync(rankDefinitionsTable );
+export default function InitDB({ children }) {
 
-export const db = SQLite.openDatabase('miDB.db');
+  async function setupDatabase(db) {
 
+    await db.execAsync(`
+      PRAGMA foreign_keys = ON;
+    `);
 
-export default function initDB({ children }) {
+    await db.execAsync(symptomLogsTable);
+    await db.execAsync(alertsTable);
+    await db.execAsync(gamesTable);
+  }
+
   return (
     <SQLiteProvider
       databaseName="NefroKids.db"
-      onInit={async (db) => {
-        await db.execAsync(`
-          CREATE TABLE IF NOT EXISTS symptom_logs (
-            id            TEXT     PRIMARY KEY,
-            child_id      TEXT     NOT NULL,
-            general_mood  TEXT     NOT NULL
-                          CHECK(general_mood IN ('feliz','cansado','dolor','hinchado')),
-            pain_level    INTEGER  NOT NULL
-                          CHECK(pain_level BETWEEN 0 AND 10),
-            energy_level  INTEGER  NOT NULL
-                          CHECK(energy_level BETWEEN 0 AND 10),
-            urine_color   TEXT     NOT NULL
-                          CHECK(urine_color IN ('normal','oscura','rojiza','sin_orina')),
-            is_swollen    INTEGER  NOT NULL
-                          CHECK(is_swollen IN (0, 1)),
-            notes         TEXT,
-            alert_sent    INTEGER  NOT NULL DEFAULT 0
-                          CHECK(alert_sent IN (0, 1)),
-            logged_at     TEXT     NOT NULL
-                          DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
-            FOREIGN KEY (child_id) REFERENCES children(id) ON DELETE CASCADE
-          );
-
-          CREATE INDEX IF NOT EXISTS idx_symptom_logs_child_id
-            ON symptom_logs (child_id);
-
-          CREATE INDEX IF NOT EXISTS idx_symptom_logs_logged_at
-            ON symptom_logs (logged_at DESC);
-        `);
-      }}
+      onInit={setupDatabase}
     >
       {children}
     </SQLiteProvider>
