@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import AppNavigator from "./app/navigation/AppNavigator";
-import { initDB } from "./app/database/database";
+import { initDB } from "./back/database/database";
 
 export default function App() {
 

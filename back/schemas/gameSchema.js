@@ -1,7 +1,7 @@
 export const gameTable = `
 CREATE TABLE IF NOT EXISTS game (
 
-  Numero INTEGER NOT NULL,
+  numero INTEGER NOT NULL,
   id TEXT PRIMARY KEY,
   nombre TEXT NOT NULL,
     descripcion TEXT NOT NULL,

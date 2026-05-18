@@ -7,12 +7,21 @@ import SectionHeader from "../components/SectionHeader";
 import colors from "../styles/colors";
 
 export default function Levels() {
-  const LEVELS = [
-    { id: 1, top: 40, left: 220, unlocked: true },
-    { id: 2, top: 140, left: 80, unlocked: true },
-    { id: 3, top: 260, left: 220, unlocked: true },
-    { id: 4, top: 380, left: 100, unlocked: false },
-  ];
+  const [levels, setLevels] = useState([]);
+  useEffect(() => {
+
+  async function loadLevels() {
+
+    const controller = new GameController(db);
+
+    const data = await controller.getLevels();
+
+    setLevels(data);
+  }
+
+  loadLevels();
+
+}, []);
   return (
     <SafeAreaView style={{ flex: 1 }}>
 
@@ -23,7 +32,7 @@ export default function Levels() {
 
       <View style={styles.mapContainer}>
 
-        {LEVELS.map((level) => (
+        {levels.map((level) => (
           <View
             key={level.id}
             style={[
