@@ -83,6 +83,7 @@ export default class GameRepository {
     `;
 
     await this.db.runAsync(query, [id]);
+    
   }
 
 }
