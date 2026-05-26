@@ -1,26 +1,52 @@
 import { SQLiteProvider } from "expo-sqlite";
 
-import { usersTable } from "./database/schemas/userSchema";
-import { alertsTable } from "./database/schemas/alertsSchema";
-import { symptomLogsTable } from "./database/schemas/symptomsSchema";
-import { gameTable } from "./database/schemas/gameSchema";
-import { progressTable } from "./database/schemas/progressSchema";
-import { rankDefinitionsTable } from "./database/schemas/rankDefinitionsSchema";
+import { usersTable } from "./schemas/userSchema";
+import { alertsTable } from "./schemas/alertsSchema";
+import { symptomLogsTable } from "./schemas/symptomsSchema";
+import { gameTable } from "./schemas/gameSchema";
+import { progressTable } from "./schemas/progressSchema";
+import { rankDefinitionsTable } from "./schemas/rankDefinitionsSchema";
 
 export default function InitDB({ children }) {
 
   async function setupDatabase(db) {
 
-    await db.execAsync(`
-      PRAGMA foreign_keys = ON;
-    `);
+    try {
 
-    await db.execAsync(usersTable);
-    await db.execAsync(alertsTable);
-    await db.execAsync(symptomLogsTable);
-    await db.execAsync(gameTable);
-    await db.execAsync(progressTable);
-    await db.execAsync(rankDefinitionsTable);
+      console.log("INIT DATABASE");
+
+      await db.execAsync(`
+        PRAGMA foreign_keys = ON;
+      `);
+
+      console.log("PRAGMA OK");
+
+      await db.execAsync(usersTable);
+      console.log("usersTable OK");
+
+      await db.execAsync(gameTable);
+      console.log("gameTable OK");
+
+      await db.execAsync(rankDefinitionsTable);
+      console.log("rankDefinitionsTable OK");
+
+      await db.execAsync(symptomLogsTable);
+      console.log("symptomLogsTable OK");
+
+      await db.execAsync(alertsTable);
+      console.log("alertsTable OK");
+
+      await db.execAsync(progressTable);
+      console.log("progressTable OK");
+
+      console.log("DATABASE READY");
+
+    } catch (error) {
+
+      console.error("DATABASE ERROR:");
+      console.error(error);
+
+    }
   }
 
   return (

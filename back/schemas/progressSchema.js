@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS child_progress (
     ON DELETE CASCADE,
 
   FOREIGN KEY (level_id)
-    REFERENCES game_levels(id)
+    REFERENCES game(id)
     ON DELETE CASCADE
 );
 `;

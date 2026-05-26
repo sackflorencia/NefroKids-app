@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS symptom_logs (
     DEFAULT CURRENT_TIMESTAMP,
 
   FOREIGN KEY (child_id)
-    REFERENCES children(id)
+    REFERENCES users(id)
     ON DELETE CASCADE
 );
 `;

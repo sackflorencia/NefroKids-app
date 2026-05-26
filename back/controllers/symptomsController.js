@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from "uuid";
+
 import SymptomLogRepository from "../repositories/SymptomLogRepository";
 
 export default class SymptomLogController {
@@ -9,7 +11,8 @@ export default class SymptomLogController {
   async createCheckIn(data) {
 
     const symptomLog = {
-      id: crypto.randomUUID(),
+
+      id: uuidv4(),
 
       child_id: data.child_id,
 
@@ -24,6 +27,7 @@ export default class SymptomLogController {
       is_swollen: data.is_swollen ?? 0,
 
       notes: data.notes ?? ""
+
     };
 
     await this.repository.insert(symptomLog);

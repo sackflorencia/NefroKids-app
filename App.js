@@ -1,12 +1,12 @@
-import React, { useEffect } from "react";
+import React from "react";
 import AppNavigator from "./app/navigation/AppNavigator";
-import { initDB } from "./back/database/database";
+import InitDB from "./back/database";
 
 export default function App() {
 
-  useEffect(() => {
-    initDB();
-  }, []);
-
-  return <AppNavigator />;
+  return (
+    <InitDB>
+      <AppNavigator />
+    </InitDB>
+  );
 }
