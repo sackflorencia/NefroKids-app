@@ -17,10 +17,10 @@ const Home = () => {
       <SpeechBubble text="¿Qué querés hacer hoy?" />
 
       <View style={styles.buttons}>
-        <Button title="Contarte como estoy" variant="secondary" style={styles.small} />
+        <Button title="Contarte como estoy" variant="secondary" style={styles.small} onPress={() => navigation.navigate("CheckIn")}/>
 
         <Button title="Informarme" variant="secondary" style={styles.small} />
-        <Button title="Repasar" variant="secondary" style={styles.small} onPress={() => navigation.navigate("CheckIn")}/>
+        <Button title="Repasar" variant="secondary" style={styles.small} onPress={() => navigation.navigate("Review")}/>
         <Button
           title="Jugar"
           variant="secondary"

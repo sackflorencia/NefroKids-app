@@ -7,6 +7,8 @@ import { gameTable } from "./schemas/gameSchema";
 import { progressTable } from "./schemas/progressSchema";
 import { rankDefinitionsTable } from "./schemas/rankDefinitionsSchema";
 import { seedGames } from "./seeds/gameSeed";
+import { reviewTable } from "./schemas/reviewschema";
+import { seedReviews } from "./seeds/reviewSeed";
 
 export default function InitDB({ children }) {
 
@@ -40,7 +42,11 @@ export default function InitDB({ children }) {
       await db.execAsync(progressTable);
       console.log("progressTable OK");
 
+      await db.execAsync(reviewTable);
+      console.log("reviewTable OK");
+
       await seedGames(db);
+      await seedReviews(db);
 
       console.log("DATABASE READY");
 

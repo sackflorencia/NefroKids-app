@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { View, Text } from "react-native";
-import ColorOptions from "../components/ColorOptions";
-import BodySelector from "../components/BodySelector";
-import FeelingSelector from "../components/FeelingSelector";
+import ColorOptions from "../components/checkIn/ColorOptions";
+import BodySelector from "../components/checkIn/BodySelector";
+import FeelingSelector from "../components/checkIn/FeelingSelector";
 import { useSQLiteContext } from "expo-sqlite";
 import SymptomLogController from "../../back/controllers/symptomsController";
 
