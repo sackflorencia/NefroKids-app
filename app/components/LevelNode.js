@@ -1,34 +1,36 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import colors from "../styles/colors";
 
-export default function LevelNode({ number, unlocked = true }) {
+export default function LevelNode({ number, unlocked = true, onPress }) {
   return (
-    <View style={styles.wrapper}>
-      <View
-        style={[
-          styles.node,
-          {
-            backgroundColor: unlocked
-              ? colors.primary
-              : colors.secondary,
-          },
-        ]}
-      >
-        <Text style={styles.text}>{number}</Text>
-      </View>
+    <TouchableOpacity activeOpacity={0.8} onPress={onPress}>
+      <View style={styles.wrapper}>
+        <View
+          style={[
+            styles.node,
+            {
+              backgroundColor: unlocked
+                ? colors.primary
+                : colors.secondary,
+            },
+          ]}
+        >
+          <Text style={styles.text}>{number}</Text>
+        </View>
 
-      <View
-        style={[
-          styles.shadow,
-          {
-            backgroundColor: unlocked
-              ? colors.primaryShadow
-              : colors.secondaryShadow,
-          },
-        ]}
-      />
-    </View>
+        <View
+          style={[
+            styles.shadow,
+            {
+              backgroundColor: unlocked
+                ? colors.primaryShadow
+                : colors.secondaryShadow,
+            },
+          ]}
+        />
+      </View>
+    </TouchableOpacity>
   );
 }
 

@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, TouchableWithoutFeedback } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useSQLiteContext } from "expo-sqlite";
 
 import LevelNode from "../components/LevelNode";
 import SectionHeader from "../components/SectionHeader";
+import LevelPreview from "../components/LevelPreview";
+
+import { useSQLiteContext } from "expo-sqlite";
 import GameController from "../../back/controllers/gameController";
+
 
 export default function Levels() {
 
   const db = useSQLiteContext();
-
   const [levels, setLevels] = useState([]);
+  const [selectedLevel, setSelectedLevel] = useState(null);
 
   useEffect(() => {
 
@@ -65,11 +68,40 @@ export default function Levels() {
             <LevelNode
               number={level.numero}
               unlocked={true}
+              onPress={() => setSelectedLevel(level)}
             />
 
           </View>
 
         ))}
+        {selectedLevel && (
+
+          <TouchableWithoutFeedback
+            onPress={() => setSelectedLevel(null)}
+          >
+
+            <View style={styles.previewOverlay}>
+
+              <TouchableWithoutFeedback>
+
+                <View>
+
+                  <LevelPreview
+                    level={selectedLevel}
+                    onStart={() => {
+                      console.log("START LEVEL");
+                    }}
+                  />
+
+                </View>
+
+              </TouchableWithoutFeedback>
+
+            </View>
+
+          </TouchableWithoutFeedback>
+
+        )}
 
       </View>
 
@@ -85,4 +117,10 @@ const styles = StyleSheet.create({
   node: {
     position: "absolute",
   },
+  previewOverlay: {
+  position: "absolute",
+  width: "100%",
+  height: "100%",
+  justifyContent: "flex-end",
+},
 });
