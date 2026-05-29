@@ -1,28 +1,44 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useSQLiteContext } from "expo-sqlite";
 
 import LevelNode from "../components/LevelNode";
 import SectionHeader from "../components/SectionHeader";
-import colors from "../styles/colors";
+import GameController from "../../back/controllers/gameController";
 
 export default function Levels() {
+
+  const db = useSQLiteContext();
+
   const [levels, setLevels] = useState([]);
+
   useEffect(() => {
 
-  async function loadLevels() {
+    async function loadLevels() {
 
-    const controller = new GameController(db);
+      try {
 
-    const data = await controller.getLevels();
+        const controller = new GameController(db);
 
-    setLevels(data);
-  }
+        const data = await controller.getLevels();
 
-  loadLevels();
+        console.log("LEVELS:");
+        console.log(data);
 
-}, []);
+        setLevels(data);
+
+      } catch (error) {
+
+        console.error(error);
+
+      }
+    }
+
+    loadLevels();
+
+  }, []);
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
 
@@ -33,21 +49,30 @@ export default function Levels() {
 
       <View style={styles.mapContainer}>
 
-        {levels.map((level) => (
+        {levels.map((level, index) => (
+
           <View
             key={level.id}
             style={[
               styles.node,
-              { top: level.top, left: level.left },
+              {
+                top: index * 120,
+                left: index % 2 === 0 ? 40 : 180,
+              },
             ]}
           >
+
             <LevelNode
-              number={level.id}
-              unlocked={level.unlocked}
+              number={level.numero}
+              unlocked={true}
             />
+
           </View>
+
         ))}
+
       </View>
+
     </SafeAreaView>
   );
 }
