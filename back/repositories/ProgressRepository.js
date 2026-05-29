@@ -1,23 +1,13 @@
-import Db from './database.js';
-
 export default class ProgressRepository {
-    constructor() {
-    this.db = new Db();
-    }
-    getAllAsync = async () => {
-        console.log(`ProgressRepository.getAllAsync()`);
-        const sql = `SELECT * FROM child_progress`;
-        return await this.db.queryAll(sql);
-    }
-    getByIdAsync = async (id) => {
-        console.log(`ProgressRepository.getByIdAsync(${id})`);
-        const sql = `SELECT * FROM child_progress WHERE id= ?`;
-        return await this.db.queryOne(sql, [id]);
-    }
-    
-    createAsync = async (entity) => {
-        console.log(`ProgressRepository.createAsync(${JSON.stringify(entity)})`);
-        const sql = `INSERT INTO child_progress (
+
+  constructor(db) {
+    this.db = db;
+  }
+
+  async insert(child_progress) {
+
+    const query = `
+      INSERT INTO child_progress (
         id,
         child_id,
         level_id,
@@ -25,46 +15,87 @@ export default class ProgressRepository {
         attempts,
         xp_gained,
         started_at,
-        completed_at) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
-        const values = [
-            entity.id,
-            entity.child_id,
-            entity.level_id,
-            entity.status ?? 'bloqueado',
-            entity.attempts ?? 0,
-            entity.xp_gained ?? 0,
-            entity.started_at ?? null,
-            entity.completed_at ?? null
-        ];
+        completed_at
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+    `;
 
-        return await this.db.queryRowCount(sql, values);
-    }
-    updateAsync = async (entity) => {
-        console.log(`ProgressRepository.updateAsync(${JSON.stringify(entity)})`);
-        const sql = `
-        UPDATE child_progress
-            SET
-                child_id = ?,
-                level_id = ?,
-                status = ?,
-                attempts = ?,
-                xp_gained = ?,
-                started_at = ?,
-                completed_at = ?
-            WHERE id = ?
-        `;
+    await this.db.runAsync(
+      query,
+      [
+        child_progress.id,
+        child_progress.child_id,
+        child_progress.level_id,
+        child_progress.status,
+        child_progress. attempts,
+        child_progress.xp_gained,
+        child_progress.started_at,
+        child_progress.completed_at
+      ]
+    );
+  }
 
-        const values = [
-            entity.child_id,
-            entity.level_id,
-            entity.status,
-            entity.attempts,
-            entity.xp_gained,
-            entity.started_at,
-            entity.completed_at,
-            entity.id
-        ];
-        return await this.db.queryRowCount(sql, values);
-    }
+  async getAll() {
+
+    const query = `
+      SELECT *
+      FROM child_progress
+      ORDER BY id ASC;
+    `;
+
+    return await this.db.getAllAsync(query);
+  }
+
+  async getById(id) {
+
+    const query = `
+      SELECT *
+      FROM child_progress
+      WHERE id = ?;
+    `;
+
+    return await this.db.getFirstAsync(query, [id]);
+  }
+
+  async update(child_progress) {
+
+    const query = `
+      UPDATE child_progress
+      SET
+       child_id= ?,
+        level_id= ?,
+        status= ?,
+        attempts= ?,
+        xp_gained= ?,
+        started_at= ?,
+        completed_at = ?
+      WHERE id = ?;
+    `;
+
+    await this.db.runAsync(
+      query,
+      [
+        child_progress.child_id,
+        child_progress.level_id,
+        child_progress.status,
+        child_progress. attempts,
+        child_progress.xp_gained,
+        child_progress.started_at,
+        child_progress.completed_at,
+        child_progress.id
+      ]
+    );
+  }
+
+  async delete(id) {
+
+    const query = `
+      DELETE FROM child_progress
+      WHERE id = ?;
+    `;
+
+    await this.db.runAsync(query, [id]);
+    
+  }
+
 }

@@ -22,9 +22,6 @@ CREATE TABLE IF NOT EXISTS users (
 
   diagnosis TEXT NOT NULL,
 
-  avatar_id TEXT,
-
-  created_at TEXT NOT NULL
-    DEFAULT CURRENT_TIMESTAMP
+  avatar_id TEXT
 );
 `;
