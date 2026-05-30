@@ -1,10 +1,24 @@
-import { View, Text, TouchableOpacity } from "react-native";
-export default function FeelingSelector({ onSelect }) {
+import { MOODS } from "../../helpers/CheckInHelper";
+import { View, Text } from "react-native";
+
+export default function FeelingSelector({
+  onSelect
+}) {
+
   return (
-    <View style={{ flexDirection: "row" }}>
-      <Text onPress={() => onSelect("happy")}>😃</Text>
-      <Text onPress={() => onSelect("neutral")}>😐</Text>
-      <Text onPress={() => onSelect("sad")}>😢</Text>
+    <View>
+      {MOODS.map(mood => (
+        <Text
+          key={mood.value}
+          onPress={() =>
+            onSelect(mood.value)
+          }
+        >
+          {mood.label}
+        </Text>
+
+      ))}
+
     </View>
   );
 }

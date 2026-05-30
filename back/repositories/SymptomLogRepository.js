@@ -3,52 +3,57 @@ export default class SymptomLogRepository {
   constructor(db) {
     this.db = db;
   }
+
   async getAll() {
 
     const query = `
-    SELECT *
-    FROM symptom_logs
-    ORDER BY logged_at DESC;
-  `;
+      SELECT *
+      FROM symptom_logs
+      ORDER BY logged_at DESC;
+    `;
 
     return await this.db.getAllAsync(query);
   }
+
   async getById(id) {
 
     const query = `
-    SELECT *
-    FROM symptom_logs
-    WHERE id = ?;
-  `;
+      SELECT *
+      FROM symptom_logs
+      WHERE id = ?;
+    `;
 
     return await this.db.getFirstAsync(query, [id]);
   }
+
   async getByChildId(childId) {
 
     const query = `
-    SELECT *
-    FROM symptom_logs
-    WHERE child_id = ?
-    ORDER BY logged_at DESC;
-  `;
+      SELECT *
+      FROM symptom_logs
+      WHERE child_id = ?
+      ORDER BY logged_at DESC;
+    `;
 
     return await this.db.getAllAsync(query, [childId]);
   }
+
   async getTodayCheckIn(childId) {
 
     const query = `
-    SELECT *
-    FROM symptom_logs
-    WHERE child_id = ?
-      AND DATE(logged_at) = DATE('now', 'localtime')
-    LIMIT 1;
-  `;
+      SELECT *
+      FROM symptom_logs
+      WHERE child_id = ?
+        AND DATE(logged_at) = DATE('now','localtime')
+      LIMIT 1;
+    `;
 
     return await this.db.getFirstAsync(
       query,
       [childId]
     );
   }
+
   async insert(symptomLog) {
 
     const query = `
@@ -72,6 +77,38 @@ export default class SymptomLogRepository {
         symptomLog.urine_color
       ]
     );
+  }
+
+  async update(symptomLog) {
+
+    const query = `
+      UPDATE symptom_logs
+      SET
+        general_mood = ?,
+        pain_location = ?,
+        urine_color = ?
+      WHERE id = ?;
+    `;
+
+    await this.db.runAsync(
+      query,
+      [
+        symptomLog.general_mood,
+        symptomLog.pain_location,
+        symptomLog.urine_color,
+        symptomLog.id
+      ]
+    );
+  }
+
+  async delete(id) {
+
+    const query = `
+      DELETE FROM symptom_logs
+      WHERE id = ?;
+    `;
+
+    await this.db.runAsync(query, [id]);
   }
 
 }

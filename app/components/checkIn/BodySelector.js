@@ -1,9 +1,22 @@
-import { View, Text, TouchableOpacity } from "react-native";
-export default function BodySelector({ onSelect }) {
+import { PAIN_LOCATIONS } from "../../helpers/CheckInHelper";
+import { View, Text } from "react-native";
+
+export default function BodySelector({
+  onSelect
+}) {
+
   return (
     <View>
-      <Text onPress={() => onSelect("head")}>Cabeza</Text>
-      <Text onPress={() => onSelect("stomach")}>Panza</Text>
+      {PAIN_LOCATIONS.map(pain => (
+        <Text
+          key={pain.value}
+          onPress={() =>
+            onSelect(pain.value)
+          }
+        >
+          {pain.label}
+        </Text>
+      ))}
     </View>
   );
 }

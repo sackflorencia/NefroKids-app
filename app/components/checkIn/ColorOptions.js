@@ -1,17 +1,28 @@
-import { View, Text, TouchableOpacity } from "react-native";
-export default function ColorOptions({ options, onSelect }) {
+import { View, TouchableOpacity } from "react-native";
+import { URINE_COLORS } from "../../helpers/CheckInHelper";
+
+export default function ColorOptions({
+  onSelect
+}) {
   return (
-    <View style={{ flexDirection: "row" }}>
-      {options.map(color => (
+    <View
+      style={{
+        flexDirection: "row"
+      }}
+    >
+      {URINE_COLORS.map(item => (
         <TouchableOpacity
-          key={color}
+          key={item.value}
           style={{
-            backgroundColor: color,
+            backgroundColor:
+              item.color,
             width: 40,
             height: 40,
             borderRadius: 20
           }}
-          onPress={() => onSelect(color)}
+          onPress={() =>
+            onSelect(item.value)
+          }
         />
       ))}
     </View>
