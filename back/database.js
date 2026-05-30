@@ -6,8 +6,13 @@ import { symptomLogsTable } from "./schemas/symptomsSchema";
 import { gameTable } from "./schemas/gameSchema";
 import { progressTable } from "./schemas/progressSchema";
 import { rankDefinitionsTable } from "./schemas/rankDefinitionsSchema";
-import { seedGames } from "./seeds/gameSeed";
 import { reviewTable } from "./schemas/reviewschema";
+import { avatarsTable } from "./schemas/avatarsSchema";
+import {reportHistoryTable} from "./schemas/reportHistorySchema";
+import {appointmentRulesTable} from "./schemas/appointmentRulesSchema";
+import {appointmentsWeekdaysTable} from "./schemas/appointmentsSchema";
+
+import { seedGames } from "./seeds/gameSeed";
 import { seedReviews } from "./seeds/reviewSeed";
 
 export default function InitDB({ children }) {
@@ -44,6 +49,18 @@ export default function InitDB({ children }) {
 
       await db.execAsync(reviewTable);
       console.log("reviewTable OK");
+
+      await db.execAsync(avatarsTable);
+      console.log("avatarsTable OK");
+      
+      await db.execAsync(reportHistoryTable);
+      console.log("reportHistoryTable OK");
+
+      await db.execAsync(appointmentRulesTable);
+      console.log("appointmentRulesTable OK");
+
+      await db.execAsync(appointmentsWeekdaysTable);
+      console.log("appointmentsWeekdaysTable OK"); 
 
       await seedGames(db);
       await seedReviews(db);

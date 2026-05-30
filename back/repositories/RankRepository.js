@@ -12,10 +12,9 @@ export default class RankRepository {
         title,
         min_xp,
         max_xp,
-        badge_url,
-        description
+        badge_url
       )
-      VALUES (?, ?, ?, ?, ?, ?);
+      VALUES (?, ?, ?, ?, ?);
     `;
 
     await this.db.runAsync(
@@ -25,8 +24,7 @@ export default class RankRepository {
         rank_definitions.title,
         rank_definitions.min_xp,
         rank_definitions.max_xp,
-        rank_definitions.badge_url,
-        rank_definitions.description
+        rank_definitions.badge_url
       ]
     );
   }
@@ -61,8 +59,7 @@ export default class RankRepository {
         title = ?,
         min_xp = ?,
         max_xp = ?,
-        badge_url = ?,
-        description = ?
+        badge_url = ?
       WHERE id = ?;
     `;
 
@@ -73,7 +70,6 @@ export default class RankRepository {
         rank_definitions.min_xp,
         rank_definitions.max_xp,
         rank_definitions.badge_url,
-        rank_definitions.description,
         rank_definitions.id
       ]
     );

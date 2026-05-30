@@ -11,8 +11,6 @@ CREATE TABLE IF NOT EXISTS rank_definitions (
   max_xp INTEGER NOT NULL
     CHECK(max_xp >= min_xp),
 
-  badge_url TEXT,
-
-  description TEXT
+  badge_url TEXT
 );
 `;
