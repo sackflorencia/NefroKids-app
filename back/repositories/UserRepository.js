@@ -11,14 +11,12 @@ export default class UserRepository {
         id,
         birth_date,
         full_name,
-        first_register_date,
         total_xp,
         urinates,
-        username,
         diagnosis,
         avatar_id
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?);
     `;
 
     await this.db.runAsync(
@@ -27,10 +25,8 @@ export default class UserRepository {
         users.id,
         users.birth_date,
         users.full_name,
-        users.first_register_date,
         users.total_xp,
         users.urinates,
-        users.username,
         users.diagnosis,
         users.avatar_id
       ]
@@ -59,6 +55,17 @@ export default class UserRepository {
     return await this.db.getFirstAsync(query, [id]);
   }
 
+  async getCurrentUser() {
+
+    const query = `
+      SELECT *
+      FROM users
+      LIMIT 1;
+    `;
+
+    return await this.db.getFirstAsync(query);
+  }
+
   async update(users) {
 
     const query = `
@@ -66,10 +73,8 @@ export default class UserRepository {
       SET
         birth_date= ?,
         full_name= ?,
-        first_register_date= ?,
         total_xp= ?,
         urinates= ?,
-        username= ?,
         diagnosis= ?,
         avatar_id = ?
       WHERE id = ?;
@@ -80,10 +85,8 @@ export default class UserRepository {
       [
         users.birth_date,
         users.full_name,
-        users.first_register_date,
         users.total_xp,
         users.urinates,
-        users.username,
         users.diagnosis,
         users.avatar_id,
         users.id
@@ -99,7 +102,7 @@ export default class UserRepository {
     `;
 
     await this.db.runAsync(query, [id]);
-    
+
   }
 
 }

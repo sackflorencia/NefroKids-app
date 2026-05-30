@@ -14,6 +14,6 @@ CREATE TABLE IF NOT EXISTS appointmentRules (
   report_hours_before INTEGER NOT NULL,
   active INTEGER NOT NULL
   DEFAULT 1
-    CHECK(active IN (0,1)),
+    CHECK(active IN (0,1))
 );
 `;

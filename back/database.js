@@ -11,9 +11,11 @@ import { avatarsTable } from "./schemas/avatarsSchema";
 import {reportHistoryTable} from "./schemas/reportHistorySchema";
 import {appointmentRulesTable} from "./schemas/appointmentRulesSchema";
 import {appointmentsWeekdaysTable} from "./schemas/appointmentsSchema";
+import {tutorsTable} from "./schemas/tutorsSchema";
 
 import { seedGames } from "./seeds/gameSeed";
 import { seedReviews } from "./seeds/reviewSeed";
+import { seedUsers } from "./seeds/userSeed";
 
 export default function InitDB({ children }) {
 
@@ -62,8 +64,12 @@ export default function InitDB({ children }) {
       await db.execAsync(appointmentsWeekdaysTable);
       console.log("appointmentsWeekdaysTable OK"); 
 
+      await db.execAsync(tutorsTable);
+      console.log("tutorsTable OK");
+
       await seedGames(db);
       await seedReviews(db);
+      await seedUsers(db);
 
       console.log("DATABASE READY");
 
