@@ -1,32 +1,38 @@
 export const symptomLogsTable = `
 CREATE TABLE IF NOT EXISTS symptom_logs (
+
   id TEXT PRIMARY KEY,
+
   child_id TEXT NOT NULL,
-  general_mood TEXT NOT NULL
-    CHECK(general_mood IN (
-      'feliz',
-      'cansado',
-      'dolor',
-      'hinchado'
+
+  general_mood TEXT
+  CHECK(general_mood IN (
+    'happy',
+    'tired',
+    'pain',
+    'swollen'
+  )),
+
+  pain_location TEXT
+    CHECK(pain_location IN (
+      'head',
+      'stomach',
+      'arm',
+      'leg',
+      'none'
     )),
-  pain_level INTEGER NOT NULL
-    CHECK(pain_level BETWEEN 0 AND 10),
-  energy_level INTEGER NOT NULL
-    CHECK(energy_level BETWEEN 0 AND 10),
-  urine_color TEXT NOT NULL
-    CHECK(urine_color IN (
-      'normal',
-      'oscura',
-      'rojiza',
-      'sin_orina'
-    )),
 
-  is_swollen INTEGER NOT NULL
-    CHECK(is_swollen IN (0,1)),
+  urine_color TEXT
+  CHECK(urine_color IN (
+    'normal',
+    'dark',
+    'reddish',
+    'no_urine',
+    'pending'
+  )),
 
-  notes TEXT,
-
-  alert_sent INTEGER DEFAULT 0
+  alert_sent INTEGER NOT NULL
+    DEFAULT 0
     CHECK(alert_sent IN (0,1)),
 
   logged_at TEXT NOT NULL

@@ -10,7 +10,7 @@ import { reviewTable } from "./schemas/reviewschema";
 import { avatarsTable } from "./schemas/avatarsSchema";
 import {reportHistoryTable} from "./schemas/reportHistorySchema";
 import {appointmentRulesTable} from "./schemas/appointmentRulesSchema";
-import {appointmentsWeekdaysTable} from "./schemas/appointmentsSchema";
+import {appointmentWeekdaysTable} from "./schemas/appointmentWeekdaysSchema";
 import {tutorsTable} from "./schemas/tutorsSchema";
 
 import { seedGames } from "./seeds/gameSeed";
@@ -61,8 +61,8 @@ export default function InitDB({ children }) {
       await db.execAsync(appointmentRulesTable);
       console.log("appointmentRulesTable OK");
 
-      await db.execAsync(appointmentsWeekdaysTable);
-      console.log("appointmentsWeekdaysTable OK"); 
+      await db.execAsync(appointmentWeekdaysTable);
+      console.log("appointmentWeekdaysTable OK"); 
 
       await db.execAsync(tutorsTable);
       console.log("tutorsTable OK");

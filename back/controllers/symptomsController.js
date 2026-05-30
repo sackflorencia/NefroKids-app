@@ -16,21 +16,31 @@ export default class SymptomLogController {
 
       child_id: data.child_id,
 
-      general_mood: data.general_mood,
+      general_mood: data.general_mood ?? null,
 
-      pain_level: data.pain_level ?? 0,
+      pain_location: data.pain_location ?? null,
 
-      energy_level: data.energy_level ?? 5,
-
-      urine_color: data.urine_color,
-
-      is_swollen: data.is_swollen ?? 0,
-
-      notes: data.notes ?? ""
+      urine_color: data.urine_color ?? null
 
     };
 
     await this.repository.insert(symptomLog);
+  }
+
+  async getAll() {
+    return await this.repository.getAll();
+  }
+
+  async getById(id) {
+    return await this.repository.getById(id);
+  }
+
+  async getByChildId(childId) {
+    return await this.repository.getByChildId(childId);
+  }
+
+  async getTodayCheckIn(childId) {
+    return await this.repository.getTodayCheckIn(childId);
   }
 
 }

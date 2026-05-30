@@ -16,7 +16,7 @@ export default class UserRepository {
         diagnosis,
         avatar_id
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+      VALUES (?, ?, ?, ?, ?, ?, ?);
     `;
 
     await this.db.runAsync(

@@ -1,5 +1,5 @@
 import UserRepository from "../repositories/UserRepository";
-import User from "../models/User";
+import User from "../models/userModel";
 
 export async function seedUsers(db) {
 
@@ -20,7 +20,7 @@ export async function seedUsers(db) {
     1,
     null
   );
-
+  console.log(initialUser);
   await repository.insert(initialUser);
 
   console.log("USER SEEDED");

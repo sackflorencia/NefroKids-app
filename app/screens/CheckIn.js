@@ -5,6 +5,7 @@ import BodySelector from "../components/checkIn/BodySelector";
 import FeelingSelector from "../components/checkIn/FeelingSelector";
 import { useSQLiteContext } from "expo-sqlite";
 import SymptomLogController from "../../back/controllers/symptomsController";
+import UserController from "../../back/controllers/userController";
 
 export default function CheckIn() {
 
@@ -47,13 +48,14 @@ export default function CheckIn() {
             currentIndex === QUESTIONS.length - 1;
 
         if (isLastQuestion) {
+            const userController = new UserController(db);
+            const currentUser = await userController.getCurrentUser();
 
-            const controller =
-                new SymptomLogController(db);
+            const controller = new SymptomLogController(db);
 
             await controller.createCheckIn({
 
-                child_id: "1",
+                child_id: currentUser.id,
 
                 general_mood:
                     updatedAnswers.mood,
@@ -81,6 +83,7 @@ export default function CheckIn() {
     };
 
     const currentQuestion = QUESTIONS[currentIndex];
+    
 
     return (
         <View>
