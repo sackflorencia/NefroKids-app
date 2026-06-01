@@ -4,7 +4,7 @@ import { View, Image, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import globalStyles from "../styles/globalStyles";
 import Button from "../components/Button";
-import SpeechBubble from "../components/SpeechBubble";
+import SpeechBubble from "../components/home/SpeechBubble";
 
 import images from "../../assets/images";
 import { useNavigation } from "@react-navigation/native";
