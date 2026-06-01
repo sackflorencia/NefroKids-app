@@ -118,9 +118,9 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   previewOverlay: {
-  position: "absolute",
-  width: "100%",
-  height: "100%",
-  justifyContent: "flex-end",
-},
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    justifyContent: "flex-end",
+  },
 });
