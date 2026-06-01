@@ -8,7 +8,6 @@ import CheckIn from "../screens/CheckIn";
 import Review from "../screens/Review";
 
 const Stack = createNativeStackNavigator();
-
 export default function AppNavigator() {
   return (
     <NavigationContainer>
@@ -17,6 +16,7 @@ export default function AppNavigator() {
         <Stack.Screen name="Levels" component={Levels} />
         <Stack.Screen name="CheckIn" component={CheckIn} />
         <Stack.Screen name="Review" component={Review} />
+        <Stack.Screen name="Game" component={GameScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
