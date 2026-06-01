@@ -25,15 +25,21 @@ export default function ReviewOptionButton({
 const styles = StyleSheet.create({
 
   button: {
-    backgroundColor: "#5DADE2",
-    paddingVertical: 16,
-    borderRadius: 14,
-    alignItems: "center"
-  },
+  backgroundColor: "#F5F5F5",
 
-  text: {
-    color: "white",
-    fontSize: 18,
-    fontWeight: "600"
-  }
+  borderWidth: 4,
+  borderColor: "#B8F0DF",
+
+  borderRadius: 25,
+
+  paddingVertical: 20,
+
+  alignItems: "center"
+},
+
+text: {
+  color: "#111",
+  fontSize: 20,
+  fontWeight: "500"
+}
 });

@@ -78,7 +78,7 @@ export default function Review() {
 
     return (
         <View style={styles.container}>
-
+            <View style={styles.header} />
             <ReviewProgressBar
                 current={currentIndex + 1}
                 total={questions.length}
@@ -97,8 +97,12 @@ const styles = StyleSheet.create({
 
     container: {
         flex: 1,
-        padding: 20,
-        justifyContent: "center"
+        backgroundColor: "#F5F5F5",
+    },
+    
+        header: {
+        height: 70,
+        backgroundColor: "#B7F0D6",
     },
 
     center: {

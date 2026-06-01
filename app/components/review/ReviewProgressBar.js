@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View,  Text,StyleSheet } from "react-native";
 
 export default function ReviewProgressBar({
   current,
@@ -27,15 +27,14 @@ export default function ReviewProgressBar({
 const styles = StyleSheet.create({
 
   container: {
-    height: 12,
-    backgroundColor: "#D6EAF8",
+    height: 18,
+    backgroundColor: "#C8F2E3",
     borderRadius: 999,
     overflow: "hidden",
-    marginBottom: 30
+    marginBottom: 50
   },
 
   progress: {
-    flex: 1,
-    backgroundColor: "#3498DB"
+    backgroundColor: "#35C59B"
   }
 });

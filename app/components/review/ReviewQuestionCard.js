@@ -49,16 +49,16 @@ export default function ReviewQuestionCard({
 const styles = StyleSheet.create({
 
   card: {
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 24,
-    gap: 20
+    gap: 25
   },
 
   question: {
-    fontSize: 24,
-    fontWeight: "bold",
-    textAlign: "center"
+    fontSize: 34,
+    fontWeight: "700",
+    color: "#215B4A",
+    textAlign: "left",
+    lineHeight: 42,
+    marginBottom: 40
   },
 
   answersContainer: {
