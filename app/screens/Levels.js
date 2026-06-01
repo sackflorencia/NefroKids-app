@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { View, StyleSheet, TouchableWithoutFeedback } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import LevelNode from "../components/LevelNode";
-import SectionHeader from "../components/SectionHeader";
-import LevelPreview from "../components/LevelPreview";
+import LevelNode from "../components/level/LevelNode";
+import SectionHeader from "../components/level/SectionHeader";
+import LevelPreview from "../components/level/LevelPreview";
 
 import { useSQLiteContext } from "expo-sqlite";
 import GameController from "../../back/controllers/gameController";

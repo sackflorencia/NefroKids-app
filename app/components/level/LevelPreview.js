@@ -5,8 +5,8 @@ import {
   StyleSheet,
 } from "react-native";
 
-import Button from "./Button";
-import colors from "../styles/colors";
+import Button from "../Button";
+import colors from "../../styles/colors";
 
 export default function LevelPreview({
   level,

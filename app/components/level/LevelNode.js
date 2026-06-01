@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import colors from "../styles/colors";
+import colors from "../../styles/colors";
 
 export default function LevelNode({ number, unlocked = true, onPress }) {
   return (
