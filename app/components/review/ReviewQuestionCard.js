@@ -23,10 +23,14 @@ export default function ReviewQuestionCard({
   return (
     <View style={styles.card}>
 
-      <Text style={styles.question}>
-        {question.question}
-      </Text>
+      {/* Altura fija para la pregunta: siempre ocupa el mismo espacio */}
+      <View style={styles.questionContainer}>
+        <Text style={styles.question}>
+          {question.question}
+        </Text>
+      </View>
 
+      {/* Altura fija para las opciones: siempre arranca en el mismo lugar */}
       <View style={styles.answersContainer}>
         {answers.map(answer => (
           <ReviewOptionButton
@@ -44,15 +48,19 @@ export default function ReviewQuestionCard({
 
 const styles = StyleSheet.create({
   card: {
-    gap: 25,
+    flex: 1,
+  },
+  questionContainer: {
+    height: 160,          // espacio fijo: la pregunta nunca desplaza las opciones
+    justifyContent: "center",
+    marginBottom: 24,
   },
   question: {
-    fontSize: 20,
+    fontSize: 23,         // un poco más grande
     fontWeight: "600",
     color: "#215B4A",
     textAlign: "center",
-    lineHeight: 28,
-    marginBottom: 24,
+    lineHeight: 32,
   },
   answersContainer: {
     gap: 12,

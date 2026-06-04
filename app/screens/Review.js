@@ -70,45 +70,42 @@ export default function Review() {
     }
 
     return (
-        <View style={styles.container}>
+         <View style={styles.container}>
 
-            {/* Header verde */}
-            <View style={styles.header} />
+        <View style={styles.content}>
 
-            <View style={styles.content}>
+            {/* Back arrow */}
+            <TouchableOpacity style={styles.backButton}>
+                <Text style={styles.backArrow}>‹</Text>
+            </TouchableOpacity>
 
-                {/* Back arrow */}
-                <TouchableOpacity style={styles.backButton}>
-                    <Text style={styles.backArrow}>‹</Text>
-                </TouchableOpacity>
+            {/* Barra de progreso */}
+            <ReviewProgressBar
+                current={currentIndex + 1}
+                total={questions.length}
+            />
 
-                {/* Barra de progreso */}
-                <ReviewProgressBar
-                    current={currentIndex + 1}
-                    total={questions.length}
-                />
+            {/* Tarjeta de pregunta */}
+            <ReviewQuestionCard
+                question={currentQuestion}
+                selectedAnswer={selectedAnswer}
+                onSelect={handleSelect}
+            />
 
-                {/* Tarjeta de pregunta */}
-                <ReviewQuestionCard
-                    question={currentQuestion}
-                    selectedAnswer={selectedAnswer}
-                    onSelect={handleSelect}
-                />
+        </View>
 
-            </View>
-
-            {/* Botón siguiente fijo abajo */}
-            <View style={styles.footer}>
-                <TouchableOpacity
-                    style={[
-                        styles.nextButton,
-                        !selectedAnswer && styles.nextButtonDisabled
-                    ]}
-                    onPress={handleNext}
-                    disabled={!selectedAnswer}
-                >
-                    <Text style={styles.nextButtonText}>Siguiente pregunta</Text>
-                </TouchableOpacity>
+        {/* Botón siguiente fijo abajo */}
+        <View style={styles.footer}>
+            <TouchableOpacity
+                style={[
+                    styles.nextButton,
+                    !selectedAnswer && styles.nextButtonDisabled
+                ]}
+                onPress={handleNext}
+                disabled={!selectedAnswer}
+            >
+                <Text style={styles.nextButtonText}>Siguiente pregunta</Text>
+            </TouchableOpacity>
             </View>
 
         </View>
@@ -120,14 +117,10 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#F5F5F5",
     },
-    header: {
-        height: 60,
-        backgroundColor: "#B7F0D6",
-    },
     content: {
         flex: 1,
         paddingHorizontal: 24,
-        paddingTop: 16,
+        paddingTop: 56,   // compensa el espacio que ocupaba el header
     },
     backButton: {
         marginBottom: 12,
