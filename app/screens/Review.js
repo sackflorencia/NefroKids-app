@@ -1,20 +1,19 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useSQLiteContext } from "expo-sqlite";
 
 import ReviewController from "../../back/controllers/ReviewController";
-
 import ReviewQuestionCard from "../components/review/ReviewQuestionCard";
 import ReviewResultCard from "../components/review/ReviewResultCard";
 import ReviewProgressBar from "../components/review/ReviewProgressBar";
+import Button from "../components/Button";
+import colors from "../styles/colors";
 
 export default function Review() {
 
     const db = useSQLiteContext();
-
-    const controller = useMemo(() => {
-        return new ReviewController(db);
-    }, [db]);
+    const controller = useMemo(() => new ReviewController(db), [db]);
 
     const [questions, setQuestions] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -61,73 +60,60 @@ export default function Review() {
     }
 
     if (finished) {
-        return (
-            <ReviewResultCard
-                score={score}
-                total={questions.length}
-            />
-        );
+        return <ReviewResultCard score={score} total={questions.length} />;
     }
 
     return (
-         <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
 
-        <View style={styles.content}>
+            <View style={styles.content}>
 
-            {/* Back arrow */}
-            <TouchableOpacity style={styles.backButton}>
-                <Text style={styles.backArrow}>‹</Text>
-            </TouchableOpacity>
+                <TouchableOpacity style={styles.backButton}>
+                    <Text style={styles.backArrow}>‹</Text>
+                </TouchableOpacity>
 
-            {/* Barra de progreso */}
-            <ReviewProgressBar
-                current={currentIndex + 1}
-                total={questions.length}
-            />
+                <ReviewProgressBar
+                    current={currentIndex + 1}
+                    total={questions.length}
+                />
 
-            {/* Tarjeta de pregunta */}
-            <ReviewQuestionCard
-                question={currentQuestion}
-                selectedAnswer={selectedAnswer}
-                onSelect={handleSelect}
-            />
+                <ReviewQuestionCard
+                    question={currentQuestion}
+                    selectedAnswer={selectedAnswer}
+                    onSelect={handleSelect}
+                />
 
-        </View>
-
-        {/* Botón siguiente fijo abajo */}
-        <View style={styles.footer}>
-            <TouchableOpacity
-                style={[
-                    styles.nextButton,
-                    !selectedAnswer && styles.nextButtonDisabled
-                ]}
-                onPress={handleNext}
-                disabled={!selectedAnswer}
-            >
-                <Text style={styles.nextButtonText}>Siguiente pregunta</Text>
-            </TouchableOpacity>
             </View>
 
-        </View>
+            <View style={styles.footer}>
+                <Button
+                    title="Siguiente pregunta"
+                    variant="secondary"
+                    onPress={handleNext}
+                    style={[styles.nextButton, !selectedAnswer && styles.nextButtonDisabled]}
+                />
+            </View>
+
+        </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#F5F5F5",
+        backgroundColor: colors.background,
     },
     content: {
         flex: 1,
         paddingHorizontal: 24,
-        paddingTop: 56,   // compensa el espacio que ocupaba el header
+        paddingTop: 16,
     },
     backButton: {
         marginBottom: 12,
     },
     backArrow: {
         fontSize: 32,
-        color: "#333",
+        color: colors.textDark,
         lineHeight: 36,
     },
     footer: {
@@ -136,18 +122,10 @@ const styles = StyleSheet.create({
         paddingTop: 12,
     },
     nextButton: {
-        backgroundColor: "#F5A623",
-        borderRadius: 30,
-        paddingVertical: 18,
-        alignItems: "center",
+        width: "100%",
     },
     nextButtonDisabled: {
-        opacity: 0.5,
-    },
-    nextButtonText: {
-        color: "#fff",
-        fontSize: 18,
-        fontWeight: "600",
+        opacity: 0.4,
     },
     center: {
         flex: 1,
