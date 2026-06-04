@@ -39,9 +39,7 @@ export default function CheckInForm({
     setCurrentIndex] =
     useState(0);
 
-  const [answers,
-    setAnswers] =
-    useState({});
+  const [answers, setAnswers] = useState({});
 
   async function handleAnswer(value) {
 

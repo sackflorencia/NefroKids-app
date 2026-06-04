@@ -6,6 +6,7 @@ import Home from "../screens/Home";
 import Levels from "../screens/Levels";
 import CheckIn from "../screens/CheckIn";
 import Review from "../screens/Review";
+import GameScreen from "../screens/GameScreen";
 
 const Stack = createNativeStackNavigator();
 export default function AppNavigator() {
