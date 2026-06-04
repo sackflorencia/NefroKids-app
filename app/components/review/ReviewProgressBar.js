@@ -25,14 +25,20 @@ export default function ReviewProgressBar({
 }
 
 const styles = StyleSheet.create({
-
-  container: {
+container: {
     height: 18,
     backgroundColor: "#C8F2E3",
     borderRadius: 999,
     overflow: "hidden",
-    marginBottom: 50
-  },
+    marginBottom: 20   // <- antes era 50
+},
+  // container: {
+  //   height: 18,
+  //   backgroundColor: "#C8F2E3",
+  //   borderRadius: 999,
+  //   overflow: "hidden",
+  //   marginBottom: 50
+  // },
 
   progress: {
     backgroundColor: "#35C59B"

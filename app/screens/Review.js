@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useSQLiteContext } from "expo-sqlite";
 
 import ReviewController from "../../back/controllers/ReviewController";
@@ -17,45 +17,38 @@ export default function Review() {
     }, [db]);
 
     const [questions, setQuestions] = useState([]);
-
     const [currentIndex, setCurrentIndex] = useState(0);
-
     const [score, setScore] = useState(0);
-
     const [finished, setFinished] = useState(false);
+    const [selectedAnswer, setSelectedAnswer] = useState(null);
 
     useEffect(() => {
-
         async function loadReviews() {
-
             const data = await controller.getAllReviews();
-
             setQuestions(data);
         }
-
         loadReviews();
-
     }, []);
 
     const currentQuestion = questions[currentIndex];
 
-    async function handleAnswer(selectedAnswer) {
+    function handleSelect(answer) {
+        setSelectedAnswer(answer);
+    }
 
-        const isCorrect =
-            selectedAnswer === currentQuestion.correct_answer;
+    function handleNext() {
+        if (!selectedAnswer) return;
 
-        if (isCorrect) {
-            setScore(prev => prev + 1);
-        }
+        const isCorrect = selectedAnswer === currentQuestion.correct_answer;
+        if (isCorrect) setScore(prev => prev + 1);
 
-        const isLastQuestion =
-            currentIndex >= questions.length - 1;
-
+        const isLastQuestion = currentIndex >= questions.length - 1;
         if (isLastQuestion) {
             setFinished(true);
             return;
         }
 
+        setSelectedAnswer(null);
         setCurrentIndex(prev => prev + 1);
     }
 
@@ -78,36 +71,94 @@ export default function Review() {
 
     return (
         <View style={styles.container}>
-            <View style={styles.header} />
-            <ReviewProgressBar
-                current={currentIndex + 1}
-                total={questions.length}
-            />
 
-            <ReviewQuestionCard
-                question={currentQuestion}
-                onAnswer={handleAnswer}
-            />
+            {/* Header verde */}
+            <View style={styles.header} />
+
+            <View style={styles.content}>
+
+                {/* Back arrow */}
+                <TouchableOpacity style={styles.backButton}>
+                    <Text style={styles.backArrow}>‹</Text>
+                </TouchableOpacity>
+
+                {/* Barra de progreso */}
+                <ReviewProgressBar
+                    current={currentIndex + 1}
+                    total={questions.length}
+                />
+
+                {/* Tarjeta de pregunta */}
+                <ReviewQuestionCard
+                    question={currentQuestion}
+                    selectedAnswer={selectedAnswer}
+                    onSelect={handleSelect}
+                />
+
+            </View>
+
+            {/* Botón siguiente fijo abajo */}
+            <View style={styles.footer}>
+                <TouchableOpacity
+                    style={[
+                        styles.nextButton,
+                        !selectedAnswer && styles.nextButtonDisabled
+                    ]}
+                    onPress={handleNext}
+                    disabled={!selectedAnswer}
+                >
+                    <Text style={styles.nextButtonText}>Siguiente pregunta</Text>
+                </TouchableOpacity>
+            </View>
 
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-
     container: {
         flex: 1,
         backgroundColor: "#F5F5F5",
     },
-    
-        header: {
-        height: 70,
+    header: {
+        height: 60,
         backgroundColor: "#B7F0D6",
     },
-
+    content: {
+        flex: 1,
+        paddingHorizontal: 24,
+        paddingTop: 16,
+    },
+    backButton: {
+        marginBottom: 12,
+    },
+    backArrow: {
+        fontSize: 32,
+        color: "#333",
+        lineHeight: 36,
+    },
+    footer: {
+        paddingHorizontal: 24,
+        paddingBottom: 36,
+        paddingTop: 12,
+    },
+    nextButton: {
+        backgroundColor: "#F5A623",
+        borderRadius: 30,
+        paddingVertical: 18,
+        alignItems: "center",
+    },
+    nextButtonDisabled: {
+        opacity: 0.5,
+    },
+    nextButtonText: {
+        color: "#fff",
+        fontSize: 18,
+        fontWeight: "600",
+    },
     center: {
         flex: 1,
         justifyContent: "center",
-        alignItems: "center"
-    }
+        alignItems: "center",
+    },
 });

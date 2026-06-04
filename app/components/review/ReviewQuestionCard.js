@@ -5,6 +5,66 @@ import ReviewOptionButton from "./ReviewOptionButton";
 
 export default function ReviewQuestionCard({
   question,
+  selectedAnswer,
+  onSelect
+}) {
+
+  const answers = useMemo(() => {
+    return [
+      question.correct_answer,
+      question.incorrect_answer1,
+      question.incorrect_answer2,
+      question.incorrect_answer3
+    ]
+    .filter(Boolean)
+    .sort(() => Math.random() - 0.5);
+  }, [question]);
+
+  return (
+    <View style={styles.card}>
+
+      <Text style={styles.question}>
+        {question.question}
+      </Text>
+
+      <View style={styles.answersContainer}>
+        {answers.map(answer => (
+          <ReviewOptionButton
+            key={answer}
+            text={answer}
+            selected={selectedAnswer === answer}
+            onPress={() => onSelect(answer)}
+          />
+        ))}
+      </View>
+
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  card: {
+    gap: 25,
+  },
+  question: {
+    fontSize: 20,
+    fontWeight: "600",
+    color: "#215B4A",
+    textAlign: "center",
+    lineHeight: 28,
+    marginBottom: 24,
+  },
+  answersContainer: {
+    gap: 12,
+  },
+});
+/*import React, { useMemo } from "react";
+import { View, Text, StyleSheet } from "react-native";
+
+import ReviewOptionButton from "./ReviewOptionButton";
+
+export default function ReviewQuestionCard({
+  question,
   onAnswer
 }) {
 
@@ -64,4 +124,4 @@ const styles = StyleSheet.create({
   answersContainer: {
     gap: 12
   }
-});
+});*/
