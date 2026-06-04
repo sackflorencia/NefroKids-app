@@ -1,22 +1,25 @@
+import React from "react";
+import { View, StyleSheet } from "react-native";
 import { PAIN_LOCATIONS } from "../../helpers/CheckInHelper";
-import { View, Text } from "react-native";
+import CheckInOptionButton from "./CheckInOptionButton";
 
-export default function BodySelector({
-  onSelect
-}) {
-
+export default function BodySelector({ selected, onSelect }) {
   return (
-    <View>
+    <View style={styles.container}>
       {PAIN_LOCATIONS.map(pain => (
-        <Text
+        <CheckInOptionButton
           key={pain.value}
-          onPress={() =>
-            onSelect(pain.value)
-          }
-        >
-          {pain.label}
-        </Text>
+          text={pain.label}
+          selected={selected === pain.value}
+          onPress={() => onSelect(pain.value)}
+        />
       ))}
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    gap: 12,
+  },
+});

@@ -1,30 +1,25 @@
-import { View, TouchableOpacity } from "react-native";
+import React from "react";
+import { View, StyleSheet } from "react-native";
 import { URINE_COLORS } from "../../helpers/CheckInHelper";
+import Button from "../Button";
 
-export default function ColorOptions({
-  onSelect
-}) {
+export default function ColorOptions({ selected, onSelect }) {
   return (
-    <View
-      style={{
-        flexDirection: "row"
-      }}
-    >
+    <View style={styles.container}>
       {URINE_COLORS.map(item => (
-        <TouchableOpacity
+        <Button
           key={item.value}
-          style={{
-            backgroundColor:
-              item.color,
-            width: 40,
-            height: 40,
-            borderRadius: 20
-          }}
-          onPress={() =>
-            onSelect(item.value)
-          }
+          title={item.label}
+          variant="option"
+          selected={selected === item.value}
+          accentColor={item.color}
+          onPress={() => onSelect(item.value)}
         />
       ))}
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: { gap: 12 },
+});

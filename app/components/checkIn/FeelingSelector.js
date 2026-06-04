@@ -1,46 +1,25 @@
+import React from "react";
+import { View, StyleSheet } from "react-native";
 import { MOODS } from "../../helpers/CheckInHelper";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import CheckInOptionButton from "./CheckInOptionButton";
 
-export default function FeelingSelector({
-  onSelect
-}) {
-
+export default function FeelingSelector({ selected, onSelect }) {
   return (
-    <View>
+    <View style={styles.container}>
       {MOODS.map(mood => (
-
-        <TouchableOpacity
+        <CheckInOptionButton
           key={mood.value}
-          style={styles.option}
-          onPress={() =>
-            onSelect(mood.value)
-          }
-        >
-
-          <Text style={styles.text}>
-            {mood.label}
-          </Text>
-
-        </TouchableOpacity>
-
+          text={mood.label}
+          selected={selected === mood.value}
+          onPress={() => onSelect(mood.value)}
+        />
       ))}
-
     </View>
   );
 }
+
 const styles = StyleSheet.create({
-
-  option: {
-    backgroundColor: "#FFF",
-    padding: 20,
-    borderRadius: 20,
-    marginBottom: 15,
-    elevation: 3
+  container: {
+    gap: 12,
   },
-
-  text: {
-    textAlign: "center",
-    fontSize: 18
-  }
-
 });
