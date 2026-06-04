@@ -1,13 +1,13 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
 import { PAIN_LOCATIONS } from "../../helpers/CheckInHelper";
-import CheckInOptionButton from "./CheckInOptionButton";
+import Button from "../Button";
 
 export default function BodySelector({ selected, onSelect }) {
   return (
     <View style={styles.container}>
       {PAIN_LOCATIONS.map(pain => (
-        <CheckInOptionButton
+        <Button
           key={pain.value}
           text={pain.label}
           selected={selected === pain.value}
