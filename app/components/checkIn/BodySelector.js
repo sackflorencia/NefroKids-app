@@ -9,7 +9,7 @@ export default function BodySelector({ selected, onSelect }) {
       {PAIN_LOCATIONS.map(pain => (
         <Button
           key={pain.value}
-          text={pain.label}
+          title={pain.label}
           selected={selected === pain.value}
           onPress={() => onSelect(pain.value)}
         />
