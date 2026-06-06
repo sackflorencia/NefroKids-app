@@ -12,6 +12,7 @@ export default function BodySelector({ selected, onSelect }) {
           title={pain.label}
           selected={selected === pain.value}
           onPress={() => onSelect(pain.value)}
+          variant="option"
         />
       ))}
     </View>

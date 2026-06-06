@@ -15,6 +15,7 @@ export default function FeelingSelector({ selected, onSelect }) {
           selected={selected === mood.value}
           onPress={() => onSelect(mood.value)}
           textColor={colors.textDark}
+          variant="option"
         />
       ))}
     </View>
