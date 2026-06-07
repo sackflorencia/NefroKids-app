@@ -37,4 +37,12 @@ class FirebaseService {
 
         this.firestore = getFirestore(this.app);
     }
+    getAuth() {
+        return this.auth;
+    }
+    getFirestore() {
+        return this.firestore;
+    }
 }
+
+export default new FirebaseService();
