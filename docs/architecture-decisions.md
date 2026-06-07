@@ -1,4 +1,4 @@
-# Architecture Decisions
+# Decisiones de arquitectura
 
 ## Objetivo
 
