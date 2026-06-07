@@ -92,6 +92,72 @@ Además del aspecto funcional, Firebase fue seleccionado por su relevancia dentr
 La utilización conjunta de SQLite y Firebase permite combinar funcionamiento offline con sincronización remota cuando existe conectividad.
 
 ---
+## Node.js
+
+### Decisión
+
+Utilizar Node.js como entorno de ejecución para la lógica de backend local de la aplicación.
+
+### Alternativas consideradas
+
+* No utilizar backend local (lógica embebida únicamente en la app móvil).
+
+### Motivos
+
+La arquitectura de NefroKids sigue un enfoque offline-first, por lo que gran parte de la lógica de negocio y persistencia de datos debía ejecutarse localmente en el dispositivo sin dependencia de servicios externos.
+
+Node.js fue seleccionado por las siguientes razones:
+
+* Integración natural con React Native al compartir el lenguaje JavaScript en todo el stack.
+* Facilidad para manejar lógica de persistencia local junto con SQLite.
+* Mayor simplicidad para mantener una arquitectura ligera en entorno móvil.
+* Disponibilidad de docentes y mentores con experiencia en Node.js, lo que facilitó el soporte técnico durante el desarrollo.
+
+### Implementación
+
+A diferencia de una arquitectura backend tradicional basada en APIs REST o microservicios, en este proyecto Node.js se utiliza como capa de lógica local, no como servidor externo.
+
+La estructura implementada es la siguiente:
+
+back/
+├── controllers
+├── models
+├── repositories
+├── schemas
+├── seeds
+├── database.js
+└── index.js
+
+Alcance de uso
+
+Node.js en este proyecto no implementa:
+
+* APIs REST externas
+* Microservicios
+* Arquitecturas distribuidas
+
+En cambio, su rol se limita a:
+
+* Manejo de lógica de negocio local
+* Interacción con SQLite
+* Organización de modelos y repositorios
+* Inicialización de datos (seeds)
+* Validación de esquemas
+
+### Integración con el sistema
+
+La capa desarrollada en Node.js funciona como intermediario entre:
+
+* La aplicación en React Native
+* La base de datos local SQLite
+
+y complementa la arquitectura general offline-first, donde:
+
+* SQLite actúa como fuente principal de datos local
+* Firebase se utiliza únicamente para sincronización, autenticación y servicios cloud
+* Node.js organiza y centraliza la lógica local sin exponer un backend externo
+
+---
 
 ## Unity
 
