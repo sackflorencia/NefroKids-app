@@ -60,7 +60,10 @@ Si la instalación es correcta, debería mostrarse una lista de dispositivos con
 La aplicación puede ejecutarse utilizando cualquiera de los siguientes métodos.
 
 ### Método 1: Expo Go mediante código QR
-Iniciar el servidor de desarrollo:
+
+Este método requiere que la computadora y el dispositivo móvil se encuentren conectados a la misma red local (Wi-Fi).
+
+#### Iniciar Expo
 
 ```bash
 npx expo start
@@ -72,14 +75,28 @@ Si es necesario limpiar la caché:
 npx expo start -c
 ```
 
+#### Abrir la aplicación
+
 1. Presionar `s` en la terminal para utilizar Expo Go.
-2. Abrir Expo Go en el celular.
-3. Escanear el código QR mostrado por Expo en la terminal.
+2. Verificar que la computadora y el dispositivo móvil se encuentren conectados a la misma red Wi-Fi.
+3. Escanear el código QR mostrado por Expo:
+   - **iPhone (iOS):** utilizar la aplicación Cámara del sistema.
+   - **Android:** abrir Expo Go y utilizar la opción **Scan QR Code**.
 4. Esperar a que la aplicación termine de cargar.
 
 Durante el desarrollo:
-* Presionar `r` para reiniciar la aplicación luego de realizar cambios.
+* Presionar `r` para reiniciar la aplicación luego de realizar cambios. 
 * Presionar `Ctrl + C` para detener el servidor.
+
+#### Uso de Tunnel
+
+Si la aplicación no puede detectarse a través de la red local o los dispositivos se encuentran en redes diferentes, puede utilizarse el modo Tunnel:
+
+```bash
+npx expo start --tunnel
+```
+
+El modo Tunnel utiliza un servidor intermediario de Expo para conectar el dispositivo con la computadora, por lo que no requiere que ambos estén en la misma red. Sin embargo, puede presentar tiempos de carga mayores que el modo LAN.
 
 ### Método 2: Android mediante USB (ADB)
 Este método también requiere tener instalada la aplicación Expo Go en el dispositivo.
@@ -111,6 +128,54 @@ npx expo start --localhost
 1. Presionar `s` para utilizar Expo Go.
 2. Presionar `a` en la terminal.
 3. La aplicación se abrirá automáticamente en el dispositivo Android conectado.
+
+Durante el desarrollo:
+* Presionar `r` para reiniciar la aplicación luego de realizar cambios.
+* Presionar `Ctrl + C` para detener el servidor.
+
+### Método 3: Emulador Android Studio
+Este método permite ejecutar la aplicación directamente en la computadora utilizando un dispositivo virtual Android.
+
+#### Requisitos
+- Android Studio instalado.
+- Android SDK y Android Emulator instalados.
+- Un dispositivo virtual (AVD) configurado.
+
+#### Configuración recomendada del emulador
+
+Se recomienda utilizar un dispositivo virtual de la línea Pixel. Durante el desarrollo de este proyecto se utilizó:
+
+```text
+Device: Pixel 7
+System Image: Android 17 (API 37)
+Services: Google Play Store
+ABI: x86_64
+```
+
+La lista completa de dispositivos y configuraciones compatibles puede consultarse en la [Documentación oficial de expo](https://docs.expo.dev/workflow/android-studio-emulator/).
+
+#### Iniciar el emulador
+1. Abrir Android Studio.
+2. Ir a More Actions > Device Manager.
+3. Iniciar el dispositivo virtual configurado.
+4. Esperar a que Android termine de cargar completamente.
+
+#### Iniciar Expo
+```bash
+npx expo start
+```
+
+Si es necesario limpiar la caché:
+
+```bash
+npx expo start -c
+```
+
+#### Abrir la aplicación
+1. Presionar `s` para utilizar Expo Go.
+2. Presionar `a` en la terminal.
+3. Expo chequea si la aplicación Expo Go está instalada en el emulador. En caso contrario, la instala automáticamente.
+4. Expo abre automáticamente la aplicación en el emulador Android.
 
 Durante el desarrollo:
 * Presionar `r` para reiniciar la aplicación luego de realizar cambios.
