@@ -119,6 +119,7 @@ A diferencia de una arquitectura backend tradicional basada en APIs REST o micro
 
 La estructura implementada es la siguiente:
 
+```text
 back/
 ├── controllers
 ├── models
@@ -127,8 +128,9 @@ back/
 ├── seeds
 ├── database.js
 └── index.js
+```
 
-Alcance de uso
+### Alcance de uso
 
 Node.js en este proyecto no implementa:
 
