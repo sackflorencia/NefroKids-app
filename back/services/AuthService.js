@@ -1,0 +1,49 @@
+import {
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    signOut
+} from "firebase/auth";
+
+import FirebaseService from "./FirebaseService";
+
+export default class AuthService {
+
+    constructor() {
+        this.auth = FirebaseService.getAuth();
+    }
+
+    async registerTutor(email, password) {
+
+        const credential =
+            await createUserWithEmailAndPassword(
+                this.auth,
+                email,
+                password
+            );
+
+        return credential.user;
+    }
+
+    async login(email, password) {
+
+        const credential =
+            await signInWithEmailAndPassword(
+                this.auth,
+                email,
+                password
+            );
+
+        return credential.user;
+    }
+
+    async logout() {
+        await signOut(this.auth);
+    }
+
+    getCurrentTutor() {
+        return this.auth.currentUser;
+    }
+    getCurrentTutorUid() {
+        return this.auth.currentUser?.uid ?? null;
+    }
+}
