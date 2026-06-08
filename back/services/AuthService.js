@@ -1,7 +1,8 @@
 import {
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
-    signOut
+    signOut,
+    onAuthStateChanged
 } from "firebase/auth";
 
 import FirebaseService from "./FirebaseService";
@@ -13,7 +14,6 @@ export default class AuthService {
     }
 
     async registerTutor(email, password) {
-
         const credential =
             await createUserWithEmailAndPassword(
                 this.auth,
@@ -25,7 +25,6 @@ export default class AuthService {
     }
 
     async login(email, password) {
-
         const credential =
             await signInWithEmailAndPassword(
                 this.auth,
@@ -43,7 +42,15 @@ export default class AuthService {
     getCurrentTutor() {
         return this.auth.currentUser;
     }
+
     getCurrentTutorUid() {
         return this.auth.currentUser?.uid ?? null;
+    }
+
+    subscribeToAuthChanges(callback) {
+        return onAuthStateChanged(
+            this.auth,
+            callback
+        );
     }
 }
