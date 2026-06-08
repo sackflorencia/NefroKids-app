@@ -10,6 +10,7 @@ import FirebaseService from "./FirebaseService";
 export default class AuthService {
 
     constructor() {
+        console.log("AuthService initialized");
         this.auth = FirebaseService.getAuth();
     }
 
