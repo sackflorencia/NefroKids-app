@@ -10,8 +10,6 @@ import Button from "../../components/Button";
 
 import AuthService from "../../../back/services/AuthService";
 
-const authService = new AuthService();
-
 const Register = () => {
 
     const [firstName, setFirstName] = useState("");
@@ -21,7 +19,7 @@ const Register = () => {
     const [confirmPassword, setConfirmPassword] = useState("");
 
     async function handleRegister() {
-
+        const authService = new AuthService();
         if (password !== confirmPassword) {
 
             Alert.alert(

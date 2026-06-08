@@ -11,7 +11,10 @@ export default class AuthService {
 
     constructor() {
         console.log("AuthService initialized");
+
         this.auth = FirebaseService.getAuth();
+
+        console.log("AUTH IN SERVICE =", this.auth);
     }
 
     async registerTutor(email, password) {

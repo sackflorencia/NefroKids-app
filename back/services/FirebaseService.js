@@ -8,7 +8,7 @@ class FirebaseService {
 
     initialize() {
         if (this.app) return;
-        
+
         console.log("Initialized firebase");
         const firebaseConfig = {
             apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
@@ -35,7 +35,7 @@ class FirebaseService {
         this.firestore = getFirestore(this.app);
     }
     getAuth() {
-        console.log("")
+        console.log("GET AUTH =", this.auth);
         return this.auth;
     }
     getFirestore() {

@@ -8,15 +8,14 @@ import InputField from "../../components/InputField";
 import Button from "../../components/Button";
 
 import AuthService from "../../../back/services/AuthService";
-const authService = new AuthService();
 
 const LogIn = () => {
-
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
     async function handleLogin() {
 
+        const authService = new AuthService();
         try {
 
             await authService.login(
