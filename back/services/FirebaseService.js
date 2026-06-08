@@ -1,11 +1,10 @@
 
 import { initializeApp } from "firebase/app";
-
 import { initializeAuth, getReactNativePersistence } from "firebase/auth";
-
 import { getFirestore } from "firebase/firestore";
-
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
+import 'dotenv/config';
 
 class FirebaseService {
 
@@ -14,13 +13,13 @@ class FirebaseService {
         if (this.app) return;
 
         const firebaseConfig = {
-            apiKey: "AIzaSyCnHWEvmdMjTfLz8PE39s5KYyGxwjY6zPY",
-            authDomain: "nefrokids-1e98c.firebaseapp.com",
-            projectId: "nefrokids-1e98c",
-            storageBucket: "nefrokids-1e98c.firebasestorage.app",
-            messagingSenderId: "379593900267",
-            appId: "1:379593900267:web:9c43da54079050280c7eae",
-            measurementId: "G-F2HLXMTKY6"
+            apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
+            authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN,
+            projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID,
+            storageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET,
+            messagingSenderId: process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+            appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID,
+            measurementId: process.env.EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID
         };
 
         this.app = initializeApp(firebaseConfig);
