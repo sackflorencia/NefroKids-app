@@ -1,24 +1,44 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import Home from "../screens/Home";
-import Levels from "../screens/Levels";
-import CheckIn from "../screens/CheckIn";
-import Review from "../screens/Review";
-import GameScreen from "../screens/GameScreen";
+import AuthNavigator from "./AuthNavigator";
+import MainNavigator from "./MainNavigator";
 
-const Stack = createNativeStackNavigator();
+import AuthService from "../../back/services/AuthService";
+
 export default function AppNavigator() {
+
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+
+    const authService = new AuthService();
+
+    const unsubscribe =
+      authService.subscribeToAuthChanges(
+        (user) => {
+
+          setUser(user);
+          setLoading(false);
+
+        }
+      );
+
+    return unsubscribe;
+
+  }, []);
+
+  if (loading) {
+    return null;
+  }
+
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen name="Home" component={Home} />
-        <Stack.Screen name="Levels" component={Levels} />
-        <Stack.Screen name="CheckIn" component={CheckIn} />
-        <Stack.Screen name="Review" component={Review} />
-        <Stack.Screen name="Game" component={GameScreen} />
-      </Stack.Navigator>
+      {user
+        ? <MainNavigator />
+        : <AuthNavigator />
+      }
     </NavigationContainer>
   );
 }

@@ -27,6 +27,12 @@ const Home = () => {
           style={styles.small}
           onPress={() => navigation.navigate("Levels")}
         />
+        <Button
+          title="Test Firebase"
+          variant="secondary"
+          style={styles.small}
+          onPress={() => navigation.navigate("FirebaseTest")}
+        />
       </View>
 
       <Image
