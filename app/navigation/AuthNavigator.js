@@ -13,11 +13,13 @@ export default function AuthNavigator() {
             <Stack.Screen
                 name="LogIn"
                 component={LogIn}
+                options={{ headerShown: false }}
             />
 
             <Stack.Screen
                 name="Register"
                 component={Register}
+                options={{ headerShown: false }}
             />
         </Stack.Navigator>
     );

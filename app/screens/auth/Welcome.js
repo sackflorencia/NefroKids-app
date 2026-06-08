@@ -5,12 +5,14 @@ import {
   StyleSheet
 } from "react-native";
 
+import { SafeAreaView } from "react-native-safe-area-context";
+
 import Button from "../../components/Button";
 
 export default function Welcome({ navigation }) {
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
 
       <Text style={styles.title}>
         ¿Estás listo para tu viaje de hoy?
@@ -27,7 +29,7 @@ export default function Welcome({ navigation }) {
         onPress={() => navigation.navigate("Register")}
       />
 
-    </View>
+    </SafeAreaView>
   );
 }
 

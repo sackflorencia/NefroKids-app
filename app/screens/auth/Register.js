@@ -4,6 +4,7 @@ import {
     StyleSheet,
     Alert
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import InputField from "../../components/InputField";
 import Button from "../../components/Button";
@@ -53,7 +54,7 @@ const Register = () => {
     }
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
 
             <InputField
                 label="Nombre"
@@ -98,7 +99,7 @@ const Register = () => {
                 onPress={handleRegister}
             />
 
-        </View>
+        </SafeAreaView>
     );
 };
 

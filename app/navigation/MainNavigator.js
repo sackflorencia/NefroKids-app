@@ -1,23 +1,51 @@
 import React from "react";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Ionicons } from "@expo/vector-icons";
 
-import Home from "../screens/Home";
-import Levels from "../screens/Levels";
-import CheckIn from "../screens/CheckIn";
-import Review from "../screens/Review";
-import GameScreen from "../screens/GameScreen";
-import FirebaseTestScreen from "../screens/FirebaseTest";
+import HomeStackNavigator from "./HomeStackNavigator";
+import Profile from "../screens/Profile";
 
-const Stack = createNativeStackNavigator();
-export default function AppNavigator() {
+const Tab = createBottomTabNavigator();
+
+export default function MainNavigator() {
+
   return (
-      <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen name="Home" component={Home} />
-        <Stack.Screen name="Levels" component={Levels} />
-        <Stack.Screen name="CheckIn" component={CheckIn} />
-        <Stack.Screen name="Review" component={Review} />
-        <Stack.Screen name="Game" component={GameScreen} />
-        <Stack.Screen name="FirebaseTest" component={FirebaseTestScreen} />
-      </Stack.Navigator>
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+
+        tabBarIcon: ({ color, size }) => {
+
+          let iconName;
+
+          if (route.name === "Inicio") {
+            iconName = "home";
+          }
+
+          if (route.name === "Perfil") {
+            iconName = "person";
+          }
+
+          return (
+            <Ionicons
+              name={iconName}
+              size={size}
+              color={color}
+            />
+          );
+        },
+
+      })}
+    >
+      <Tab.Screen
+        name="Inicio"
+        component={HomeStackNavigator}
+      />
+
+      <Tab.Screen
+        name="Perfil"
+        component={Profile}
+      />
+
+    </Tab.Navigator>
   );
 }

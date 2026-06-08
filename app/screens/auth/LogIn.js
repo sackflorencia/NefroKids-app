@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import {
-    View,
     StyleSheet, Alert
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import InputField from "../../components/InputField";
 import Button from "../../components/Button";
@@ -39,7 +39,7 @@ const LogIn = () => {
     }
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
 
             <InputField
                 label="Email del tutor"
@@ -64,7 +64,7 @@ const LogIn = () => {
                 onPress={handleLogin}
             />
 
-        </View>
+        </SafeAreaView>
     );
 };
 
