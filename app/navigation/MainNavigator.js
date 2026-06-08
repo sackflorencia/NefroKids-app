@@ -39,11 +39,13 @@ export default function MainNavigator() {
       <Tab.Screen
         name="Inicio"
         component={HomeStackNavigator}
+        options={{ headerShown: false }}
       />
 
       <Tab.Screen
         name="Perfil"
         component={Profile}
+        options={{ headerShown: false }}
       />
 
     </Tab.Navigator>
