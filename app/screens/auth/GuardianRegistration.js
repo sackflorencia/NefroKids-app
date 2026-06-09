@@ -7,11 +7,13 @@ import {
     ScrollView,
     TouchableOpacity,
 } from "react-native";
-
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import InputField from "../../components/InputField";
 import Button from "../../components/Button";
+
+import { useSQLiteContext } from "expo-sqlite";
+import RegistrationService from "../../../back/services/RegistrationService";
 
 const MAX_GUARDIANS = 5;
 
@@ -21,7 +23,7 @@ export default function GuardianRegistration({
 }) {
 
     const { userData } = route.params;
-
+    const db = useSQLiteContext();
     const [guardians, setGuardians] = useState([
         {
             full_name: "",
@@ -88,23 +90,31 @@ export default function GuardianRegistration({
             return;
         }
 
-        const registrationData = {
-            user: userData,
-            guardians,
-        };
+        try {
 
-        console.log(registrationData);
+            const registrationService =
+                new RegistrationService(db);
 
-        navigation.navigate("Home");
+            await registrationService
+                .completeRegistration(
+                    userData,
+                    guardians
+                );
 
-        /**
-         * Después:
-         *
-         * await RegistrationService.completeRegistration(
-         *   registrationData
-         * );
-         */
+            navigation.navigate("Home");
+
+        } catch (error) {
+
+            console.error(error);
+
+            Alert.alert(
+                "Error",
+                "No se pudo completar el registro."
+            );
+
+        }
     }
+
     function removeGuardian(index) {
 
         if (guardians.length === 1) {

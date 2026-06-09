@@ -15,6 +15,7 @@ export default class UserController {
       urinates: data.urinates,
     };
     await this.repository.insert(user);
+    return user;
   }
 
   async getAllUsers() {
