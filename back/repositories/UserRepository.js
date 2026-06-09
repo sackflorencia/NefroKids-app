@@ -4,30 +4,27 @@ export default class UserRepository {
     this.db = db;
   }
 
-  async insert(users) {
+  async insert(user) {
 
     const query = `
       INSERT INTO users (
         id,
         birth_date,
         full_name,
-        total_xp,
         urinates,
-        diagnosis,
-        avatar_id
+        diagnosis
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?);
+      VALUES (?, ?, ?, ?, ?);
     `;
 
     await this.db.runAsync(
       query,
       [
-        users.id,
-        users.birth_date,
-        users.full_name,
-        users.total_xp,
-        users.urinates,
-        users.diagnosis,
+        user.id,
+        user.birth_date,
+        user.full_name,
+        user.urinates,
+        user.diagnosis,
         users.avatar_id
       ]
     );

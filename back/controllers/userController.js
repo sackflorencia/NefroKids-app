@@ -1,4 +1,5 @@
 import UserRepository from "../repositories/UserRepository";
+import { v4 as uuidv4 } from "uuid";
 
 export default class UserController {
 
@@ -6,7 +7,14 @@ export default class UserController {
     this.repository = new UserRepository(db);
   }
 
-  async createUser(user) {
+  async createUser(data) {
+    const user = {
+      id: uuidv4(),
+      birth_date: data.birth_date,
+      full_name: data.full_name,
+      diagnosis: data.diagnosis,
+      urinates: data.urinates,
+    };
     await this.repository.insert(user);
   }
 
