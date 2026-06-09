@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS tutors (
 
   phone TEXT,
 
-  password_hash TEXT NOT NULL,
+  relationship TEXT NOT NULL,
 
   is_primary INTEGER NOT NULL
     DEFAULT 0

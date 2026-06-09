@@ -13,7 +13,7 @@ export default class TutorRepository {
         full_name,
         email,
         phone,
-        password_hash,
+        relationship,
         is_primary
       )
       VALUES (?, ?, ?, ?, ?, ?, ?);
@@ -27,7 +27,7 @@ export default class TutorRepository {
         tutor.full_name,
         tutor.email,
         tutor.phone,
-        tutor.password_hash,
+        tutor.relationship,
         tutor.is_primary
       ]
     );
@@ -73,7 +73,7 @@ export default class TutorRepository {
         full_name = ?,
         email = ?,
         phone = ?,
-        password_hash = ?,
+        relationship = ?,
         is_primary = ?
       WHERE id = ?;
     `;
@@ -84,7 +84,7 @@ export default class TutorRepository {
         tutor.full_name,
         tutor.email,
         tutor.phone,
-        tutor.password_hash,
+        tutor.relationship,
         tutor.is_primary,
         tutor.id
       ]
