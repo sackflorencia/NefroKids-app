@@ -12,7 +12,6 @@ export default class UserController {
       id: uuidv4(),
       birth_date: data.birth_date,
       full_name: data.full_name,
-      diagnosis: data.diagnosis,
       urinates: data.urinates,
     };
     await this.repository.insert(user);

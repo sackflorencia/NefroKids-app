@@ -4,7 +4,6 @@ export default class User {
         id,
         birth_date,
         full_name,
-        diagnosis,
         total_xp = 0,
         urinates = 1,
         avatar_id = null
@@ -14,8 +13,6 @@ export default class User {
 
         this.birth_date = birth_date;
         this.full_name = full_name;
-
-        this.diagnosis = diagnosis;
 
         this.total_xp = total_xp;
 

@@ -11,10 +11,9 @@ export default class UserRepository {
         id,
         birth_date,
         full_name,
-        urinates,
-        diagnosis
+        urinates
       )
-      VALUES (?, ?, ?, ?, ?);
+      VALUES (?, ?, ?, ?);
     `;
 
     await this.db.runAsync(
@@ -24,8 +23,6 @@ export default class UserRepository {
         user.birth_date,
         user.full_name,
         user.urinates,
-        user.diagnosis,
-        users.avatar_id
       ]
     );
   }
@@ -72,7 +69,6 @@ export default class UserRepository {
         full_name= ?,
         total_xp= ?,
         urinates= ?,
-        diagnosis= ?,
         avatar_id = ?
       WHERE id = ?;
     `;
@@ -84,7 +80,6 @@ export default class UserRepository {
         users.full_name,
         users.total_xp,
         users.urinates,
-        users.diagnosis,
         users.avatar_id,
         users.id
       ]

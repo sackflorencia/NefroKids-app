@@ -16,15 +16,13 @@ const UserRegistration = ({ navigation }) => {
 
     const [fullName, setFullName] = useState("");
     const [birthDate, setBirthDate] = useState("");
-    const [diagnosis, setDiagnosis] = useState("");
     const [urinates, setUrinates] = useState(true);
 
     async function handleNext() {
 
         if (
             !fullName.trim() ||
-            !birthDate.trim() ||
-            !diagnosis.trim()
+            !birthDate.trim() 
         ) {
 
             Alert.alert(
@@ -39,7 +37,6 @@ const UserRegistration = ({ navigation }) => {
         const userData = {
             full_name: fullName,
             birth_date: birthDate.toISOString().split("T")[0],
-            diagnosis,
             urinates: urinates ? 1 : 0,
         };
 
@@ -69,12 +66,6 @@ const UserRegistration = ({ navigation }) => {
                     label="Fecha de nacimiento"
                     value={birthDate}
                     onChange={setBirthDate}
-                />
-
-                <InputField
-                    label="Diagnóstico"
-                    value={diagnosis}
-                    onChangeText={setDiagnosis}
                 />
 
                 <View style={styles.section}>
