@@ -22,7 +22,7 @@ const UserRegistration = ({ navigation }) => {
 
         if (
             !fullName.trim() ||
-            !birthDate.trim() 
+            !birthDate
         ) {
 
             Alert.alert(
@@ -32,17 +32,18 @@ const UserRegistration = ({ navigation }) => {
 
             return;
         }
-
-
-        const userData = {
-            full_name: fullName,
-            birth_date: birthDate.toISOString().split("T")[0],
-            urinates: urinates ? 1 : 0,
-        };
+        console.log("handlenext activated"
+        );
 
         navigation.navigate(
             "GuardianRegistration",
-            { userData }
+            {
+                userData: {
+                    full_name: fullName,
+                    birth_date: birthDate.toISOString().split("T")[0],
+                    urinates: urinates ? 1 : 0,
+                }
+            }
         );
 
     }

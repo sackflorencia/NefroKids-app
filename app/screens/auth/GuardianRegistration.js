@@ -1,0 +1,262 @@
+import React, { useState } from "react";
+import {
+    View,
+    Text,
+    StyleSheet,
+    Alert,
+    ScrollView,
+    TouchableOpacity,
+} from "react-native";
+
+import { SafeAreaView } from "react-native-safe-area-context";
+
+import InputField from "../../components/InputField";
+import Button from "../../components/Button";
+
+const MAX_GUARDIANS = 5;
+
+export default function GuardianRegistration({
+    route,
+    navigation,
+}) {
+
+    const { userData } = route.params;
+
+    const [guardians, setGuardians] = useState([
+        {
+            full_name: "",
+            email: "",
+            relationship: "",
+        },
+    ]);
+
+    function updateGuardian(
+        index,
+        field,
+        value
+    ) {
+
+        const updated = [...guardians];
+
+        updated[index][field] = value;
+
+        setGuardians(updated);
+    }
+
+    function addGuardian() {
+
+        if (guardians.length >= MAX_GUARDIANS) {
+            return;
+        }
+
+        setGuardians([
+            ...guardians,
+            {
+                full_name: "",
+                email: "",
+                relationship: "",
+            },
+        ]);
+    }
+
+    function validateGuardians() {
+
+        for (const guardian of guardians) {
+
+            if (
+                !guardian.full_name.trim() ||
+                !guardian.email.trim() ||
+                !guardian.relationship.trim()
+            ) {
+
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    async function handleNext() {
+
+        if (!validateGuardians()) {
+
+            Alert.alert(
+                "Datos incompletos",
+                "Completá todos los campos de los tutores."
+            );
+
+            return;
+        }
+
+        const registrationData = {
+            user: userData,
+            guardians,
+        };
+
+        console.log(registrationData);
+
+        navigation.navigate("Home");
+
+        /**
+         * Después:
+         *
+         * await RegistrationService.completeRegistration(
+         *   registrationData
+         * );
+         */
+    }
+    function removeGuardian(index) {
+
+        if (guardians.length === 1) {
+            return;
+        }
+
+        const updated = guardians.filter(
+            (_, i) => i !== index
+        );
+
+        setGuardians(updated);
+    }
+
+    return (
+        <SafeAreaView style={styles.container}>
+
+            <ScrollView
+                contentContainerStyle={styles.content}
+                showsVerticalScrollIndicator={false}
+            >
+
+                <Text style={styles.title}>
+                    ¿Quién te acompaña a los turnos médicos?
+                </Text>
+
+                <Text style={styles.subtitle}>
+                    Agrega a las personas que ayudan a manejar el tratamiento del niño y deberían recibir su información médica.
+                </Text>
+
+                {guardians.map((guardian, index) => (
+
+                    <View
+                        key={index}
+                        style={styles.guardianCard}
+                    >
+
+                        <Text style={styles.guardianTitle}>
+                            Tutor #{index + 1}
+                        </Text>
+
+                        {guardians.length > 1 && (
+                            <TouchableOpacity
+                                onPress={() => removeGuardian(index)}
+                            >
+                                <Text style={styles.deleteText}>
+                                    ✕
+                                </Text>
+                            </TouchableOpacity>
+                        )}
+
+                        <InputField
+                            label="Nombre completo"
+                            value={guardian.full_name}
+                            onChangeText={(text) =>
+                                updateGuardian(
+                                    index,
+                                    "full_name",
+                                    text
+                                )
+                            }
+                            autoCapitalize="words"
+                        />
+
+                        <InputField
+                            label="Email"
+                            value={guardian.email}
+                            onChangeText={(text) =>
+                                updateGuardian(
+                                    index,
+                                    "email",
+                                    text
+                                )
+                            }
+                            keyboardType="email-address"
+                            autoCapitalize="none"
+                        />
+
+                        <InputField
+                            label="Relacion con el niño"
+                            value={guardian.relationship}
+                            onChangeText={(text) =>
+                                updateGuardian(
+                                    index,
+                                    "relationship",
+                                    text
+                                )
+                            }
+                            placeholder="Madre, Padre, Abuelo, Tía..."
+                        />
+
+                    </View>
+
+                ))}
+
+                {guardians.length < MAX_GUARDIANS && (
+
+                    <Button
+                        title="+ Agrega otro tutor"
+                        variant="secondary"
+                        onPress={addGuardian}
+                    />
+
+                )}
+
+                <Button
+                    title="Siguiente"
+                    onPress={handleNext}
+                />
+
+            </ScrollView>
+
+        </SafeAreaView>
+    );
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+    },
+
+    content: {
+        padding: 24,
+        gap: 20,
+    },
+
+    title: {
+        fontSize: 24,
+        fontWeight: "700",
+    },
+
+    subtitle: {
+        fontSize: 16,
+        lineHeight: 22,
+        opacity: 0.7,
+    },
+
+    guardianCard: {
+        marginTop: 12,
+    },
+
+    guardianTitle: {
+        fontSize: 18,
+        fontWeight: "600",
+        marginBottom: 16,
+    },
+    headerRow: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+    },
+
+    deleteText: {
+        fontSize: 24,
+    },
+});
