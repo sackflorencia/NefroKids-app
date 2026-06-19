@@ -15,6 +15,7 @@ export default function Levels() {
   const db = useSQLiteContext();
   const [levels, setLevels] = useState([]);
   const [selectedLevel, setSelectedLevel] = useState(null);
+  const [activeLevel, setActiveLevel] = useState(null);
 
   useEffect(() => {
 
@@ -75,32 +76,24 @@ export default function Levels() {
 
         ))}
         {selectedLevel && (
-
           <TouchableWithoutFeedback
             onPress={() => setSelectedLevel(null)}
           >
-
             <View style={styles.previewOverlay}>
-
               <TouchableWithoutFeedback>
-
                 <View>
-
                   <LevelPreview
                     level={selectedLevel}
                     onStart={() => {
-                      console.log("START LEVEL");
+                      setActiveLevel(selectedLevel);
+                      setSelectedLevel(null);
+                      navigation.navigate("Game");
                     }}
                   />
-
                 </View>
-
               </TouchableWithoutFeedback>
-
             </View>
-
           </TouchableWithoutFeedback>
-
         )}
 
       </View>
