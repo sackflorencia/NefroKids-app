@@ -13,6 +13,7 @@ import globalStyle from "../../styles/globalStyles";
 import colors from "../../styles/colors";
 import typography from "../../styles/typography";
 import images from "../../../assets/images";
+import ReviewButton from "../../components/review/button";
 
 const SLIDES = [
   {
@@ -21,7 +22,7 @@ const SLIDES = [
   },
   {
     title: "¡Aprender puede ser divertido!",
-    text: "Completá actividades, descubrí consejos y conseguí nuevos logros mientras avanzas.",
+    text: "Completá actividades, descubrí­ consejos y conseguí­ nuevos logros mientras avanzas.",
   },
   {
     title: "¡Registrá tu tratamiento!",
@@ -53,7 +54,7 @@ export default function Introduction({ navigation }) {
 
   return (
     <SafeAreaView style={globalStyle.container}>
-      {/* Zonas táctiles para avanzar/retroceder */}
+      {/* Zonas tÃ¡ctiles para avanzar/retroceder */}
       <View style={styles.touchZonesContainer} pointerEvents="box-none">
         <Pressable style={styles.touchZoneLeft} onPress={goPrev} />
         <Pressable style={styles.touchZoneRight} onPress={goNext} />
@@ -78,9 +79,12 @@ export default function Introduction({ navigation }) {
 
         {/* Logo */}
         <View style={styles.logoContainer}>
-          <Text style={styles.logoTitle}>
-            Nefr<Text style={{ color: colors.secondary }}>O</Text> Kids
-          </Text>
+          <Image
+            source={require("../../../assets/Logo/logo.png")}
+            style={globalStyle.logo}
+            resizeMode="contain"
+            alt="logo"
+          />
           <Text style={styles.logoSubtitle}>Creciendo acompañados</Text>
         </View>
 
@@ -98,7 +102,10 @@ export default function Introduction({ navigation }) {
         <View style={styles.characterContainer}>
           <Image
             source={images.confusedRiku}
-            style={styles.characterImage}
+            style={[
+              styles.characterImage,
+              isLast && styles.characterImageLast,
+            ]}
             resizeMode="contain"
           />
         </View>
@@ -107,11 +114,7 @@ export default function Introduction({ navigation }) {
       {/* Continue button */}
       {isLast && (
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={handleContinue}>
-            <Text style={[typography.button, styles.buttonText]}>
-              Continuar
-            </Text>
-          </TouchableOpacity>
+          <ReviewButton title="Continuar" onPress={handleContinue} style={styles.button} />
         </View>
       )}
     </SafeAreaView>
@@ -137,12 +140,12 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     paddingHorizontal: 24,
-    paddingTop: 16,
+    paddingTop: 12,
   },
   progressContainer: {
     flexDirection: "row",
     gap: 8,
-    marginBottom: 24,
+    marginBottom: 28,
   },
   progressBar: {
     flex: 1,
@@ -150,42 +153,44 @@ const styles = StyleSheet.create({
     borderRadius: 3,
   },
   logoContainer: {
-    marginBottom: 24,
+    alignItems: "center",
+    marginBottom: 28,
   },
-  logoTitle: {
-    fontSize: 32,
-    fontWeight: "800",
-    color: colors.primaryShadow,
+  logo:{
+    
   },
   logoSubtitle: {
-    fontSize: 14,
-    fontWeight: "500",
-    color: colors.secondaryShadow,
-    marginTop: -4,
+    fontSize: typography.regular.fontSize,
+    fontWeight: typography.regular.fontWeight,
+    color: colors.textLight,
+    marginTop: 2,
   },
   textContainer: {
-    marginBottom: 24,
+    marginBottom: 8,
   },
   title: {
-    fontSize: 24,
-    fontWeight: "700",
     color: colors.primaryShadow,
-    marginBottom: 12,
+    marginBottom: 10,
   },
   subtitle: {
-    fontSize: 16,
     color: colors.textDark,
-    lineHeight: 22,
+    lineHeight: 24,
   },
   characterContainer: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "flex-end",
+    justifyContent: "center",
   },
   characterImage: {
-    width: 220,
-    height: 280,
+    width: 300,
+    height: 500,
+    marginLeft:100
   },
+  characterImageLast: {
+  width: 220,
+  height: 360,
+  marginLeft: 150,
+},
   buttonContainer: {
     paddingHorizontal: 24,
     paddingBottom: 32,
@@ -195,12 +200,18 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: colors.secondary,
     borderRadius: 30,
-    paddingVertical: 16,
+    paddingVertical: 18,
     alignItems: "center",
+    justifyContent: "center",
+    borderBottomWidth: 4,
+    borderBottomColor: colors.secondaryShadow,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   buttonText: {
-    color: colors.textDark,
-    fontSize: 18,
-    fontWeight: "700",
+    color: colors.textLight,
   },
 });
