@@ -12,11 +12,10 @@ import { useNavigation } from "@react-navigation/native";
 
 
 export default function Levels() {
-
+  const navigation = useNavigation();
   const db = useSQLiteContext();
   const [levels, setLevels] = useState([]);
   const [selectedLevel, setSelectedLevel] = useState(null);
-  const [activeLevel, setActiveLevel] = useState(null);
 
   useEffect(() => {
 
@@ -86,9 +85,11 @@ export default function Levels() {
                   <LevelPreview
                     level={selectedLevel}
                     onStart={() => {
-                      setActiveLevel(selectedLevel);
                       setSelectedLevel(null);
-                      navigation.navigate("Game");
+
+                      navigation.navigate("Game", {
+                        level: selectedLevel,
+                      });
                     }}
                   />
                 </View>
