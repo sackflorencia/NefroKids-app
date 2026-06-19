@@ -1,69 +1,106 @@
-import FirebaseService from "./FirebaseService";
-
-import {
-  doc,
-  setDoc,
-  serverTimestamp
-} from "firebase/firestore";
+import FirestoreService from "./FirestoreService";
 
 export default class SyncService {
 
-  constructor() {
-    this.db = FirebaseService.getFirestore();
-  }
+    constructor() {
 
+        this.firestoreService =
+            new FirestoreService();
 
-  async createChild(child) {
+    }
 
-    await setDoc(
-      doc(this.db, "children", child.id),
-      {
-        full_name: child.full_name,
+    async uploadRegistration(
 
-        birth_date: child.birth_date,
+    child,
 
-        first_register_date: new Date(child.first_register_date),
+    primaryTutor,
 
-        total_xp: child.total_xp,
+    tutorUid,
 
-        urinates: Boolean(child.urinates),
+    guardians
 
-        avatar_id: child.avatar_id,
+) {
 
-        tutor_uids: [],
+    await this.firestoreService.createChild(
 
-        created_at: serverTimestamp(),
+        child,
 
-        updated_at: serverTimestamp()
-      }
+        tutorUid
+
     );
 
-  }
-  async createTutor(uid, tutor) {
+    await this.firestoreService.createTutor(
 
-    await setDoc(
-      doc(this.db, "tutors", uid),
-      {
-        child_id: tutor.child_id,
+        primaryTutor,
 
-        full_name: tutor.full_name,
+        tutorUid
 
-        email: tutor.email,
-
-        phone: tutor.phone,
-
-        relationship: tutor.relationship,
-
-        is_primary:
-          Boolean(tutor.is_primary),
-
-        created_at:
-          serverTimestamp(),
-
-        updated_at:
-          serverTimestamp()
-      }
     );
-  }
+
+    for (let i = 1; i < guardians.length; i++) {
+
+        const guardian = guardians[i];
+
+        await this.firestoreService.createInvitation({
+
+            child_id: child.id,
+
+            email: guardian.email,
+
+            relationship: guardian.relationship,
+
+            invited_by: tutorUid,
+
+            status: "pending"
+
+        });
+
+    }
+
+}
+
+    async uploadSymptomLog(log) {
+
+        await this.firestoreService
+            .createSymptomLog(log);
+
+    }
+
+    async uploadAlert(
+        childId,
+        symptomLogId,
+        alert
+    ) {
+
+        await this.firestoreService
+            .createAlert(
+                childId,
+                symptomLogId,
+                alert
+            );
+
+    }
+
+    async uploadProgress(progress) {
+
+        await this.firestoreService
+            .createProgress(progress);
+
+    }
+
+    async uploadReport(report) {
+
+        await this.firestoreService
+            .createReport(report);
+
+    }
+
+
+    async uploadAppointmentRule(rule) {
+
+        await this.firestoreService
+            .createAppointmentRule(rule);
+
+    }
 
 }

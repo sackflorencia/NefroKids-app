@@ -11,7 +11,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import InputField from "../../components/InputField";
 import Button from "../../components/Button";
-
+import AuthService from "../../../back/services/AuthService";
 import { useSQLiteContext } from "expo-sqlite";
 import RegistrationService from "../../../back/services/RegistrationService";
 
@@ -31,6 +31,9 @@ export default function GuardianRegistration({
             relationship: "",
         },
     ]);
+    const [password, setPassword] = useState("");
+
+    const [confirmPassword, setConfirmPassword] = useState("");
 
     function updateGuardian(
         index,
@@ -89,21 +92,56 @@ export default function GuardianRegistration({
 
             return;
         }
+      /*  if (!password.trim()) {
+
+        Alert.alert(
+        "Contraseña",
+        "Ingresá una contraseña para el tutor principal."
+         );
+
+          return;
+        }
+
+    if (password !== confirmPassword) {
+
+    Alert.alert(
+        "Contraseña",
+        "Las contraseñas no coinciden."
+    );
+
+    return;
+}*/
 
         try {
 
-            const registrationService =
-                new RegistrationService(db);
+    const authService =
+        new AuthService();
 
-            await registrationService
-                .completeRegistration(
-                    userData,
-                    guardians
-                );
+    const firebaseUser =
+        await authService.registerTutor(
 
-            navigation.navigate("Home");
+            guardians[0].email,
 
-        } catch (error) {
+            password
+
+        );
+
+    const registrationService =
+        new RegistrationService(db);
+
+    await registrationService.completeRegistration(
+
+        userData,
+
+        guardians,
+
+        firebaseUser.uid
+
+    );
+
+    navigation.navigate("Home");
+
+        }catch (error) {
 
             console.error(error);
 
@@ -191,6 +229,23 @@ export default function GuardianRegistration({
                             keyboardType="email-address"
                             autoCapitalize="none"
                         />
+                        {index === 0 && (
+                         <>
+                      <InputField
+                      label="Contraseña"
+                     value={password}
+                    onChangeText={setPassword}
+                      secureTextEntry
+                      />
+
+                     <InputField
+                    label="Confirmar contraseña"
+                     value={confirmPassword}
+                    onChangeText={setConfirmPassword}
+                 secureTextEntry
+                />
+            </>
+                        )}
 
                         <InputField
                             label="Relacion con el niño"
