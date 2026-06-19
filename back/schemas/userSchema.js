@@ -18,8 +18,6 @@ CREATE TABLE IF NOT EXISTS users (
     DEFAULT 1
     CHECK(urinates IN (0,1)),
 
-  diagnosis TEXT NOT NULL,
-
   avatar_id TEXT
 );
 `;

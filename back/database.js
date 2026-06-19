@@ -8,10 +8,10 @@ import { progressTable } from "./schemas/progressSchema";
 import { rankDefinitionsTable } from "./schemas/rankDefinitionsSchema";
 import { reviewTable } from "./schemas/reviewschema";
 import { avatarsTable } from "./schemas/avatarsSchema";
-import {reportHistoryTable} from "./schemas/reportHistorySchema";
-import {appointmentRulesTable} from "./schemas/appointmentRulesSchema";
-import {appointmentWeekdaysTable} from "./schemas/appointmentWeekdaysSchema";
-import {tutorsTable} from "./schemas/tutorsSchema";
+import { reportHistoryTable } from "./schemas/reportHistorySchema";
+import { appointmentRulesTable } from "./schemas/appointmentRulesSchema";
+import { appointmentWeekdaysTable } from "./schemas/appointmentWeekdaysSchema";
+import { tutorsTable } from "./schemas/tutorsSchema";
 
 import { seedGames } from "./seeds/gameSeed";
 import { seedReviews } from "./seeds/reviewSeed";
@@ -54,7 +54,7 @@ export default function InitDB({ children }) {
 
       await db.execAsync(avatarsTable);
       console.log("avatarsTable OK");
-      
+
       await db.execAsync(reportHistoryTable);
       console.log("reportHistoryTable OK");
 
@@ -62,7 +62,7 @@ export default function InitDB({ children }) {
       console.log("appointmentRulesTable OK");
 
       await db.execAsync(appointmentWeekdaysTable);
-      console.log("appointmentWeekdaysTable OK"); 
+      console.log("appointmentWeekdaysTable OK");
 
       await db.execAsync(tutorsTable);
       console.log("tutorsTable OK");
