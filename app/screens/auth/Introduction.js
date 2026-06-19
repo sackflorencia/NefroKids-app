@@ -14,6 +14,7 @@ import colors from "../../styles/colors";
 import typography from "../../styles/typography";
 import images from "../../../assets/images";
 import ReviewButton from "../../components/review/button";
+import LogoSlogan from "../../components/logo/logo"
 
 const SLIDES = [
   {
@@ -78,15 +79,7 @@ export default function Introduction({ navigation }) {
         </View>
 
         {/* Logo */}
-        <View style={styles.logoContainer}>
-          <Image
-            source={require("../../../assets/Logo/logo.png")}
-            style={globalStyle.logo}
-            resizeMode="contain"
-            alt="logo"
-          />
-          <Text style={styles.logoSubtitle}>Creciendo acompañados</Text>
-        </View>
+        <LogoSlogan/>
 
         {/* Text content */}
         <View style={styles.textContainer}>
@@ -151,19 +144,6 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 6,
     borderRadius: 3,
-  },
-  logoContainer: {
-    alignItems: "center",
-    marginBottom: 28,
-  },
-  logo:{
-    
-  },
-  logoSubtitle: {
-    fontSize: typography.regular.fontSize,
-    fontWeight: typography.regular.fontWeight,
-    color: colors.textLight,
-    marginTop: 2,
   },
   textContainer: {
     marginBottom: 8,

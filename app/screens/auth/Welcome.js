@@ -34,17 +34,7 @@ export default function Welcome({ navigation }) {
 
       <View style={styles.content}>
         {/* Logo */}
-        <View style={styles.logoContainer}>
-          <Image
-            source={require("../../../assets/Logo/logo.png")}
-            style={globalStyle.logo}
-            resizeMode="contain"
-            alt="logo"
-          />
-          <Text style={[typography.regular, styles.logoSubtitle]}>
-            Creciendo acompañados
-          </Text>
-        </View>
+        {/* PONER LOGOOOO */}
 
         {/* Speech bubble */}
         <View style={styles.bubbleContainer}>
@@ -107,14 +97,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 24,
     paddingTop: 16,
-  },
-  logoContainer: {
-    alignItems: "center",
-    marginBottom: 4,
-  },
-  logoSubtitle: {
-    color: colors.textLight,
-    marginTop: 2,
   },
   bubbleContainer: {
     alignItems: "flex-end",
