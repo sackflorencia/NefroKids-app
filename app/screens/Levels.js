@@ -8,6 +8,7 @@ import LevelPreview from "../components/level/LevelPreview";
 
 import { useSQLiteContext } from "expo-sqlite";
 import GameController from "../../back/controllers/gameController";
+import { useNavigation } from "@react-navigation/native";
 
 
 export default function Levels() {
