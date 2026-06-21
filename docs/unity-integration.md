@@ -852,6 +852,74 @@ Con esta configuración:
 
 > **Importante:** no depender de la autodetección de NDK por Expo o por el export de Unity, ya que puede cambiar entre builds y generar errores no determinísticos.
 
+#### NDK no detectado por variable de entorno (`ANDROID_NDK_ROOT`)
+
+Una variante del mismo problema puede aparecer incluso con el NDK ya alineado según lo descrito arriba. El error es similar:
+
+```text
+Execution failed for task ':unityLibrary:BuildIl2CppTask'.
+> NDK is not installed
+```
+
+**Causa real**
+
+Aunque el NDK esté instalado correctamente en el sistema, Unity IL2CPP no lo detecta porque:
+
+- Gradle y Expo sí conocen el NDK (a través de `ndkVersion`, ver arriba)
+- Unity IL2CPP no usa automáticamente la resolución de Gradle
+- El script de build de Unity depende de una variable de entorno del sistema operativo
+
+En particular, esta línea (usada internamente por el build de Unity):
+
+```text
+System.getenv("ANDROID_NDK_ROOT")
+```
+
+devuelve `null` si la variable no existe en el sistema operativo, y Unity interpreta eso como que el NDK no está instalado.
+
+**Solución: configurar la variable de entorno (Windows)**
+
+1. Buscar en Windows: *"Editar variables de entorno del sistema"*.
+2. Abrir **Variables de entorno** → ir a *Variables de usuario* (o del sistema).
+3. Crear una nueva variable:
+
+   - Nombre: `ANDROID_NDK_ROOT`
+   - Valor (ejemplo típico):
+
+```text
+C:\Users\BANGHO\AppData\Local\Android\Sdk\ndk\27.1.12297006
+```
+
+4. Aceptar todo y reiniciar la terminal / Android Studio / VSCode para que tome la variable.
+
+**Verificación**
+
+En una terminal nueva:
+
+```bash
+echo %ANDROID_NDK_ROOT%
+```
+
+Debe devolver la ruta del NDK.
+
+**Uso en Gradle (Unity IL2CPP)**
+
+En `unityLibrary/build.gradle`, el build de IL2CPP referencia esta variable así:
+
+```gradle
+commandLineArgs.add("--tool-chain-path=" + System.getenv("ANDROID_NDK_ROOT"))
+```
+
+> **Importante:** no se crea ninguna carpeta nueva. `ANDROID_NDK_ROOT` es solo una referencia al NDK ya existente dentro del Android SDK. Si la variable no existe, Unity interpreta que el NDK no está instalado, aunque sí lo esté.
+
+**Resultado**
+
+Una vez configurada la variable:
+
+- Unity IL2CPP encuentra el toolchain correctamente
+- El task `BuildIl2CppTask` deja de fallar
+- El build de Expo + Unity se completa normalmente
+
 ---
 
 ## 9. Componente React Native
