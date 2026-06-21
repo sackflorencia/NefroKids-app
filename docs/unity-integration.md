@@ -753,6 +753,105 @@ packagingOptions {
 
 > **Nota:** este bloque solo debe modificarse cuando existan errores de build relacionados con duplicación de `.so`, conflictos de `libc++_shared.so`, o crashes en runtime relacionados con librerías nativas. No es recomendable ajustar estas opciones sin un error previo reproducible.
 
+### 8.7 Problema conocido: NDK inconsistente entre Android (Expo/RN) y unityLibrary
+
+En la integración Unity + React Native + Expo, uno de los problemas más frecuentes es la inconsistencia en la versión del NDK (Native Development Kit) entre:
+
+- El sistema Android del proyecto (Expo / React Native / Firebase)
+- El módulo `unityLibrary` exportado por Unity
+
+**Problema detectado**
+
+Durante el build puede aparecer el siguiente error:
+
+```text
+NDK is not installed
+```
+
+o errores relacionados con IL2CPP como:
+
+- Mismatch entre `ndkVersion`
+- Incompatibilidad entre `ndkPath` y el NDK del sistema
+- Fallos en `BuildIl2CppTask`
+
+**Causa raíz**
+
+El proyecto puede estar usando simultáneamente:
+
+- NDK provisto por Android SDK (ej: `27.1.12297006`)
+- NDK embebido por Unity en el export:
+
+```text
+Unity/Editor/Data/PlaybackEngines/AndroidPlayer/NDK
+```
+
+Esto genera un conflicto porque:
+
+- React Native / Expo espera un NDK gestionado por Android SDK
+- Unity export puede forzar o referenciar otro NDK distinto
+- Gradle no puede resolver un único toolchain consistente
+
+**Configuraciones problemáticas**
+
+1. `unityLibrary` forzando un NDK propio:
+
+```gradle
+ndkPath "C:/Program Files/Unity/Hub/Editor/.../NDK"
+```
+
+Esto genera conflictos con el NDK del Android SDK.
+
+2. Falta de definición explícita del NDK en el root project. Si no existe una versión centralizada, el valor puede ser inyectado por Expo o plugins, generando inconsistencias.
+
+**Solución recomendada (configuración estable)**
+
+1. Definir el NDK de forma centralizada en `android/build.gradle`:
+
+```gradle
+ext {
+    ndkVersion = "27.1.12297006"
+}
+```
+
+2. Usar la referencia centralizada en `android/app/build.gradle`:
+
+```gradle
+android {
+    ndkVersion rootProject.ext.ndkVersion
+}
+```
+
+3. Alinear `unityLibrary` con el mismo NDK, en `unityLibrary/build.gradle`:
+
+- Eliminar cualquier referencia a:
+
+```gradle
+ndkPath "..."
+```
+
+- Asegurar compatibilidad con el mismo NDK usado por Android:
+
+```gradle
+android {
+    ndkVersion "27.1.12297006"
+}
+```
+
+**Regla de arquitectura**
+
+En proyectos híbridos Unity + React Native, el NDK debe ser único y definido por el proyecto Android (root), nunca por Unity. Unity debe adaptarse al toolchain del proyecto host, no al revés.
+
+**Resultado esperado**
+
+Con esta configuración:
+
+- Unity IL2CPP compila correctamente
+- React Native / Expo mantiene compatibilidad
+- Firebase y dependencias nativas funcionan sin conflictos
+- Se elimina el error `NDK is not installed`
+
+> **Importante:** no depender de la autodetección de NDK por Expo o por el export de Unity, ya que puede cambiar entre builds y generar errores no determinísticos.
+
 ---
 
 ## 9. Componente React Native
