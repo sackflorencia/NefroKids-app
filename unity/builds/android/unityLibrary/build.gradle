@@ -28,16 +28,17 @@ android {
         consumerProguardFiles 'proguard-unity.txt'
     }
 
-    lintOptions {
+    lintOptions {1
         abortOnError false
     }
 
     aaptOptions {
-        noCompress = ['.unity3d', '.ress', '.resource', '.obb', '.bundle', '.unityexp'] + unityStreamingAssets.tokenize(', ')
+        noCompress = ['.unity3d', '.ress', '.resource', '.obb', '.bundle', '.unityexp']
         ignoreAssetsPattern = "!.svn:!.git:!.ds_store:!*.scc:!CVS:!thumbs.db:!picasa.ini:!*~"
     }
 
     packagingOptions {
+        pickFirst '**/libc++_shared.so'
         doNotStrip '*/armeabi-v7a/*.so'
         doNotStrip '*/arm64-v8a/*.so'
         jniLibs {

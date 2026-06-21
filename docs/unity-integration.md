@@ -724,6 +724,35 @@ aaptOptions {
 }
 ```
 
+### 8.6 Problema conocido: conflictos de librerías nativas (`packagingOptions`)
+
+En la integración Unity + React Native, a veces es necesario ajustar `packagingOptions` dentro de `unityLibrary/build.gradle` para evitar conflictos entre librerías nativas generadas por Unity y dependencias del proyecto Android.
+
+El bloque, tal como queda en `unityLibrary/build.gradle`, es el siguiente:
+
+```gradle
+packagingOptions {
+    pickFirst '**/libc++_shared.so'
+
+    doNotStrip '*/armeabi-v7a/*.so'
+    doNotStrip '*/arm64-v8a/*.so'
+
+    jniLibs {
+        useLegacyPackaging true
+    }
+}
+```
+
+> **Importante:** de este bloque, la **única línea agregada manualmente** es `pickFirst '**/libc++_shared.so'`. El resto (`doNotStrip` y `jniLibs.useLegacyPackaging`) ya viene incluido por defecto en el `build.gradle` que genera el export de Unity.
+
+**Descripción de cada ajuste:**
+
+- **`pickFirst '**/libc++_shared.so'`** — Evita conflictos cuando múltiples dependencias incluyen la misma librería C++ compartida.
+- **`doNotStrip '*/armeabi-v7a/*.so'` y `doNotStrip '*/arm64-v8a/*.so'`** — Previene la eliminación de símbolos nativos en librerías `.so` utilizadas por Unity o plugins nativos.
+- **`jniLibs { useLegacyPackaging true }`** — Fuerza el empaquetado clásico de librerías nativas, mejorando la compatibilidad con Unity 2022+ y plugins Android antiguos.
+
+> **Nota:** este bloque solo debe modificarse cuando existan errores de build relacionados con duplicación de `.so`, conflictos de `libc++_shared.so`, o crashes en runtime relacionados con librerías nativas. No es recomendable ajustar estas opciones sin un error previo reproducible.
+
 ---
 
 ## 9. Componente React Native
