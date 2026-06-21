@@ -375,7 +375,7 @@ unity/NEW EXPORT
 El proyecto de Unity fue exportado para Android como módulo embebido:
 
 ```
-unity/Build/Android/unityLibrary
+unity/builds/android/unityLibrary
 ```
 
 Este módulo se integra dentro del proyecto Android en:
@@ -627,8 +627,8 @@ Estructura esperada tras la exportación:
 
 ```text
 unity/
-└── Build/
-    └── Android/
+└── builds/
+    └── android/
         ├── unityLibrary/
         ├── launcher/
         ├── build.gradle
@@ -642,8 +642,8 @@ Y dentro del proyecto React Native:
 NefroKids-app/
 ├── android/
 ├── unity/
-│   └── Build/
-│       └── Android/
+│   └── builds/
+│       └── android/
 │           ├── unityLibrary/
 │           └── launcher/
 ```
@@ -672,7 +672,7 @@ Esto es necesario porque React Native será la app principal (el launcher), no U
 Agregar al final del archivo:
 
 ```gradle
-def unityPath = new File(rootProject.projectDir, '../unity/Build/Android/unityLibrary')
+def unityPath = new File(rootProject.projectDir, '../unity/builds/android/unityLibrary')
 
 include ':unityLibrary'
 project(':unityLibrary').projectDir = unityPath
@@ -686,7 +686,7 @@ project(':unityLibrary').projectDir = unityPath
 sourceSets {
     main {
         assets.srcDirs += [
-            '../../unity/Build/Android/unityLibrary/src/main/assets'
+            '../../unity/builds/android/unityLibrary/src/main/assets'
         ]
     }
 }
@@ -896,7 +896,7 @@ Cada vez que Unity cambie:
 4. Sobrescribir la carpeta:
 
 ```text
-unity/Build/Android/
+unity/builds/android/
 ```
 
 5. Verificar que el `AndroidManifest.xml` siga sin `intent-filter`.
