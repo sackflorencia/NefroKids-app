@@ -43,5 +43,13 @@ yarn-error.*
 #unity integration 
 /android/local.properties
 
+# Unity builds 
+unity/builds/
+**/Build/
+**/build/
+**/il2cpp_cache/
+**/symbols/
+**/jniLibs/
+**/*.so
 
 /unity/NEW_EXPORT
