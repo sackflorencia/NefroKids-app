@@ -672,10 +672,10 @@ Esto es necesario porque React Native será la app principal (el launcher), no U
 Agregar al final del archivo:
 
 ```gradle
+def unityPath = new File(rootProject.projectDir, '../unity/Build/Android/unityLibrary')
+
 include ':unityLibrary'
-project(':unityLibrary').projectDir =
-    new File(rootProject.projectDir,
-        '../unity/Build/Android/unityLibrary')
+project(':unityLibrary').projectDir = unityPath
 ```
 
 ### 8.4 Modificar `android/app/build.gradle`

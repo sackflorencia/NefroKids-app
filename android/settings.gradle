@@ -37,3 +37,8 @@ expoAutolinking.useExpoVersionCatalog()
 
 include ':app'
 includeBuild(expoAutolinking.reactNativeGradlePlugin)
+
+def unityPath = new File(rootProject.projectDir, '../unity/Build/Android/unityLibrary')
+
+include ':unityLibrary'
+project(':unityLibrary').projectDir = unityPath
