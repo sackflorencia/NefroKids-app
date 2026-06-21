@@ -9,8 +9,7 @@ dependencies {
 android {
     namespace "com.unity3d.player"
     //ndkPath "C:/Program Files/Unity/Hub/Editor/2022.3.42f1/Editor/Data/PlaybackEngines/AndroidPlayer/NDK"
-    compileSdkVersion 34
-    buildToolsVersion '32.0.0'
+    compileSdkVersion 36
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
@@ -69,7 +68,6 @@ def BuildIl2Cpp(String workingDir, String configuration, String architecture, St
     commandLineArgs.add("--data-folder=" + workingDir + "/src/main/Il2CppOutputProject/Source/il2cppOutput/data")
     commandLineArgs.add("--generatedcppdir=" + workingDir + "/src/main/Il2CppOutputProject/Source/il2cppOutput")
     commandLineArgs.add("--cachedirectory=" + workingDir + "/build/il2cpp_"+ abi + "_" + configuration + "/il2cpp_cache")
-    commandLineArgs.add("--tool-chain-path=" + System.getenv("ANDROID_NDK_ROOT"))
     staticLibraries.eachWithIndex {fileName, i->
         commandLineArgs.add("--additional-libraries=" + workingDir + "/src/main/jniStaticLibs/" + abi + "/" + fileName)
     }
