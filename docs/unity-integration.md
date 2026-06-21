@@ -1119,3 +1119,137 @@ npx expo run:android
 > No hace falta volver a tocar `settings.gradle` ni `app/build.gradle` si la estructura de carpetas no cambia.
 
 > **Nota:** este flujo manual se repite porque `npx expo prebuild` borra `unityLibrary` cada vez que regenera `android/` (ver sección 0.1). La solución definitiva a futuro es migrar esta integración a un **Expo Config Plugin** que automatice estos pasos.
+
+---
+
+## 15. Mono vs IL2CPP: análisis de arquitectura y conflictos de toolchain
+
+Esta sección documenta, a nivel de arquitectura, por qué la integración Unity + React Native (Expo) es propensa a errores de compilación C++ y de runtime, más allá de los problemas puntuales ya cubiertos en la sección 8.
+
+### 15.1 Contexto general
+
+El proyecto integra simultáneamente:
+
+- React Native (Expo)
+- Firebase (Auth, Firestore, Analytics)
+- Unity embebido como módulo nativo
+- Android NDK + CMake
+- Bridge `@azesmway/react-native-unity`
+
+Esto implica que la app no es únicamente JavaScript móvil, sino un sistema híbrido que compila múltiples runtimes nativos (C++, Java/Kotlin y Unity IL2CPP/Mono) dentro del mismo build de Gradle.
+
+### 15.2 Qué compila realmente `expo run:android`
+
+Durante `expo run:android`, el sistema compila en conjunto:
+
+1. **React Native** — JS hacia el bridge nativo.
+2. **Expo modules** — componentes nativos en C++ (JSI, Folly).
+3. **Firebase Android SDK** — Java/Kotlin, con algunas dependencias nativas.
+4. **Unity (export)** — el motor completo exportado como `unityLibrary`, con uno de estos dos backends:
+   - Mono (arquitectura más simple)
+   - IL2CPP (C++ generado automáticamente)
+
+### 15.3 Diferencia entre Mono e IL2CPP
+
+| | Mono | IL2CPP |
+|---|---|---|
+| Runtime | Interpretado, más simple | C# convertido a C++ y compilado a binario nativo |
+| Código nativo generado | Mínimo | `libil2cpp`, `libunity`, `libmain`, etc. |
+| Soporte de arquitecturas modernas | Limitado (sobre todo `armeabi-v7a`) | Sí, incluye `arm64-v8a` |
+| Tamaño de build | Más liviano | Más pesado |
+| Sensibilidad a la versión del NDK | Baja | Alta |
+| Apto para producción en este stack | No | Sí, requerido |
+
+### 15.4 Problema principal: colisión de toolchains C++
+
+**Error característico:**
+
+```text
+std::regular not found / folly compilation error
+expo-modules-core buildCMakeDebug failed
+```
+
+Esto indica un conflicto de compilación C++ en el toolchain, no un error aislado de un solo módulo.
+
+**Causa real:** el build mezcla tres sistemas C++ con requisitos distintos:
+
+| Sistema | Toolchain |
+|---|---|
+| Unity IL2CPP | NDK propio / versión específica de Unity |
+| React Native (0.81+) | C++20 moderno (Folly) |
+| Expo modules | C++ JSI + Folly + CMake moderno |
+
+El conflicto ocurre porque Expo usa `folly` (C++ moderno), el NDK configurado no siempre es completamente compatible con ese estándar, y Unity además impone su propia configuración de `libc++` y ABI. El resultado es una incompatibilidad en tiempo de compilación. Esta es la misma familia de problema que la sección 8.7 resuelve para el caso específico de versión de NDK desalineada; acá se documenta la causa de fondo cuando el conflicto no se limita solo al NDK.
+
+### 15.5 Problemas de arquitectura (ARM vs x86 vs arm64)
+
+Comportamientos observados:
+
+- `armeabi-v7a` → funciona parcialmente.
+- `arm64-v8a` → falla en compilación o en runtime.
+- Emuladores x86 → incompatibles con builds de Unity antiguos.
+
+Esto genera errores como:
+
+```text
+failed to load libmain.so
+UnsatisfiedLinkError: library not found
+```
+
+> Este síntoma puntual (`libmain.so` / `UnsatisfiedLinkError`) ya está registrado en la tabla de la sección 11 como problema de ABI entre emulador y arquitecturas exportadas. Lo que agrega esta sección es el contexto de por qué puede repetirse incluso con las arquitecturas bien configuradas: depende también de si el export es Mono o IL2CPP.
+
+### 15.6 Estructura de `jniLibs` según el backend
+
+En exports distintos de Unity se observan diferencias en:
+
+```text
+jniLibs/
+  armv7a/
+  arm64-v8a/
+```
+
+- **Export Mono:** solo genera `libunity.so`.
+- **Export IL2CPP:** genera múltiples `.so` (`libmain.so`, `libil2cpp.so`, etc.).
+
+Esto confirma que Mono no genera un runtime nativo completo, mientras que IL2CPP sí lo genera, pero depende de que la arquitectura de destino esté correctamente habilitada (ver sección 3.1, Target Architectures).
+
+### 15.7 Falla típica en runtime
+
+Error observado:
+
+```text
+failed to initialize
+your hardware does not support the application
+failed to load libmain.so
+```
+
+Causas probables:
+
+- El APK no incluye la arquitectura correcta del dispositivo.
+- El export de Unity no coincide con los ABIs habilitados en Gradle.
+- Mezcla de builds Mono e IL2CPP en exportaciones anteriores (residuos de una versión previa no limpiados).
+
+### 15.8 Limitaciones de Mono en este stack
+
+- Solo funciona de forma confiable en arquitecturas limitadas (principalmente `armeabi-v7a`).
+- No soporta correctamente escenarios modernos que requieren `arm64-v8a` obligatorio, Expo SDK reciente, o React Native 0.70+.
+
+**Conclusión:** Mono no es viable para producción en este stack.
+
+### 15.9 Limitaciones de IL2CPP en este stack
+
+IL2CPP es el backend requerido para arquitectura moderna, pero:
+
+- Depende fuertemente de la versión del NDK (ver sección 8.7).
+- Es sensible a mismatches con Expo modules.
+- Puede romper el build si React Native usa características de C++20 avanzadas.
+- Genera conflictos con Folly / JSI si el toolchain no está alineado.
+
+### 15.10 Conclusión técnica
+
+El problema no proviene de Firebase, Expo o Unity de forma aislada: es una colisión entre el toolchain de Unity IL2CPP, el runtime C++ de React Native (Folly + JSI), los módulos nativos de Expo (CMake + C++) y la versión específica del NDK del proyecto. Esta combinación es la que produce incompatibilidades tanto en compilación como en runtime.
+
+### 15.11 Resultado práctico
+
+- **Mono:** compila más fácil, pero no soporta la arquitectura moderna completa.
+- **IL2CPP:** correcto para producción, pero puede romper el build si no hay alineación total del toolchain (NDK, Folly, ABIs).
