@@ -1,4 +1,3 @@
-def ndkPath = android.getNdkDirectory().toString()
 apply plugin: 'com.android.library'
 
 
