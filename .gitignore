@@ -40,5 +40,8 @@ yarn-error.*
 # generated native folders
 /ios
 
+#unity integration 
+/android/local.properties
+
 
 /unity/NEW_EXPORT
