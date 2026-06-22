@@ -1,12 +1,17 @@
 import React from "react";
 import { WebView } from "react-native-webview";
-import Orientation from "react-native-orientation-locker";
+import { useEffect } from "react";
+import * as ScreenOrientation from "expo-screen-orientation";
+
 
 export default function GameScreen() {
   useEffect(() => {
-    Orientation.lockToLandscape();
+    ScreenOrientation.lockAsync(
+      ScreenOrientation.OrientationLock.LANDSCAPE
+    );
+
     return () => {
-      Orientation.unlockAllOrientations();
+      ScreenOrientation.unlockAsync();
     };
   }, []);
   return (
