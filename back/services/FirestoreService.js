@@ -35,26 +35,26 @@ export default class FirestoreService {
                     child.birth_date,
 
                 first_register_date:
-                    child.first_register_date,
+                    serverTimestamp(),
 
                 total_xp:
-                    child.total_xp,
+                     child.total_xp ?? 0,
 
                 urinates:
                     Boolean(child.urinates),
 
                 avatar_id:
-                    child.avatar_id,
-
-                tutor_uids: [
-                    tutorUid
-                ],
-
+                    child.avatar_id ?? null,
+                
                 created_at:
                     serverTimestamp(),
 
                 updated_at:
-                    serverTimestamp()
+                    serverTimestamp(),
+                tutor_uids: [
+                    tutorUid
+                ]
+
 
             }
 
