@@ -1,5 +1,5 @@
 import react from "react";
-import images from "../../assets/images";
+import images from "../../../assets/images";
 import globalStyle from "../../styles/globalStyles";
 import colors from "../../styles/colors";
 import typography from "../../styles/typography";

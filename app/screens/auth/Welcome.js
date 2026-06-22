@@ -13,6 +13,7 @@ import colors from "../../styles/colors";
 import typography from "../../styles/typography";
 import images from "../../../assets/images";
 import SpeechBubble from "../../components/home/SpeechBubble";
+import Logo from "../../components/logo/logo";
 
 export default function Welcome({ navigation }) {
   const handleLogin = () => {
@@ -27,7 +28,7 @@ export default function Welcome({ navigation }) {
     <SafeAreaView style={styles.wrapper}>
       {/* Character - fondo, superpuesto por todo lo demÃ¡s */}
       <Image
-        source={require("../../../assets/images/pet/happy_riku.png")}
+        source={images.happyRiku}
         style={styles.characterImage}
         resizeMode="contain"
       />
@@ -35,6 +36,7 @@ export default function Welcome({ navigation }) {
       <View style={styles.content}>
         {/* Logo */}
         {/* PONER LOGOOOO */}
+        <Logo/>
 
         {/* Speech bubble */}
         <View style={styles.bubbleContainer}>
