@@ -22,7 +22,3 @@ allprojects {
 
 apply plugin: "expo-root-project"
 apply plugin: "com.facebook.react.rootproject"
-
-ext {
-    ndkVersion = "27.1.12297006"
-}
