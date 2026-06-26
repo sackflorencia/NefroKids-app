@@ -13,8 +13,8 @@ import globalStyle from "../../styles/globalStyles";
 import colors from "../../styles/colors";
 import typography from "../../styles/typography";
 import images from "../../../assets/images";
-import ReviewButton from "../../components/review/button";
-import LogoSlogan from "../../components/logo/logo"
+import Button from "../../components/Button";
+import LogoSlogan from "../../components/logo/logo";
 
 const SLIDES = [
   {
@@ -107,7 +107,12 @@ export default function Introduction({ navigation }) {
       {/* Continue button */}
       {isLast && (
         <View style={styles.buttonContainer}>
-          <ReviewButton title="Continuar" onPress={handleContinue} style={styles.button} />
+          <Button
+            title="Continuar"
+            onPress={handleContinue}
+            variant="secondary"
+            style={styles.button}
+          />
         </View>
       )}
     </SafeAreaView>
@@ -176,20 +181,6 @@ const styles = StyleSheet.create({
     paddingBottom: 32,
     paddingTop: 16,
     zIndex: 2,
-  },
-  button: {
-    backgroundColor: colors.secondary,
-    borderRadius: 30,
-    paddingVertical: 18,
-    alignItems: "center",
-    justifyContent: "center",
-    borderBottomWidth: 4,
-    borderBottomColor: colors.secondaryShadow,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
   },
   buttonText: {
     color: colors.textLight,

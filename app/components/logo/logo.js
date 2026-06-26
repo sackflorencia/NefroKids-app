@@ -1,4 +1,3 @@
-import react from "react";
 import images from "../../../assets/images";
 import globalStyle from "../../styles/globalStyles";
 import colors from "../../styles/colors";
@@ -6,25 +5,24 @@ import typography from "../../styles/typography";
 import {
   View,
   Text,
-  TouchableOpacity,
   Image,
   StyleSheet,
-  SafeAreaView,
 } from "react-native";
 
 const LogoSlogan = () => {
-    <View style={styles.logoSloganContainer}>
-              <Image
+    return (
+        <View style={styles.logoSloganContainer}>
+            <Image
                 source={images.logo}
-                style={globalStyle.logo}
+                style={styles.imagenLogo}
                 resizeMode="contain"
-                alt="logo"
-              />
-              <Text style={styles.slogan}>
+                accessibilityLabel="logo"
+            />
+            <Text style={styles.slogan}>
                 Creciendo acompañados
-              </Text>
-            </View>
-            
+            </Text>
+        </View>
+    );
 }
 export default LogoSlogan;
 
@@ -38,5 +36,10 @@ const styles = StyleSheet.create({
     logoSloganContainer: {
         alignItems: "center",
         marginBottom: 28,
+    },
+    imagenLogo: {
+      width: 300, 
+      padding: 0,
+      margin: 0,
     },
 });
