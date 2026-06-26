@@ -17,11 +17,11 @@ import Logo from "../../components/logo/logo";
 
 export default function Welcome({ navigation }) {
   const handleLogin = () => {
-    navigation.navigate("Login");
+    navigation.navigate("LogIn");
   };
 
   const handleSignUp = () => {
-    navigation.navigate("SignUp");
+    navigation.navigate("Register");
   };
 
   return (
