@@ -74,7 +74,7 @@ export default class RegistrationService {
             }
 
         }
-
+        console.log("ANTES DE SUBIR A FIRESTORE");
         await this.syncService.uploadRegistration(
 
             child,

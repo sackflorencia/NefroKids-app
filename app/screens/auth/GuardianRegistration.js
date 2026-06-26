@@ -92,7 +92,7 @@ export default function GuardianRegistration({
 
             return;
         }
-      /*  if (!password.trim()) {
+      if (!password.trim()) {
 
         Alert.alert(
         "Contraseña",
@@ -110,10 +110,10 @@ export default function GuardianRegistration({
     );
 
     return;
-}*/
+}
 
         try {
-
+     console.log("1 - Empieza registro");
     const authService =
         new AuthService();
 
@@ -125,9 +125,11 @@ export default function GuardianRegistration({
             password
 
         );
-
+        console.log("2 - Usuario Firebase creado");
+        
     const registrationService =
         new RegistrationService(db);
+        console.log("3 - Antes de completeRegistration");
 
     await registrationService.completeRegistration(
 
@@ -138,8 +140,7 @@ export default function GuardianRegistration({
         firebaseUser.uid
 
     );
-
-    navigation.navigate("Home");
+    console.log("4 - Registro completo");
 
         }catch (error) {
 

@@ -10,7 +10,6 @@ export default class SyncService {
     }
 
     async uploadRegistration(
-
     child,
 
     primaryTutor,
@@ -20,6 +19,10 @@ export default class SyncService {
     guardians
 
 ) {
+    console.log("UPLOAD REGISTRATION");
+    console.log(child);
+    console.log(primaryTutor);
+    console.log(tutorUid);
 
     await this.firestoreService.createChild(
 
