@@ -1,14 +1,18 @@
 export default {
   title: {
-    fontSize: 18,
+    fontSize: 40,
     fontWeight: "600",
   },
   subtitle: {
-    fontSize: 14,
+    fontSize: 25,
     fontWeight: "500",
   },
+  regular:{
+    fontSize: 20,
+    fontWeight: "450"
+  },
   button: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "500",
   },
 };

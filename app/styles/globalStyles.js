@@ -6,4 +6,8 @@ export default StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
+  logo: {
+  width: 100,
+  height: 50,
+  },
 });
