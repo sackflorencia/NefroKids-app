@@ -122,9 +122,7 @@ export default function GuardianRegistration({
 
             const firebaseUser =
                 await authService.registerTutor(
-
                     guardians[0].email,
-
                     password
 
                 );
