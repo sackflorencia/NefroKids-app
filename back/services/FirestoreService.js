@@ -18,7 +18,7 @@ export default class FirestoreService {
         child,
         tutorUid
     ) {
-         console.log("Creando child en Firestore");
+        console.log("Creando child en Firestore");
         await setDoc(
 
             doc(
@@ -38,14 +38,14 @@ export default class FirestoreService {
                     serverTimestamp(),
 
                 total_xp:
-                     child.total_xp ?? 0,
+                    child.total_xp ?? 0,
 
                 urinates:
                     Boolean(child.urinates),
 
                 avatar_id:
                     child.avatar_id ?? null,
-                
+
                 created_at:
                     serverTimestamp(),
 
@@ -59,7 +59,7 @@ export default class FirestoreService {
             }
 
         );
-            console.log("12. createChild terminó");
+        console.log("12. createChild terminó");
     }
     async createTutor(
         tutor,
@@ -119,8 +119,14 @@ export default class FirestoreService {
                 child_id:
                     invitation.child_id,
 
+                full_name:
+                    invitation.full_name,
+
                 email:
                     invitation.email,
+
+                phone:
+                    invitation.phone,
 
                 relationship:
                     invitation.relationship,
@@ -348,5 +354,5 @@ export default class FirestoreService {
         );
 
     }
-    
+
 }

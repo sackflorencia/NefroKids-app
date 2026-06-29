@@ -47,11 +47,10 @@ export default class SyncService {
         await this.firestoreService.createInvitation({
 
             child_id: child.id,
-
+            full_name: guardian.full_name,
             email: guardian.email,
-
+            phone: guardian.phone,
             relationship: guardian.relationship,
-
             invited_by: tutorUid,
 
             status: "pending"
