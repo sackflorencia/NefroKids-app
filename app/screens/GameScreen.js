@@ -17,15 +17,20 @@ export default function GameScreen({ route }) {
   }, []);
 
   const sendStartLevel = () => {
-    const message = {
-      type: "START_LEVEL",
-      level: level,
-    };
+    if (!webviewRef.current) return;
 
-    webviewRef.current?.injectJavaScript(`
-      receiveFromReact(${JSON.stringify(message)});
+    setTimeout(() => {
+      const message = {
+        type: "START_LEVEL",
+        level: level.numero,
+      };
+      console.log(level.numero)
+
+      webviewRef.current.injectJavaScript(`
+      window.receiveFromReact(${JSON.stringify(JSON.stringify(message))});
       true;
     `);
+    }, 300);
   };
 
   const handleMessage = (event) => {
@@ -48,7 +53,9 @@ export default function GameScreen({ route }) {
       case "EXIT_GAME":
         console.log("Salir del juego");
         break;
-
+      case "DEBUG":
+        console.log("[UNITY]", data.message);
+        break;
       default:
         console.log("Mensaje recibido:", data);
     }
@@ -60,7 +67,11 @@ export default function GameScreen({ route }) {
       source={{
         uri: "https://nefrokids-web-1d52f.web.app/",
       }}
+      cacheEnabled={false}
+      cacheMode="LOAD_NO_CACHE"
+      incognito={true}
       style={{ flex: 1 }}
+      javaScriptEnabled={true}
       onMessage={handleMessage}
     />
   );
