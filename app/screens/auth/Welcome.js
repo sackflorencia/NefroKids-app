@@ -12,7 +12,7 @@ import globalStyle from "../../styles/globalStyles";
 import colors from "../../styles/colors";
 import typography from "../../styles/typography";
 import images from "../../../assets/images";
-import SpeechBubble from "../../components/home/SpeechBubble";
+import SpeechBubble from "../../components/speechBubble.js/SpeechBubble";
 import Logo from "../../components/logo/logo";
 
 export default function Welcome({ navigation }) {
@@ -40,7 +40,7 @@ export default function Welcome({ navigation }) {
 
         {/* Speech bubble */}
         <View style={styles.bubbleContainer}>
-          <SpeechBubble text="¡Hola, Explorador!" />
+          <SpeechBubble message="¡Hola, Explorador!" />
         </View>
 
         {/* Spacer para empujar el texto y los botones hacia abajo,

@@ -4,7 +4,7 @@ import { View, Image, StyleSheet} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import globalStyles from "../styles/globalStyles";
 import Button from "../components/Button";
-import SpeechBubble from "../components/home/SpeechBubble";
+import SpeechBubble from "../components/speechBubble.js/SpeechBubble";
 import colors from "../styles/colors";
 import Header from "../components/header/Header";
 
@@ -35,7 +35,7 @@ const Home = () => {
         </View>
 
         {/* Speech Bubble */}
-        <SpeechBubble text="¿Que quieres hacer hoy?" />
+        <SpeechBubble message="¿Que quieres hacer hoy?" direction="left" />
 
         {/* Buttons */}
         <View style={styles.buttons}>
