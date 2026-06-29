@@ -29,6 +29,7 @@ export default function GuardianRegistration({
             full_name: "",
             email: "",
             relationship: "",
+            phone: ""
         },
     ]);
     const [password, setPassword] = useState("");
@@ -60,6 +61,7 @@ export default function GuardianRegistration({
                 full_name: "",
                 email: "",
                 relationship: "",
+                phone: "",
             },
         ]);
     }
@@ -71,6 +73,7 @@ export default function GuardianRegistration({
             if (
                 !guardian.full_name.trim() ||
                 !guardian.email.trim() ||
+                !guardian.phone.trim() ||
                 !guardian.relationship.trim()
             ) {
 
@@ -92,57 +95,57 @@ export default function GuardianRegistration({
 
             return;
         }
-      if (!password.trim()) {
+        if (!password.trim()) {
 
-        Alert.alert(
-        "Contraseña",
-        "Ingresá una contraseña para el tutor principal."
-         );
+            Alert.alert(
+                "Contraseña",
+                "Ingresá una contraseña para el tutor principal."
+            );
 
-          return;
+            return;
         }
 
-    if (password !== confirmPassword) {
+        if (password !== confirmPassword) {
 
-    Alert.alert(
-        "Contraseña",
-        "Las contraseñas no coinciden."
-    );
+            Alert.alert(
+                "Contraseña",
+                "Las contraseñas no coinciden."
+            );
 
-    return;
-}
+            return;
+        }
 
         try {
-     console.log("1 - Empieza registro");
-    const authService =
-        new AuthService();
+            console.log("1 - Empieza registro");
+            const authService =
+                new AuthService();
 
-    const firebaseUser =
-        await authService.registerTutor(
+            const firebaseUser =
+                await authService.registerTutor(
 
-            guardians[0].email,
+                    guardians[0].email,
 
-            password
+                    password
 
-        );
-        console.log("2 - Usuario Firebase creado");
-        
-    const registrationService =
-        new RegistrationService(db);
-        console.log("3 - Antes de completeRegistration");
+                );
+            console.log("2 - Usuario Firebase creado");
 
-    await registrationService.completeRegistration(
+            const registrationService =
+                new RegistrationService(db);
+            console.log("3 - Antes de completeRegistration");
 
-        userData,
+            await registrationService.completeRegistration(
 
-        guardians,
+                userData,
 
-        firebaseUser.uid
+                guardians,
 
-    );
-    console.log("4 - Registro completo");
+                firebaseUser.uid
 
-        }catch (error) {
+            );
+            console.log("4 - Registro completo");
+
+        } catch (error) {
 
             console.error(error);
 
@@ -230,22 +233,34 @@ export default function GuardianRegistration({
                             keyboardType="email-address"
                             autoCapitalize="none"
                         />
+                        <InputField
+                            label="Teléfono"
+                            value={guardian.phone}
+                            onChangeText={(text) =>
+                                updateGuardian(
+                                    index,
+                                    "phone",
+                                    text
+                                )
+                            }
+                            keyboardType="phone-pad"
+                        />
                         {index === 0 && (
-                         <>
-                      <InputField
-                      label="Contraseña"
-                     value={password}
-                    onChangeText={setPassword}
-                      secureTextEntry
-                      />
+                            <>
+                                <InputField
+                                    label="Contraseña"
+                                    value={password}
+                                    onChangeText={setPassword}
+                                    secureTextEntry
+                                />
 
-                     <InputField
-                    label="Confirmar contraseña"
-                     value={confirmPassword}
-                    onChangeText={setConfirmPassword}
-                 secureTextEntry
-                />
-            </>
+                                <InputField
+                                    label="Confirmar contraseña"
+                                    value={confirmPassword}
+                                    onChangeText={setConfirmPassword}
+                                    secureTextEntry
+                                />
+                            </>
                         )}
 
                         <InputField

@@ -46,7 +46,7 @@ export default class RegistrationService {
 
                 relationship: guardian.relationship,
 
-                phone: guardian.phone ?? null,
+                phone: guardian.phone,
 
                 is_primary: i === 0 ? 1 : 0,
 
@@ -65,7 +65,7 @@ export default class RegistrationService {
 
                     relationship: guardian.relationship,
 
-                    phone: guardian.phone ?? null,
+                    phone: guardian.phone,
 
                     is_primary: 1
 
