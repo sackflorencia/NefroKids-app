@@ -36,21 +36,11 @@ export default class RegistrationService {
             const guardian =
                 guardiansData[i];
 
-            await this.tutorController.createTutor({
+            
+        const tutor =
+        await this.tutorController.createTutor({
 
-                child_id: child.id,
-
-                full_name: guardian.full_name,
-
-                email: guardian.email,
-
-                relationship: guardian.relationship,
-
-                phone: guardian.phone,
-
-                is_primary: i === 0 ? 1 : 0,
-
-            });
+        child_id: child.id,
 
             // Guardamos el primer tutor para subirlo a Firestore
             if (i === 0) {
