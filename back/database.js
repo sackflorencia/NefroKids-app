@@ -28,6 +28,17 @@ export default function InitDB({ children }) {
       await db.execAsync(`
         PRAGMA foreign_keys = ON;
       `);
+      /*await db.execAsync(`
+  DROP TABLE IF EXISTS alerts;
+  DROP TABLE IF EXISTS symptom_logs;
+  DROP TABLE IF EXISTS child_progress;
+  DROP TABLE IF EXISTS reportHistory;
+  DROP TABLE IF EXISTS appointmentWeekdays;
+  DROP TABLE IF EXISTS appointmentRules;
+  DROP TABLE IF EXISTS tutors;
+  DROP TABLE IF EXISTS users;
+`);
+OJO CON ESTO: SOLO CUANDO PROBAMOS, DESP HAY Q HACER UNA BUENA MIGRACION PARA QUE NO SE BORREN LOS DATOS*/
 
       console.log("PRAGMA OK");
 

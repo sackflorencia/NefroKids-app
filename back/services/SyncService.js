@@ -10,24 +10,57 @@ export default class SyncService {
     }
 
     async uploadRegistration(
+    child,
+
+    primaryTutor,
+
+    tutorUid,
+
+    guardians
+
+) {
+    console.log("UPLOAD REGISTRATION");
+    console.log(child);
+    console.log(primaryTutor);
+    console.log(tutorUid);
+
+    await this.firestoreService.createChild(
+
         child,
-        primaryTutor,
+
         tutorUid
-    ) {
 
-        await this.firestoreService
-            .createChild(
-                child,
-                tutorUid
-            );
+    );
 
-        await this.firestoreService
-            .createTutor(
-                primaryTutor,
-                tutorUid
-            );
+    await this.firestoreService.createTutor(
+
+        primaryTutor,
+
+        tutorUid
+
+    );
+
+    for (let i = 1; i < guardians.length; i++) {
+
+        const guardian = guardians[i];
+
+        await this.firestoreService.createInvitation({
+
+            child_id: child.id,
+
+            email: guardian.email,
+
+            relationship: guardian.relationship,
+
+            invited_by: tutorUid,
+
+            status: "pending"
+
+        });
 
     }
+
+}
 
     async uploadSymptomLog(log) {
 
@@ -64,6 +97,7 @@ export default class SyncService {
             .createReport(report);
 
     }
+
 
     async uploadAppointmentRule(rule) {
 
