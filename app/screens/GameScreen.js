@@ -26,7 +26,9 @@ export default function GameScreen({ route }) {
       };
       console.log(level.numero)
 
+      console.log("Enviando", message);
       webviewRef.current.injectJavaScript(`
+      console.log("Entró al JS");
       window.receiveFromReact(${JSON.stringify(JSON.stringify(message))});
       true;
     `);
