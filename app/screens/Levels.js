@@ -8,10 +8,11 @@ import LevelPreview from "../components/level/LevelPreview";
 
 import { useSQLiteContext } from "expo-sqlite";
 import GameController from "../../back/controllers/gameController";
+import { useNavigation } from "@react-navigation/native";
 
 
 export default function Levels() {
-
+  const navigation = useNavigation();
   const db = useSQLiteContext();
   const [levels, setLevels] = useState([]);
   const [selectedLevel, setSelectedLevel] = useState(null);
@@ -75,32 +76,26 @@ export default function Levels() {
 
         ))}
         {selectedLevel && (
-
           <TouchableWithoutFeedback
             onPress={() => setSelectedLevel(null)}
           >
-
             <View style={styles.previewOverlay}>
-
               <TouchableWithoutFeedback>
-
                 <View>
-
                   <LevelPreview
                     level={selectedLevel}
                     onStart={() => {
-                      console.log("START LEVEL");
+                      setSelectedLevel(null);
+
+                      navigation.navigate("Game", {
+                        level: selectedLevel,
+                      });
                     }}
                   />
-
                 </View>
-
               </TouchableWithoutFeedback>
-
             </View>
-
           </TouchableWithoutFeedback>
-
         )}
 
       </View>
