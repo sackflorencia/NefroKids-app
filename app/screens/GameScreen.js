@@ -1,10 +1,12 @@
 import React, { useEffect, useRef } from "react";
 import { WebView } from "react-native-webview";
 import * as ScreenOrientation from "expo-screen-orientation";
+import { useNavigation } from "@react-navigation/native";
 
 export default function GameScreen({ route }) {
   const { level } = route.params;
   const webviewRef = useRef(null);
+  const navigation = useNavigation();
 
   useEffect(() => {
     ScreenOrientation.lockAsync(
@@ -50,6 +52,7 @@ export default function GameScreen({ route }) {
         // TODO:
         // Guardar progreso en SQLite
         // Navegar a pantalla de resultados
+        navigation.navigate("Levels")
         break;
 
       case "EXIT_GAME":
