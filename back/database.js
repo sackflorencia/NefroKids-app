@@ -3,10 +3,10 @@ import { SQLiteProvider } from "expo-sqlite";
 import { usersTable } from "./schemas/userSchema";
 import { alertsTable } from "./schemas/alertsSchema";
 import { symptomLogsTable } from "./schemas/symptomsSchema";
-import { gameTable } from "./schemas/gameSchema";
+import { levelTable } from "./schemas/levelSchema";
 import { progressTable } from "./schemas/progressSchema";
 import { rankDefinitionsTable } from "./schemas/rankDefinitionsSchema";
-import { reviewTable } from "./schemas/reviewschema";
+import { questionTable } from "./schemas/questionSchema";
 import { avatarsTable } from "./schemas/avatarsSchema";
 import { reportHistoryTable } from "./schemas/reportHistorySchema";
 import { appointmentRulesTable } from "./schemas/appointmentRulesSchema";
@@ -45,8 +45,8 @@ OJO CON ESTO: SOLO CUANDO PROBAMOS, DESP HAY Q HACER UNA BUENA MIGRACION PARA QU
       await db.execAsync(usersTable);
       console.log("usersTable OK");
 
-      await db.execAsync(gameTable);
-      console.log("gameTable OK");
+      await db.execAsync(levelTable);
+      console.log("levelTable OK");
 
       await db.execAsync(rankDefinitionsTable);
       console.log("rankDefinitionsTable OK");
@@ -60,8 +60,8 @@ OJO CON ESTO: SOLO CUANDO PROBAMOS, DESP HAY Q HACER UNA BUENA MIGRACION PARA QU
       await db.execAsync(progressTable);
       console.log("progressTable OK");
 
-      await db.execAsync(reviewTable);
-      console.log("reviewTable OK");
+      await db.execAsync(questionTable);
+      console.log("questionTable OK");
 
       await db.execAsync(avatarsTable);
       console.log("avatarsTable OK");

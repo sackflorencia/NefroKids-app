@@ -1,5 +1,5 @@
-export const gameTable = `
-CREATE TABLE IF NOT EXISTS game (
+export const levelTable = `
+CREATE TABLE IF NOT EXISTS level (
 
   numero INTEGER NOT NULL,
   id TEXT PRIMARY KEY,
