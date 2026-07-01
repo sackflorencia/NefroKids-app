@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS question (
   incorrect_feedback2 TEXT,
   incorrect_feedback3 TEXT,
 
-  explanation
+  explanation TEXT NOT NULL,
+  difficulty INTEGER NOT NULL
 );
 `;
