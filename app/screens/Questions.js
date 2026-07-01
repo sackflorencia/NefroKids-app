@@ -1,7 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
+import { useSQLiteContext } from "expo-sqlite";
+import { useRoute } from "@react-navigation/native";
 
-const Questions = ({ level, questionController }) => {
+import QuestionController from "../../back/controllers/QuestionController";
+
+export default function Questions() {
+
+  const db = useSQLiteContext();
+  const route = useRoute();
+
+  const { level } = route.params;
 
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -10,34 +19,44 @@ const Questions = ({ level, questionController }) => {
   const [selected, setSelected] = useState(null);
 
   useEffect(() => {
-    const loadQuestions = async () => {
-      try {
-        setLoading(true);
 
-        const data = await questionController.getLevelQuestions(
-          level.id,
-          3
-        );
+    async function loadQuestions() {
+
+      try {
+
+        const controller = new QuestionController(db);
+
+        const data = await controller.getLevelQuestions(level.id, 3);
+
+        console.log("QUESTIONS:");
+        console.log(data);
 
         setQuestions(data);
-      } catch (err) {
-        console.log("error loading questions", err);
+
+      } catch (error) {
+
+        console.error(error);
+
       } finally {
+
         setLoading(false);
+
       }
-    };
+
+    }
 
     loadQuestions();
-  }, [level]);
+
+  }, []);
 
   if (loading) {
     return <ActivityIndicator />;
   }
 
-  if (!questions.length) {
+  if (questions.length === 0) {
     return (
       <View>
-        <Text>No hay preguntas disponibles</Text>
+        <Text>No hay preguntas disponibles.</Text>
       </View>
     );
   }
@@ -47,75 +66,89 @@ const Questions = ({ level, questionController }) => {
   const answers = [
     {
       text: current.correct_answer,
-      isCorrect: true,
-      feedback: current.correct_feedback
+      correct: true,
+      feedback: current.correct_feedback,
     },
     {
       text: current.incorrect_answer1,
-      isCorrect: false,
-      feedback: current.incorrect_feedback1
+      correct: false,
+      feedback: current.incorrect_feedback1,
     },
     current.incorrect_answer2 && {
       text: current.incorrect_answer2,
-      isCorrect: false,
-      feedback: current.incorrect_feedback2
+      correct: false,
+      feedback: current.incorrect_feedback2,
     },
     current.incorrect_answer3 && {
       text: current.incorrect_answer3,
-      isCorrect: false,
-      feedback: current.incorrect_feedback3
-    }
+      correct: false,
+      feedback: current.incorrect_feedback3,
+    },
   ].filter(Boolean);
 
-  const handleAnswer = (answer) => {
+  function handleAnswer(answer) {
 
     setSelected(answer);
 
-    if (answer.isCorrect) {
-      setScore(prev => prev + 1);
+    if (answer.correct) {
+      setScore(score + 1);
     }
-  };
 
-  const nextQuestion = () => {
+  }
+
+  function nextQuestion() {
+
     setSelected(null);
-    setIndex(prev => prev + 1);
-  };
+    setIndex(index + 1);
 
-  const finish = index >= questions.length;
+  }
 
-  if (finish) {
+  if (index >= questions.length) {
+
     return (
       <View>
-        <Text>Score final: {score} / {questions.length}</Text>
+        <Text>
+          Puntaje: {score}/{questions.length}
+        </Text>
       </View>
     );
+
   }
 
   return (
     <View>
+
       <Text>{current.question}</Text>
 
-      {answers.map((a, i) => (
+      {answers.map((answer, i) => (
+
         <TouchableOpacity
           key={i}
-          onPress={() => handleAnswer(a)}
+          onPress={() => handleAnswer(answer)}
           disabled={selected !== null}
         >
-          <Text>{a.text}</Text>
+
+          <Text>{answer.text}</Text>
+
         </TouchableOpacity>
+
       ))}
 
       {selected && (
         <View>
+
           <Text>{selected.feedback}</Text>
+
+          <Text>{current.explanation}</Text>
 
           <TouchableOpacity onPress={nextQuestion}>
             <Text>Siguiente</Text>
           </TouchableOpacity>
+
         </View>
       )}
+
     </View>
   );
-};
 
-export default Questions;
+}
