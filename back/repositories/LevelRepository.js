@@ -4,12 +4,12 @@ export default class LevelRepository {
     this.db = db;
   }
 
-  async insert(game) {
+  async insert(level) {
 
     const query = `
-      INSERT INTO game (
+      INSERT INTO level (
         id,
-        Numero,
+        numero,
         nombre,
         descripcion,
         xp_reward
@@ -17,24 +17,21 @@ export default class LevelRepository {
       VALUES (?, ?, ?, ?, ?);
     `;
 
-    await this.db.runAsync(
-      query,
-      [
-        game.id,
-        game.numero,
-        game.nombre,
-        game.descripcion,
-        game.xp_reward
-      ]
-    );
+    await this.db.runAsync(query, [
+      level.id,
+      level.numero,
+      level.nombre,
+      level.descripcion,
+      level.xp_reward
+    ]);
   }
 
   async getAll() {
 
     const query = `
       SELECT *
-      FROM game
-      ORDER BY Numero ASC;
+      FROM level
+      ORDER BY numero ASC;
     `;
 
     return await this.db.getAllAsync(query);
@@ -44,46 +41,52 @@ export default class LevelRepository {
 
     const query = `
       SELECT *
-      FROM game
+      FROM level
       WHERE id = ?;
     `;
 
     return await this.db.getFirstAsync(query, [id]);
   }
 
-  async update(game) {
+  async getByNumber(numero) {
 
     const query = `
-      UPDATE game
+      SELECT *
+      FROM level
+      WHERE numero = ?;
+    `;
+
+    return await this.db.getFirstAsync(query, [numero]);
+  }
+
+  async update(level) {
+
+    const query = `
+      UPDATE level
       SET
-        Numero = ?,
+        numero = ?,
         nombre = ?,
         descripcion = ?,
         xp_reward = ?
       WHERE id = ?;
     `;
 
-    await this.db.runAsync(
-      query,
-      [
-        game.numero,
-        game.nombre,
-        game.descripcion,
-        game.xp_reward,
-        game.id
-      ]
-    );
+    await this.db.runAsync(query, [
+      level.numero,
+      level.nombre,
+      level.descripcion,
+      level.xp_reward,
+      level.id
+    ]);
   }
 
   async delete(id) {
 
     const query = `
-      DELETE FROM game
+      DELETE FROM level
       WHERE id = ?;
     `;
 
     await this.db.runAsync(query, [id]);
-    
   }
-
 }
