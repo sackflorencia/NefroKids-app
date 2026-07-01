@@ -1,7 +1,7 @@
 
-import GameRepository from "../repositories/GameRepository";
+import LevelRepository from "../repositories/LevelRepository";
 
-export default class GameController {
+export default class LevelController {
 
   constructor(db) {
     this.repository = new GameRepository(db);

@@ -1,194 +1,181 @@
-// seeds/reviewSeed.js
+// seeds/questionSeedLevel1.js
 
-import ReviewRepository from "../repositories/ReviewRepository";
+import QuestionRepository from "../repositories/QuestionRepository";
 
-const reviews = [
-
-  // NIVEL 1 - RIÑONES
+const questions = [
 
   {
-    id: "1",
-    question: "¿Para qué sirven los riñones?",
-    correct_answer: "Para limpiar la sangre",
-    incorrect_answer1: "Para respirar",
-    incorrect_answer2: "Para mover los brazos",
-    incorrect_answer3: null
+    id: "q1",
+    game_id: "level1",
+    question: "¿Qué es lo primero que hay que hacer antes de lavarse las manos?",
+    correct_answer: "Retirar anillos, pulseras y reloj",
+    incorrect_answer1: "Mojarse las manos directamente",
+    incorrect_answer2: "Ponerse jabón",
+    incorrect_answer3: null,
+    correct_feedback: "Correcto, los accesorios pueden acumular microorganismos.",
+    incorrect_feedback1: "No es el primer paso del procedimiento.",
+    incorrect_feedback2: "No corresponde antes del lavado.",
+    incorrect_feedback3: null,
+    explanation: "Los accesorios pueden impedir una correcta higiene de todas las superficies de la mano.",
+    difficulty: 2
   },
 
   {
-    id: "2",
-    question: "¿Por qué son importantes los riñones?",
-    correct_answer: "Porque ayudan al cuerpo a funcionar bien",
-    incorrect_answer1: "Porque cambian el color del pelo",
+    id: "q2",
+    game_id: "level1",
+    question: "¿Por qué es importante lavarse las manos antes del tratamiento?",
+    correct_answer: "Para evitar transmitir microorganismos",
+    incorrect_answer1: "Para que se vean limpias",
     incorrect_answer2: null,
-    incorrect_answer3: null
-  },
-
-  // NIVEL 2 - QUÉ ME ESTÁ PASANDO
-
-  {
-    id: "3",
-    question: "¿Qué pasa cuando los riñones dejan de funcionar?",
-    correct_answer: "El cuerpo necesita ayuda para limpiarse",
-    incorrect_answer1: "Los ojos dejan de ver",
-    incorrect_answer2: "Las manos desaparecen",
-    incorrect_answer3: null
+    incorrect_answer3: null,
+    correct_feedback: "Correcto, reduce el riesgo de infecciones.",
+    incorrect_feedback1: "La higiene no depende de lo visual.",
+    incorrect_feedback2: null,
+    incorrect_feedback3: null,
+    explanation: "El lavado de manos es una de las principales barreras de prevención de infecciones.",
+    difficulty: 1
   },
 
   {
-    id: "4",
-    question: "¿Qué es la diálisis peritoneal?",
-    correct_answer: "Un tratamiento que ayuda a limpiar el cuerpo",
-    incorrect_answer1: "Un videojuego",
-    incorrect_answer2: "Una comida especial",
-    incorrect_answer3: null
-  },
-
-  // LAVADO DE MANOS
-
-  {
-    id: "5",
-    question: "¿Qué es lo primero antes del tratamiento?",
-    correct_answer: "Lavarse bien las manos",
-    incorrect_answer1: "Jugar",
-    incorrect_answer2: "Salir corriendo",
-    incorrect_answer3: null
+    id: "q3",
+    game_id: "level1",
+    question: "¿Qué se hace primero al comenzar el lavado de manos?",
+    correct_answer: "Mojar las manos con agua",
+    incorrect_answer1: "Secarlas",
+    incorrect_answer2: "Aplicar jabón sin agua",
+    incorrect_answer3: null,
+    correct_feedback: "Correcto, el agua prepara la superficie.",
+    incorrect_feedback1: "No corresponde en el inicio.",
+    incorrect_feedback2: "El jabón se usa con agua.",
+    incorrect_feedback3: null,
+    explanation: "El agua permite distribuir mejor el jabón y eliminar suciedad inicial.",
+    difficulty: 1
   },
 
   {
-    id: "6",
-    question: "¿Qué hay que ponerse en las manos para limpiarlas?",
-    correct_answer: "Jabón",
-    incorrect_answer1: "Tierra",
-    incorrect_answer2: "Pintura",
-    incorrect_answer3: null
+    id: "q4",
+    game_id: "level1",
+    question: "¿Cuánto tiempo debe durar un lavado de manos completo?",
+    correct_answer: "Aproximadamente 1 minuto",
+    incorrect_answer1: "5 segundos",
+    incorrect_answer2: "10 minutos",
+    incorrect_answer3: null,
+    correct_feedback: "Correcto, el tiempo asegura una limpieza efectiva.",
+    incorrect_feedback1: "Es insuficiente.",
+    incorrect_feedback2: "Es excesivo para el procedimiento.",
+    incorrect_feedback3: null,
+    explanation: "El tiempo permite cubrir todas las zonas de la mano correctamente.",
+    difficulty: 2
   },
 
   {
-    id: "7",
-    question: "¿Qué accesorio hay que sacarse antes del tratamiento?",
-    correct_answer: "Anillos y pulseras",
-    incorrect_answer1: "Las zapatillas",
-    incorrect_answer2: null,
-    incorrect_answer3: null
+    id: "q5",
+    game_id: "level1",
+    question: "¿Qué hay que hacer con la canilla mientras se enjabonan las manos?",
+    correct_answer: "Cerrar la canilla",
+    incorrect_answer1: "Dejarla abierta",
+    incorrect_answer2: "Aumentar el flujo de agua",
+    incorrect_answer3: null,
+    correct_feedback: "Correcto, ayuda a ahorrar agua y evitar contaminación.",
+    incorrect_feedback1: "No es necesario mantenerla abierta.",
+    incorrect_feedback2: "No mejora la higiene.",
+    incorrect_feedback3: null,
+    explanation: "Cerrar la canilla reduce desperdicio y mantiene el control del proceso.",
+    difficulty: 2
   },
 
   {
-    id: "8",
-    question: "¿Qué elemento ayuda a mantener la higiene?",
-    correct_answer: "Barbijo",
-    incorrect_answer1: "Pelota",
-    incorrect_answer2: "Auriculares",
-    incorrect_answer3: null
-  },
-
-  // MATERIALES
-
-  {
-    id: "9",
-    question: "¿Por qué hay que preparar bien los materiales?",
-    correct_answer: "Para hacer el tratamiento de forma segura",
-    incorrect_answer1: "Para decorar la habitación",
-    incorrect_answer2: null,
-    incorrect_answer3: null
-  },
-
-  // BOLSAS
-
-  {
-    id: "10",
-    question: "¿Qué bolsa debemos usar?",
-    correct_answer: "La que está limpia y no rota",
-    incorrect_answer1: "La que está pinchada",
-    incorrect_answer2: "La más sucia",
-    incorrect_answer3: null
+    id: "q6",
+    game_id: "level1",
+    question: "¿Por qué hay que secarse bien las manos?",
+    correct_answer: "Porque la humedad favorece bacterias",
+    incorrect_answer1: "Porque es más cómodo",
+    incorrect_answer2: "Para enfriarlas",
+    incorrect_answer3: null,
+    correct_feedback: "Correcto, la humedad favorece microorganismos.",
+    incorrect_feedback1: "No es el objetivo.",
+    incorrect_feedback2: "No tiene relación con la higiene.",
+    incorrect_feedback3: null,
+    explanation: "Las manos húmedas pueden facilitar la proliferación de bacterias.",
+    difficulty: 2
   },
 
   {
-    id: "11",
-    question: "¿Qué debemos revisar en la bolsa?",
-    correct_answer: "La claridad y el volumen",
-    incorrect_answer1: "El color favorito",
-    incorrect_answer2: "El dibujo de la bolsa",
-    incorrect_answer3: null
-  },
-
-  // SEGUNDA HIGIENE
-
-  {
-    id: "12",
-    question: "¿Qué se usa para volver a higienizarse?",
-    correct_answer: "Alcohol",
-    incorrect_answer1: "Jugo",
-    incorrect_answer2: "Chocolate",
-    incorrect_answer3: null
-  },
-
-  // DISCO
-
-  {
-    id: "13",
-    question: "¿Qué hay que aprender a usar correctamente?",
-    correct_answer: "El disco",
-    incorrect_answer1: "El televisor",
-    incorrect_answer2: null,
-    incorrect_answer3: null
-  },
-
-  // DESCONEXIÓN
-
-  {
-    id: "14",
-    question: "¿Qué hacemos al finalizar el tratamiento?",
-    correct_answer: "Cerrar el disco con la tapa protectora",
-    incorrect_answer1: "Dejar todo abierto",
-    incorrect_answer2: "Tirar los materiales al piso",
-    incorrect_answer3: null
-  },
-
-  // EMERGENCIAS
-
-  {
-    id: "15",
-    question: "¿Qué hay que hacer si una bolsa se rompe?",
-    correct_answer: "Avisar a un adulto o médico",
-    incorrect_answer1: "Usarla igual",
-    incorrect_answer2: "Esconderla",
-    incorrect_answer3: null
+    id: "q7",
+    game_id: "level1",
+    question: "¿Cuál es el orden correcto del inicio del procedimiento?",
+    correct_answer: "Retirar accesorios → mojar manos → usar jabón",
+    incorrect_answer1: "Jabón → accesorios → agua",
+    incorrect_answer2: "Secar → mojar → jabón",
+    incorrect_answer3: null,
+    correct_feedback: "Correcto, es el orden seguro del proceso.",
+    incorrect_feedback1: "El orden no es adecuado.",
+    incorrect_feedback2: "El secado no va al inicio.",
+    incorrect_feedback3: null,
+    explanation: "El orden correcto garantiza una higiene efectiva y completa.",
+    difficulty: 3
   },
 
   {
-    id: "16",
-    question: "¿Qué hacemos si sentimos dolor durante el tratamiento?",
-    correct_answer: "Avisar inmediatamente",
-    incorrect_answer1: "No decir nada",
-    incorrect_answer2: "Seguir jugando",
-    incorrect_answer3: null
+    id: "q8",
+    game_id: "level1",
+    question: "¿Qué puede pasar si no nos lavamos bien las manos?",
+    correct_answer: "Aumenta el riesgo de infecciones",
+    incorrect_answer1: "Nada importante",
+    incorrect_answer2: "Mejora la salud",
+    incorrect_answer3: null,
+    correct_feedback: "Correcto, se facilita la transmisión de microorganismos.",
+    incorrect_feedback1: "Sí tiene consecuencias.",
+    incorrect_feedback2: "Es incorrecto.",
+    incorrect_feedback3: null,
+    explanation: "La falta de higiene es una de las principales causas de infecciones evitables.",
+    difficulty: 2
   },
 
   {
-    id: "17",
-    question: "¿Qué significa un cambio en el color del líquido?",
-    correct_answer: "Que hay que avisar y revisarlo",
-    incorrect_answer1: "Que todo está perfecto",
-    incorrect_answer2: null,
-    incorrect_answer3: null
+    id: "q9",
+    game_id: "level1",
+    question: "¿Qué enseña la frase de Riku: 'Primero lo más importante, la limpieza'?",
+    correct_answer: "La higiene es la base del procedimiento",
+    incorrect_answer1: "Que lo importante es terminar rápido",
+    incorrect_answer2: "Que el agua no es necesaria",
+    incorrect_answer3: null,
+    correct_feedback: "Correcto, la higiene es fundamental.",
+    incorrect_feedback1: "No es el mensaje.",
+    incorrect_feedback2: "El agua sí es necesaria.",
+    incorrect_feedback3: null,
+    explanation: "El personaje refuerza la importancia de la bioseguridad antes de cualquier acción.",
+    difficulty: 3
+  },
+
+  {
+    id: "q10",
+    game_id: "level1",
+    question: "¿Qué se debe hacer al finalizar el lavado de manos?",
+    correct_answer: "Secarse completamente las manos",
+    incorrect_answer1: "Volver a usar accesorios",
+    incorrect_answer2: "Dejar las manos húmedas",
+    incorrect_answer3: null,
+    correct_feedback: "Correcto, el secado completa el proceso.",
+    incorrect_feedback1: "No es seguro.",
+    incorrect_feedback2: "La humedad no es adecuada.",
+    incorrect_feedback3: null,
+    explanation: "El secado es la última etapa del lavado de manos seguro.",
+    difficulty: 1
   }
 
 ];
 
-export async function seedReviews(db) {
+export async function seedQuestions(db) {
+  const repository = new QuestionRepository(db);
 
-  const repository = new ReviewRepository(db);
-
-  for (const review of reviews) {
-
-    const existing = await repository.getById(review.id);
+  for (const q of questions) {
+    const existing = await repository.getById(q.id);
 
     if (!existing) {
-      await repository.insert(review);
+      await repository.insert(q);
     }
   }
 
-  console.log("REVIEWS SEEDED");
+  console.log("LEVEL 1 QUESTIONS SEEDED");
 }

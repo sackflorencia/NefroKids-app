@@ -1,4 +1,4 @@
-export default class GameRepository {
+export default class LevelRepository {
 
   constructor(db) {
     this.db = db;

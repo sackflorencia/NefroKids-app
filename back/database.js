@@ -13,7 +13,7 @@ import { appointmentRulesTable } from "./schemas/appointmentRulesSchema";
 import { appointmentWeekdaysTable } from "./schemas/appointmentWeekdaysSchema";
 import { tutorsTable } from "./schemas/tutorsSchema";
 
-import { seedGames } from "./seeds/gameSeed";
+import { seedGames } from "./seeds/levelSeed";
 import { seedReviews } from "./seeds/reviewSeed";
 import { seedUsers } from "./seeds/userSeed";
 

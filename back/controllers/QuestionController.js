@@ -1,9 +1,9 @@
-import ReviewRepository from "../repositories/ReviewRepository";
+import QuestionRepository from "../repositories/QuestionRepository";
 
 export default class ReviewController {
 
   constructor(db) {
-    this.repository = new ReviewRepository(db);
+    this.repository = new QuestionRepository(db);
   }
 
   async getAllReviews() {
@@ -25,5 +25,8 @@ export default class ReviewController {
   async deleteReview(id) {
     return await this.repository.delete(id);
   }
-
+  async getLevelQuestions(levelId, amount = 3) {
+    const questions = await this.repository.getRandomByLevel(levelId, amount);
+    return questions;
+  }
 }

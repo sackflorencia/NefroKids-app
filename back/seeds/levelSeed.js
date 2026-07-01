@@ -1,9 +1,9 @@
-import GameRepository from "../repositories/GameRepository";
-import Game from "../models/gameModel";
+import LevelRepository from "../repositories/LevelRepository";
+import Level from "../models/levelModel";
 
 export async function seedGames(db) {
 
-  const repository = new GameRepository(db);
+  const repository = new LevelRepository(db);
 
   const games = await repository.getAll();
 
@@ -13,15 +13,15 @@ export async function seedGames(db) {
 
   const initialGames = [
 
-    new Game(
-      "conexion_sistema_lvl1",
+    new Level(
+      "level1",
       1,
       "Conexión del Sistema",
       "Lavarse las manos y prepararse correctamente.",
       50
     ),
-    new Game(
-      "Preparación_materiales_lvl2",
+    new Level(
+      "level2",
       2,
       "Preparación de materiales",
       "Lavarse las manos y prepararse correctamente.",

@@ -1,4 +1,4 @@
-export default class Game {
+export default class Level {
 
   constructor(
     id,
