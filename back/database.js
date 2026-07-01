@@ -14,7 +14,7 @@ import { appointmentWeekdaysTable } from "./schemas/appointmentWeekdaysSchema";
 import { tutorsTable } from "./schemas/tutorsSchema";
 
 import { seedGames } from "./seeds/levelSeed";
-import { seedReviews } from "./seeds/reviewSeed";
+import { seedQuestions } from "./seeds/questionSeed";
 import { seedUsers } from "./seeds/userSeed";
 
 export default function InitDB({ children }) {
@@ -60,6 +60,9 @@ OJO CON ESTO: SOLO CUANDO PROBAMOS, DESP HAY Q HACER UNA BUENA MIGRACION PARA QU
       await db.execAsync(progressTable);
       console.log("progressTable OK");
 
+      // await db.execAsync(`
+      //   DROP TABLE IF EXISTS question;
+      // `);
       await db.execAsync(questionTable);
       console.log("questionTable OK");
 
@@ -79,7 +82,7 @@ OJO CON ESTO: SOLO CUANDO PROBAMOS, DESP HAY Q HACER UNA BUENA MIGRACION PARA QU
       console.log("tutorsTable OK");
 
       await seedGames(db);
-      await seedReviews(db);
+      await seedQuestions(db);
       await seedUsers(db);
 
       console.log("DATABASE READY");

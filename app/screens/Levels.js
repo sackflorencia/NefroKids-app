@@ -7,7 +7,7 @@ import SectionHeader from "../components/level/SectionHeader";
 import LevelPreview from "../components/level/LevelPreview";
 
 import { useSQLiteContext } from "expo-sqlite";
-import GameController from "../../back/controllers/gameController";
+import LevelController from "../../back/controllers/levelController";
 import { useNavigation } from "@react-navigation/native";
 
 
@@ -23,7 +23,7 @@ export default function Levels() {
 
       try {
 
-        const controller = new GameController(db);
+        const controller = new LevelController(db);
 
         const data = await controller.getLevels();
 

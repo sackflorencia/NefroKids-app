@@ -1,7 +1,7 @@
 export const questionTable = `
 CREATE TABLE IF NOT EXISTS question (
   id TEXT PRIMARY KEY,
-  game_id TEXT,
+  level_id TEXT,
   question TEXT NOT NULL,
   correct_answer TEXT NOT NULL,
   incorrect_answer1 TEXT NOT NULL,
