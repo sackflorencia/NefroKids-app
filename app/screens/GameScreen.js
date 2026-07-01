@@ -52,7 +52,9 @@ export default function GameScreen({ route }) {
         // TODO:
         // Guardar progreso en SQLite
         // Navegar a pantalla de resultados
-        navigation.navigate("Levels")
+        navigation.navigate("Questions", {
+                        level: level,
+                      })
         break;
 
       case "EXIT_GAME":
