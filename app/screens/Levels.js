@@ -7,7 +7,7 @@ import SectionHeader from "../components/level/SectionHeader";
 import LevelPreview from "../components/level/LevelPreview";
 
 import { useSQLiteContext } from "expo-sqlite";
-import LevelController from "../../back/controllers/levelController";
+import ProgressController from "../../back/controllers/ProgressController";
 import { useNavigation } from "@react-navigation/native";
 
 
@@ -23,9 +23,9 @@ export default function Levels() {
 
       try {
 
-        const controller = new LevelController(db);
+        const controller = new ProgressController(db);
 
-        const data = await controller.getLevels();
+        const data = await controller.getLevelsForChild(childId); //no tenemos child id aca
 
         console.log("LEVELS:");
         console.log(data);
