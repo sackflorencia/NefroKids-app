@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
+
 import { useSQLiteContext } from "expo-sqlite";
 import { useRoute } from "@react-navigation/native";
 
@@ -14,9 +20,12 @@ export default function Questions() {
 
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
+
   const [index, setIndex] = useState(0);
   const [score, setScore] = useState(0);
+
   const [selected, setSelected] = useState(null);
+  const [answers, setAnswers] = useState([]);
 
   useEffect(() => {
 
@@ -49,6 +58,59 @@ export default function Questions() {
 
   }, []);
 
+  useEffect(() => {
+
+    if (questions.length === 0) return;
+    if (index >= questions.length) return;
+
+    const current = questions[index];
+
+    const shuffledAnswers = [
+      {
+        text: current.correct_answer,
+        correct: true,
+        feedback: current.correct_feedback,
+      },
+      {
+        text: current.incorrect_answer1,
+        correct: false,
+        feedback: current.incorrect_feedback1,
+      },
+      current.incorrect_answer2 && {
+        text: current.incorrect_answer2,
+        correct: false,
+        feedback: current.incorrect_feedback2,
+      },
+      current.incorrect_answer3 && {
+        text: current.incorrect_answer3,
+        correct: false,
+        feedback: current.incorrect_feedback3,
+      },
+    ]
+      .filter(Boolean)
+      .sort(() => Math.random() - 0.5);
+
+    setAnswers(shuffledAnswers);
+    setSelected(null);
+
+  }, [index, questions]);
+
+  function handleAnswer(answer) {
+
+    setSelected(answer);
+
+    if (answer.correct) {
+      setScore((prev) => prev + 1);
+    }
+
+  }
+
+  function nextQuestion() {
+
+    setIndex((prev) => prev + 1);
+
+  }
+
   if (loading) {
     return <ActivityIndicator />;
   }
@@ -61,62 +123,24 @@ export default function Questions() {
     );
   }
 
-  const current = questions[index];
-
-  const answers = [
-    {
-      text: current.correct_answer,
-      correct: true,
-      feedback: current.correct_feedback,
-    },
-    {
-      text: current.incorrect_answer1,
-      correct: false,
-      feedback: current.incorrect_feedback1,
-    },
-    current.incorrect_answer2 && {
-      text: current.incorrect_answer2,
-      correct: false,
-      feedback: current.incorrect_feedback2,
-    },
-    current.incorrect_answer3 && {
-      text: current.incorrect_answer3,
-      correct: false,
-      feedback: current.incorrect_feedback3,
-    },
-  ].filter(Boolean);
-
-  function handleAnswer(answer) {
-
-    setSelected(answer);
-
-    if (answer.correct) {
-      setScore(score + 1);
-    }
-
-  }
-
-  function nextQuestion() {
-
-    setSelected(null);
-    setIndex(index + 1);
-
-  }
-
   if (index >= questions.length) {
-
     return (
       <View>
         <Text>
-          Puntaje: {score}/{questions.length}
+          Puntaje: {score} / {questions.length}
         </Text>
       </View>
     );
-
   }
+
+  const current = questions[index];
 
   return (
     <View>
+
+      <Text>
+        Pregunta {index + 1} de {questions.length}
+      </Text>
 
       <Text>{current.question}</Text>
 
@@ -135,6 +159,7 @@ export default function Questions() {
       ))}
 
       {selected && (
+
         <View>
 
           <Text>{selected.feedback}</Text>
@@ -142,10 +167,15 @@ export default function Questions() {
           <Text>{current.explanation}</Text>
 
           <TouchableOpacity onPress={nextQuestion}>
-            <Text>Siguiente</Text>
+
+            <Text>
+              {index === questions.length - 1 ? "Finalizar" : "Siguiente"}
+            </Text>
+
           </TouchableOpacity>
 
         </View>
+
       )}
 
     </View>

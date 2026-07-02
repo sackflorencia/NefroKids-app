@@ -11,17 +11,25 @@ CREATE TABLE IF NOT EXISTS child_progress (
     CHECK(status IN (
       'bloqueado',
       'disponible',
+      'en_progreso',
       'completado'
     )),
 
-  time_record INTEGER NOT NULL
-    DEFAULT 0
-    CHECK(time_record >= 0),
+  section1_completed INTEGER NOT NULL DEFAULT 0
+    CHECK(section1_completed IN (0,1)),
 
-  stars INTEGER NOT NULL,
+  section2_completed INTEGER NOT NULL DEFAULT 0
+    CHECK(section2_completed IN (0,1)),
 
-  xp_gained INTEGER NOT NULL
-    DEFAULT 0
+  quiz_score INTEGER NOT NULL DEFAULT 0
+    CHECK(quiz_score >= 0),
+
+  quiz_total INTEGER NOT NULL DEFAULT 0
+    CHECK(quiz_total >= 0),
+
+  stars INTEGER NOT NULL DEFAULT 0,
+
+  xp_gained INTEGER NOT NULL DEFAULT 0
     CHECK(xp_gained >= 0),
 
   started_at TEXT,
@@ -33,7 +41,7 @@ CREATE TABLE IF NOT EXISTS child_progress (
     ON DELETE CASCADE,
 
   FOREIGN KEY (level_id)
-    REFERENCES game(id)
+    REFERENCES level(id)
     ON DELETE CASCADE
 );
 `;
