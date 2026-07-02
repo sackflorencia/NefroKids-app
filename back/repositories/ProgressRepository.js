@@ -38,45 +38,49 @@ export default class ProgressRepository {
       progress.started_at,
       progress.completed_at,
     ]);
+
   }
 
   async getAll() {
 
-    const query = `
+    return await this.db.getAllAsync(`
       SELECT *
       FROM child_progress
       ORDER BY level_id ASC;
-    `;
-
-    return await this.db.getAllAsync(query);
+    `);
 
   }
 
   async getById(id) {
 
-    const query = `
+    return await this.db.getFirstAsync(`
       SELECT *
       FROM child_progress
       WHERE id = ?;
+    `, [id]);
+
+  }
+  async getByChild(childId) {
+
+    const query = `
+        SELECT *
+        FROM child_progress
+        WHERE child_id = ?
+        ORDER BY level_id;
     `;
 
-    return await this.db.getFirstAsync(query, [id]);
+    return await this.db.getAllAsync(query, [childId]);
 
   }
 
   async getByChildAndLevel(childId, levelId) {
 
-    const query = `
+    return await this.db.getFirstAsync(`
       SELECT *
       FROM child_progress
       WHERE child_id = ?
       AND level_id = ?;
-    `;
-
-    return await this.db.getFirstAsync(query, [
-      childId,
-      levelId,
-    ]);
+    `, [childId, levelId]);
 
   }
 
@@ -116,14 +120,57 @@ export default class ProgressRepository {
 
   }
 
+  async completeSection1(progressId) {
+
+    await this.db.runAsync(
+      `
+      UPDATE child_progress
+      SET
+        section1_completed = 1
+      WHERE id = ?;
+      `,
+      [progressId]
+    );
+
+  }
+
+  async saveQuiz(progressId, score, total, stars, xp, completed) {
+
+    await this.db.runAsync(
+      `
+      UPDATE child_progress
+      SET
+        section2_completed = 1,
+        quiz_score = ?,
+        quiz_total = ?,
+        stars = ?,
+        xp_gained = ?,
+        status = ?,
+        completed_at = ?
+      WHERE id = ?;
+      `,
+      [
+        score,
+        total,
+        stars,
+        xp,
+        completed ? "completado" : "en_progreso",
+        completed ? new Date().toISOString() : null,
+        progressId,
+      ]
+    );
+
+  }
+
   async delete(id) {
 
-    const query = `
+    await this.db.runAsync(
+      `
       DELETE FROM child_progress
       WHERE id = ?;
-    `;
-
-    await this.db.runAsync(query, [id]);
+      `,
+      [id]
+    );
 
   }
 

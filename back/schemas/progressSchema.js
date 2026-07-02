@@ -9,8 +9,6 @@ CREATE TABLE IF NOT EXISTS child_progress (
 
   status TEXT NOT NULL
     CHECK(status IN (
-      'bloqueado',
-      'disponible',
       'en_progreso',
       'completado'
     )),
