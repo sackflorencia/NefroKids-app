@@ -4,7 +4,6 @@ import colors from "../../styles/colors";
 import typography from "../../styles/typography";
 import {
   View,
-  Text,
   Image,
   StyleSheet,
 } from "react-native";

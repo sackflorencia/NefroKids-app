@@ -1,5 +1,5 @@
 import React, { use } from "react";
-import { View, Image, StyleSheet} from "react-native";
+import { View, Image, StyleSheet, StatusBar } from "react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 import globalStyles from "../styles/globalStyles";
@@ -21,6 +21,7 @@ const Home = () => {
   const navigation = useNavigation();
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar backgroundColor={colors.primary} barStyle="light-content" translucent={false} />
       {/* Header */}
       <Header/>
 
@@ -35,7 +36,7 @@ const Home = () => {
         </View>
 
         {/* Speech Bubble */}
-        <SpeechBubble message="¿Que quieres hacer hoy?" direction="left" />
+        <SpeechBubble message="¿Que quieres hacer hoy?" direction="top" />
 
         {/* Buttons */}
         <View style={styles.buttons}>
@@ -97,13 +98,13 @@ const styles = StyleSheet.create({
   },
 
   pet: {
-    width: 220,
-    height: 280,
+    width: 300,
+    height: 380,
     marginBottom: 40,
   },
 
   petContainer: {
-    height: 140,
+    height: 170,
     overflow: "hidden",
     marginBottom: 40,
   },
