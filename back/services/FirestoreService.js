@@ -18,6 +18,7 @@ export default class FirestoreService {
         child,
         tutorUid
     ) {
+
         console.log("Creando child en Firestore");
         await setDoc(
 
@@ -35,8 +36,8 @@ export default class FirestoreService {
                     child.birth_date,
 
                 first_register_date:
-                    serverTimestamp(),
-
+                    child.first_register_date,
+              
                 total_xp:
                     child.total_xp ?? 0,
 
@@ -44,6 +45,11 @@ export default class FirestoreService {
                     Boolean(child.urinates),
 
                 avatar_id:
+                    child.avatar_id,
+
+                tutor_uids: [
+                    tutorUid
+                ],
                     child.avatar_id ?? null,
 
                 created_at:

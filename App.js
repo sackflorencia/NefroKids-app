@@ -9,8 +9,12 @@ FirebaseService.initialize();
 export default function App() {
 
   return (
-    <InitDB>
-      <AppNavigator />
-    </InitDB>
+    <>
+      <InitDB>
+        <AppNavigator />
+      </InitDB>
+    </>
   );
 }
+
+// si ponemos en statusBar, style="auto"?
