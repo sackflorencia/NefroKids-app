@@ -18,19 +18,19 @@ import LogoSlogan from "../../components/logo/logo";
 
 const SLIDES = [
   {
-    title: "¡Hola soy Riku!",
-    text: "Voy a ser tu compañero en esta aventura. Te voy a ayudar a aprender y a seguir tu tratamiento paso a paso.",
+    title: "¡Hola, soy Riku!",
+    text: "Voy a ser tu compañero en esta aventura. \nTe voy a ayudar a seguir tu tratamiento paso a paso.",
   },
   {
     title: "¡Aprender puede ser divertido!",
-    text: "Completá actividades, descubrí­ consejos y conseguí­ nuevos logros mientras avanzas.",
+    text: "Completá actividades, descubrí­ consejos y conseguí­ nuevos logros mientras avanzás.",
   },
   {
     title: "¡Registrá tu tratamiento!",
-    text: "Guardá la informacion de tus sesiones de diálisis y seguí tu progreso día a día.",
+    text: "Guardá la información de tus sesiones de diálisis y seguí tu progreso día a día.",
   },
   {
-    title: "Siempre acompañando",
+    title: "Siempre acompañado",
     text: "Tu familia, tus médicos y Riku van a estar con vos durante todo el camino.",
   },
 ];

@@ -13,6 +13,8 @@ export default class UserController {
       birth_date: data.birth_date,
       full_name: data.full_name,
       urinates: data.urinates,
+      total_xp: 0,
+      avatar_id: null,
     };
     await this.repository.insert(user);
     return user;

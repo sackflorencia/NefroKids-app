@@ -19,11 +19,10 @@ export default class RegistrationService {
     }
 
     async completeRegistration(
-        userData,
-        guardiansData,
-        tutorUid
-    ) {
-
+    userData,
+    guardiansData,
+    tutorUid
+) {
 
         const child =
             await this.userController.createUser(
@@ -52,40 +51,36 @@ export default class RegistrationService {
                 is_primary: i === 0 ? 1 : 0,
 
             });
-        const tutor =
-        await this.tutorController.createTutor({
 
-        child_id: child.id,
+            // Guardamos el primer tutor para subirlo a Firestore
+            if (i === 0) {
 
-        full_name: guardian.full_name,
+                primaryTutor = {
 
-        email: guardian.email,
+                    child_id: child.id,
 
-        relationship: guardian.relationship,
+                    full_name: guardian.full_name,
 
-        phone: guardian.phone ?? null,
+                    email: guardian.email,
 
-        is_primary: i === 0 ? 1 : 0,
+                    relationship: guardian.relationship,
 
-    });
+                    phone: guardian.phone ?? null,
 
-    if (i === 0) {
+                    is_primary: 1
 
-    primaryTutor = tutor;
+                };
 
-}
-
+            }
 
         }
-
+        console.log("ANTES DE SUBIR A FIRESTORE");
         await this.syncService.uploadRegistration(
 
             child,
-
             primaryTutor,
-
-            tutorUid
-
+            tutorUid,
+           guardiansData
         );
 
         return child;

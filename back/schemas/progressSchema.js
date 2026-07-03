@@ -14,9 +14,11 @@ CREATE TABLE IF NOT EXISTS child_progress (
       'completado'
     )),
 
-  attempts INTEGER NOT NULL
+  time_record INTEGER NOT NULL
     DEFAULT 0
-    CHECK(attempts >= 0),
+    CHECK(time_record >= 0),
+
+  stars INTEGER NOT NULL,
 
   xp_gained INTEGER NOT NULL
     DEFAULT 0

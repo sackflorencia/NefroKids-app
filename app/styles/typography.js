@@ -9,7 +9,7 @@ export default {
   },
   regular:{
     fontSize: 20,
-    fontWeight: "450"
+    fontWeight: "400"
   },
   button: {
     fontSize: 18,
