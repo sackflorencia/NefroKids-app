@@ -44,13 +44,7 @@ export default class FirestoreService {
                 urinates:
                     Boolean(child.urinates),
 
-                avatar_id:
-                    child.avatar_id,
-
-                tutor_uids: [
-                    tutorUid
-                ],
-                    child.avatar_id ?? null,
+                avatar_id: child.avatar_id ?? null,
 
                 created_at:
                     serverTimestamp(),
