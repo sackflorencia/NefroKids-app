@@ -15,6 +15,7 @@ export default class UserController {
       urinates: data.urinates,
       total_xp: 0,
       avatar_id: null,
+      first_register_date: new Date().toISOString(),
     };
     await this.repository.insert(user);
     return user;
