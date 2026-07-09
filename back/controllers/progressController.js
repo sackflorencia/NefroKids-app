@@ -27,8 +27,7 @@ export default class ProgressController {
         const levels =
             await this.levelRepository.getAll();
 
-        const progress =
-            await this.progressRepository.getByChild(childId);
+        const progress = await this.repository.getByChild(childId);
 
         return levels.map((level, index) => {
 

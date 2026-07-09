@@ -9,11 +9,12 @@ import LevelPreview from "../components/level/LevelPreview";
 import { useSQLiteContext } from "expo-sqlite";
 import ProgressController from "../../back/controllers/progressController";
 import { useNavigation } from "@react-navigation/native";
-
+import { useUser } from "../context/UserContext";
 
 export default function Levels() {
   const navigation = useNavigation();
   const db = useSQLiteContext();
+  const { user } = useUser();
   const [levels, setLevels] = useState([]);
   const [selectedLevel, setSelectedLevel] = useState(null);
 
@@ -22,10 +23,10 @@ export default function Levels() {
     async function loadLevels() {
 
       try {
-
+        if (!user?.childId) return;
         const controller = new ProgressController(db);
 
-        const data = await controller.getLevelsForChild(childId); //no tenemos child id aca
+        const data = await controller.getLevelsForChild(user.childId);
 
         console.log("LEVELS:");
         console.log(data);
@@ -41,7 +42,7 @@ export default function Levels() {
 
     loadLevels();
 
-  }, []);
+  }, [user]);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -68,8 +69,13 @@ export default function Levels() {
 
             <LevelNode
               number={level.numero}
-              unlocked={true}
-              onPress={() => setSelectedLevel(level)}
+              unlocked={level.state !== "bloqueado"}
+              onPress={() => {
+                if (level.state !== "bloqueado") {
+                  setSelectedLevel(level)
+                };
+              }
+              }
             />
 
           </View>
