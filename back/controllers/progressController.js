@@ -1,138 +1,83 @@
+import { v4 as uuidv4 } from "uuid";
+
 import ProgressRepository from "../repositories/ProgressRepository";
 import LevelRepository from "../repositories/LevelRepository";
 
 export default class ProgressController {
 
     constructor(db) {
-        this.repository = new ProgressRepository(db);
+        this.progressRepository = new ProgressRepository(db);
         this.levelRepository = new LevelRepository(db);
     }
 
     async getAllProgress() {
-        return await this.repository.getAll();
+        return await this.progressRepository.getAll();
     }
 
     async getProgressById(id) {
-        return await this.repository.getById(id);
+        return await this.progressRepository.getById(id);
     }
 
     async getProgressByChildAndLevel(childId, levelId) {
-        return await this.repository.getByChildAndLevel(
+        return await this.progressRepository.getByChildAndLevel(
             childId,
             levelId
         );
     }
+
     async getLevelsForChild(childId) {
-
-        const levels =
-            await this.levelRepository.getAll();
-
-        const progress = await this.repository.getByChild(childId);
-
+        const levels = await this.levelRepository.getAll();
+        const progress = await this.progressRepository.getByChild(childId);
         return levels.map((level, index) => {
-
             const currentProgress = progress.find(
                 p => p.level_id === level.id
             );
-
             if (currentProgress) {
-
                 return {
                     ...level,
                     state: currentProgress.status
                 };
-
             }
-
-            // El primer nivel siempre está disponible
             if (index === 0) {
-
                 return {
                     ...level,
                     state: "disponible"
                 };
-
             }
-
-            // Buscamos el progreso del nivel anterior
             const previousLevel = levels[index - 1];
-
             const previousProgress = progress.find(
                 p => p.level_id === previousLevel.id
             );
-
             return {
                 ...level,
                 state:
-                    previousProgress &&
-                        previousProgress.status === "completado"
+                    previousProgress?.status === "completado"
                         ? "disponible"
                         : "bloqueado"
             };
-
         });
-
     }
-
     async createProgress(progress) {
-        return await this.repository.insert(progress);
+        return await this.progressRepository.insert(progress);
     }
-
     async updateProgress(progress) {
-        return await this.repository.update(progress);
+        return await this.progressRepository.update(progress);
     }
-
     async deleteProgress(id) {
-        return await this.repository.delete(id);
+        return await this.progressRepository.delete(id);
     }
-
     async completeSection1(childId, levelId) {
-
-        const progress = await this.startLevel(
-            childId,
-            levelId
-        );
-
-        return await this.repository.completeSection1(
+        const progress = await this.startLevel(childId, levelId);
+        return await this.progressRepository.completeSection1(
             progress.id
         );
-
     }
-
     async saveQuiz(childId, levelId, score, total) {
-
-        const progress = await this.startLevel(
-            childId,
-            levelId
-        );
-
-        let stars = 0;
-
-        if (score === total) {
-            stars = 3;
-        } else if (score >= Math.ceil(total * 0.7)) {
-            stars = 2;
-        } else if (score > 0) {
-            stars = 1;
-        }
-
-        let xp = 0;
-
-        switch (stars) {
-            case 3:
-                xp = 50;
-                break;
-            case 2:
-                xp = 30;
-                break;
-            case 1:
-                xp = 10;
-                break;
-        }
-
+        const progress = await this.startLevel(childId, levelId);
+        const stars = this.calculateStars(score, total);
+        const xp = this.calculateXp(stars);
         const completed = progress.section1_completed === 1;
-
-        return await this.repository.saveQuiz(
+        return await this.progressRepository.saveQuiz(
             progress.id,
             score,
             total,
@@ -140,21 +85,17 @@ export default class ProgressController {
             xp,
             completed
         );
-
     }
     async startLevel(childId, levelId) {
-
-        let progress = await this.repository.getByChildAndLevel(
-            childId,
-            levelId
-        );
-
+        let progress = await this.progressRepository.getByChildAndLevel(
+                childId,
+                levelId
+            );
         if (progress) {
             return progress;
         }
-
         progress = {
-            id: crypto.randomUUID(),
+            id: uuidv4(),
             child_id: childId,
             level_id: levelId,
             status: "en_progreso",
@@ -167,11 +108,32 @@ export default class ProgressController {
             started_at: new Date().toISOString(),
             completed_at: null
         };
-
-        await this.repository.insert(progress);
-
+        await this.progressRepository.insert(progress);
         return progress;
-
     }
 
+    calculateStars(score, total) {
+        if (score === total) {
+            return 3;
+        }
+        if (score >= Math.ceil(total * 0.7)) {
+            return 2;
+        }
+        if (score > 0) {
+            return 1;
+        }
+        return 0;
+    }
+    calculateXp(stars) {
+        switch (stars) {
+            case 3:
+                return 50;
+            case 2:
+                return 30;
+            case 1:
+                return 10;
+            default:
+                return 0;
+        }
+    }
 }
