@@ -9,6 +9,7 @@ export default class TutorRepository {
     const query = `
       INSERT INTO tutors (
         id,
+        firebase_uid,
         child_id,
         full_name,
         email,
@@ -16,21 +17,19 @@ export default class TutorRepository {
         relationship,
         is_primary
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?);
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?);
     `;
 
-    await this.db.runAsync(
-      query,
-      [
-        tutor.id,
-        tutor.child_id,
-        tutor.full_name,
-        tutor.email,
-        tutor.phone,
-        tutor.relationship,
-        tutor.is_primary
-      ]
-    );
+    await this.db.runAsync(query, [
+      tutor.id,
+      tutor.firebase_uid,
+      tutor.child_id,
+      tutor.full_name,
+      tutor.email,
+      tutor.phone,
+      tutor.relationship,
+      tutor.is_primary,
+    ]);
   }
 
   async getAll() {
@@ -70,6 +69,7 @@ export default class TutorRepository {
     const query = `
       UPDATE tutors
       SET
+        firebase_uid = ?,
         full_name = ?,
         email = ?,
         phone = ?,
@@ -78,17 +78,15 @@ export default class TutorRepository {
       WHERE id = ?;
     `;
 
-    await this.db.runAsync(
-      query,
-      [
-        tutor.full_name,
-        tutor.email,
-        tutor.phone,
-        tutor.relationship,
-        tutor.is_primary,
-        tutor.id
-      ]
-    );
+    await this.db.runAsync(query, [
+      tutor.firebase_uid,
+      tutor.full_name,
+      tutor.email,
+      tutor.phone,
+      tutor.relationship,
+      tutor.is_primary,
+      tutor.id,
+    ]);
   }
 
   async delete(id) {

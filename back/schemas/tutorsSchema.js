@@ -2,7 +2,7 @@ export const tutorsTable = `
 CREATE TABLE IF NOT EXISTS tutors (
 
   id TEXT PRIMARY KEY,
-
+  firebase_uid TEXT UNIQUE,
   child_id TEXT NOT NULL,
 
   full_name TEXT NOT NULL,
