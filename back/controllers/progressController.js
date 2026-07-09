@@ -26,36 +26,113 @@ export default class ProgressController {
     }
 
     async getLevelsForChild(childId) {
+
         const levels = await this.levelRepository.getAll();
+
         const progress = await this.progressRepository.getByChild(childId);
+
         return levels.map((level, index) => {
+
             const currentProgress = progress.find(
                 p => p.level_id === level.id
             );
-            if (currentProgress) {
-                return {
-                    ...level,
-                    state: currentProgress.status
-                };
-            }
-            if (index === 0) {
-                return {
-                    ...level,
-                    state: "disponible"
-                };
-            }
-            const previousLevel = levels[index - 1];
-            const previousProgress = progress.find(
-                p => p.level_id === previousLevel.id
+
+            const state = this.getLevelState(
+                currentProgress,
+                progress,
+                levels,
+                index
             );
+
             return {
                 ...level,
-                state:
-                    previousProgress?.status === "completado"
-                        ? "disponible"
-                        : "bloqueado"
+                state,
+                sections: this.getSections(
+                    state,
+                    currentProgress
+                )
             };
+
         });
+
+    }
+    getLevelState(
+        currentProgress,
+        allProgress,
+        levels,
+        index
+    ) {
+
+        if (currentProgress) {
+            return currentProgress.status;
+        }
+
+        if (index === 0) {
+            return "disponible";
+        }
+
+        const previousLevel = levels[index - 1];
+
+        const previousProgress = allProgress.find(
+            p => p.level_id === previousLevel.id
+        );
+
+        return previousProgress?.status === "completado"
+            ? "disponible"
+            : "bloqueado";
+
+    }
+    getSections(levelState, progress) {
+
+        if (levelState === "bloqueado") {
+
+            return [
+                {
+                    number: 1,
+                    state: "blocked"
+                },
+                {
+                    number: 2,
+                    state: "blocked"
+                }
+            ];
+
+        }
+
+        if (!progress) {
+
+            return [
+                {
+                    number: 1,
+                    state: "available"
+                },
+                {
+                    number: 2,
+                    state: "blocked"
+                }
+            ];
+
+        }
+
+        return [
+            {
+                number: 1,
+                state: progress.section1_completed
+                    ? "completed"
+                    : "available"
+            },
+            {
+                number: 2,
+                state: progress.section1_completed
+                    ? (
+                        progress.section2_completed
+                            ? "completed"
+                            : "available"
+                    )
+                    : "blocked"
+            }
+        ];
+
     }
     async createProgress(progress) {
         return await this.progressRepository.insert(progress);
@@ -88,9 +165,9 @@ export default class ProgressController {
     }
     async startLevel(childId, levelId) {
         let progress = await this.progressRepository.getByChildAndLevel(
-                childId,
-                levelId
-            );
+            childId,
+            levelId
+        );
         if (progress) {
             return progress;
         }

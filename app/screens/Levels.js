@@ -76,7 +76,7 @@ export default function Levels() {
 
             <LevelNode
               number={level.numero}
-              state={level.state}
+              sections={level.sections}
               onPress={() => {
                 if (level.state !== "bloqueado") {
                   setSelectedLevel(level);
