@@ -11,11 +11,12 @@ export default function App() {
 
   return (
     <>
-      <UserProvider>
-        <InitDB>
+
+      <InitDB>
+        <UserProvider>
           <AppNavigator />
-        </InitDB>
-      </UserProvider>
+        </UserProvider>
+      </InitDB>
     </>
   );
 }

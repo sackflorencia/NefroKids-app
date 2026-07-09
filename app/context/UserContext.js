@@ -1,20 +1,40 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import AuthService from "../back/services/AuthService";
+import AuthService from "../../back/services/AuthService";
+import TutorController from "../../back/controllers/tutorController";
+import { useSQLiteContext } from "expo-sqlite";
 
 const UserContext = createContext();
 
 export function UserProvider({ children }) {
-
+    const db = useSQLiteContext();
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+
         const authService = new AuthService();
+
         const unsubscribe =
-            authService.subscribeToAuthChanges((firebaseUser) => {
-                setUser(firebaseUser);
-                setLoading(false);
-            });
+            authService.subscribeToAuthChanges(
+                async (firebaseUser) => {
+                    if (firebaseUser) {
+                        const tutorController = new TutorController(db);
+                        const tutor = await tutorController.getTutorByFirebaseUid(
+                            firebaseUser.uid
+                        );
+                        setUser({
+                            tutorId: tutor.id,
+                            firebaseUid: firebaseUser.uid,
+                            childId: tutor.child_id,
+                            fullName: tutor.full_name,
+                            email: tutor.email
+                        });
+                    } else {
+                        setUser(null);
+                    }
+                    setLoading(false);
+                }
+            );
         return unsubscribe;
     }, [])
     async function login(email, password) {

@@ -7,7 +7,7 @@ import SectionHeader from "../components/level/SectionHeader";
 import LevelPreview from "../components/level/LevelPreview";
 
 import { useSQLiteContext } from "expo-sqlite";
-import ProgressController from "../../back/controllers/ProgressController";
+import ProgressController from "../../back/controllers/progressController";
 import { useNavigation } from "@react-navigation/native";
 
 
