@@ -2,15 +2,16 @@ import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import colors from "../../styles/colors";
 
-export default function LevelNode({ number, unlocked = true, onPress }) {
+export default function LevelNode({ number, state, onPress }) {
+  const blocked = state === "bloqueado"
   return (
-    <TouchableOpacity activeOpacity={0.8} onPress={onPress}>
-      <View style={styles.wrapper}>
+    <TouchableOpacity activeOpacity={0.8} onPress={onPress} disabled={blocked}>
+      <View style={styles.wrapper, blocked && styles.blocked}>
         <View
           style={[
             styles.node,
             {
-              backgroundColor: unlocked
+              backgroundColor: blocked
                 ? colors.primary
                 : colors.secondary,
             },
@@ -23,7 +24,7 @@ export default function LevelNode({ number, unlocked = true, onPress }) {
           style={[
             styles.shadow,
             {
-              backgroundColor: unlocked
+              backgroundColor: blocked
                 ? colors.primaryShadow
                 : colors.secondaryShadow,
             },
@@ -47,6 +48,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     zIndex: 2,
+  },
+  blocked: {
+    opacity: 0.4,
   },
   shadow: {
     position: "absolute",

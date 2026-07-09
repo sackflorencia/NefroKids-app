@@ -20,29 +20,36 @@ export default function Levels() {
 
   useEffect(() => {
 
+    console.log("Entró al useEffect");
     async function loadLevels() {
+      console.log("Entró al loadLevels");
 
       try {
-        if (!user?.childId) return;
+        console.log("user:", user);
+
+        if (!user?.childId) {
+          console.log("No hay childId");
+          return;
+        }
+
+        console.log("childId:", user.childId);
+
         const controller = new ProgressController(db);
+        console.log("Controller creado");
 
         const data = await controller.getLevelsForChild(user.childId);
-
-        console.log("LEVELS:");
-        console.log(data);
+        console.log("Data:", data);
 
         setLevels(data);
 
       } catch (error) {
-
-        console.error(error);
-
+        console.error("ERROR:", error);
       }
     }
 
     loadLevels();
 
-  }, [user]);
+  }, []);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -69,13 +76,12 @@ export default function Levels() {
 
             <LevelNode
               number={level.numero}
-              unlocked={level.state !== "bloqueado"}
+              state={level.state}
               onPress={() => {
                 if (level.state !== "bloqueado") {
-                  setSelectedLevel(level)
-                };
-              }
-              }
+                  setSelectedLevel(level);
+                }
+              }}
             />
 
           </View>

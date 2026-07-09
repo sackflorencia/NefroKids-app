@@ -7,6 +7,7 @@ const UserContext = createContext();
 
 export function UserProvider({ children }) {
     const db = useSQLiteContext();
+    console.log("DB:", db);
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -14,27 +15,36 @@ export function UserProvider({ children }) {
 
         const authService = new AuthService();
 
-        const unsubscribe =
-            authService.subscribeToAuthChanges(
-                async (firebaseUser) => {
-                    if (firebaseUser) {
-                        const tutorController = new TutorController(db);
-                        const tutor = await tutorController.getTutorByFirebaseUid(
-                            firebaseUser.uid
-                        );
-                        setUser({
-                            tutorId: tutor.id,
-                            firebaseUid: firebaseUser.uid,
-                            childId: tutor.child_id,
-                            fullName: tutor.full_name,
-                            email: tutor.email
-                        });
-                    } else {
-                        setUser(null);
-                    }
-                    setLoading(false);
-                }
-            );
+        const unsubscribe = authService.subscribeToAuthChanges(async (firebaseUser) => {
+            console.log("Entró al callback");
+            console.log("firebaseUser:", firebaseUser);
+            if (firebaseUser) {
+                console.log("UID:", firebaseUser.uid);
+                const tutorController = new TutorController(db);
+                console.log("Antes de buscar tutor");
+                const tutor =
+                    await tutorController.getTutorByFirebaseUid(
+                        firebaseUser.uid
+                    );
+                console.log("TUTOR:", tutor);
+
+                setUser({
+                    tutorId: tutor.id,
+                    firebaseUid: firebaseUser.uid,
+                    childId: tutor.child_id,
+                    fullName: tutor.full_name,
+                    email: tutor.email
+                });
+
+            } else {
+
+                console.log("NO USER");
+                setUser(null);
+
+            }
+
+            setLoading(false);
+        });
         return unsubscribe;
     }, [])
     async function login(email, password) {

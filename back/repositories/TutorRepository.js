@@ -52,6 +52,15 @@ export default class TutorRepository {
 
     return await this.db.getFirstAsync(query, [id]);
   }
+  async getByFirebaseUid(firebaseUid){
+    const query = `
+      SELECT *
+      FROM tutors
+      WHERE firebase_uid = ?;
+    `;
+
+    return await this.db.getFirstAsync(query, [firebaseUid]);
+  }
 
   async getByChildId(childId) {
 
