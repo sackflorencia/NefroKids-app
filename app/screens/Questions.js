@@ -242,7 +242,7 @@ export default function Questions() {
           <TouchableOpacity
             key={index}
             style={styles.answer}
-            disabled={selected}
+            disabled={selected !== null}
             onPress={() =>
               handleAnswer(
                 answer
