@@ -32,13 +32,10 @@ export default function LevelNode({
           blocked && styles.blocked
         ]}
       >
-
         <View style={styles.container}>
-
           <SectionRing
             sections={sections}
           />
-
           <View
             style={[
               styles.node,
@@ -47,16 +44,11 @@ export default function LevelNode({
               }
             ]}
           >
-
             <Text style={styles.text}>
               {number}
             </Text>
-
           </View>
-
         </View>
-
-
         <View
           style={[
             styles.shadow,
@@ -65,18 +57,12 @@ export default function LevelNode({
             }
           ]}
         />
-
       </View>
-
     </TouchableOpacity>
   );
 }
-
-
 const SIZE = 90;
-
 const styles = StyleSheet.create({
-
   wrapper: {
     alignItems: "center",
   },
