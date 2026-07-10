@@ -2,8 +2,8 @@ import { v4 as uuidv4 } from "uuid";
 
 import ProgressRepository from "../repositories/ProgressRepository";
 
-import LevelController from "./LevelController";
-import SectionProgressController from "./SectionProgressController";
+import LevelController from "./levelController";
+import SectionProgressController from "./sectionProgressController";
 
 export default class ProgressController {
 
@@ -48,7 +48,7 @@ export default class ProgressController {
     async getLevelsForChild(childId) {
 
         const levels =
-            await this.levelController.getAllLevels();
+            await this.levelController.getLevels();
 
         const allProgress =
             await this.progressRepository.getByChild(
@@ -75,7 +75,7 @@ export default class ProgressController {
 
             const sections =
                 await this.sectionProgressController
-                    .getSectionsWithProgress(
+                    .getSectionsForLevel(
                         level.id,
                         currentProgress,
                         state

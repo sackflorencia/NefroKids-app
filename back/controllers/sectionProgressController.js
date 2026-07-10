@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import SectionProgressRepository from "../repositories/SectionProgressRepository";
 
-import LevelSectionController from "./LevelSectionController";
+import LevelSectionController from "./levelSectionController";
 
 export default class SectionProgressController {
 
@@ -139,7 +139,7 @@ export default class SectionProgressController {
 
         const sections =
             await this.levelSectionController
-                .getSectionsByLevel(
+                .getSectionsByLevelId(
                     levelId
                 );
 
@@ -165,7 +165,7 @@ export default class SectionProgressController {
 
         const sections =
             await this.levelSectionController
-                .getSectionsByLevel(
+                .getSectionsByLevelId(
                     levelId
                 );
 

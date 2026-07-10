@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   title: {
-    ...typography.title,
+    ...typography.subtitle,
     color: colors.textLight,
   },
 });

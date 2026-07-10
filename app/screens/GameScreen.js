@@ -3,10 +3,18 @@ import { WebView } from "react-native-webview";
 import * as ScreenOrientation from "expo-screen-orientation";
 import { useNavigation } from "@react-navigation/native";
 
+import SectionProgressController from "../../back/controllers/sectionProgressController";
+import { useSQLiteContext } from "expo-sqlite";
+import { useUser } from "../context/UserContext";
+
 export default function GameScreen({ route }) {
-  const { level } = route.params;
+  const { level, section } = route.params;
   const webviewRef = useRef(null);
   const navigation = useNavigation();
+
+  const db = useSQLiteContext();
+  const { user } = useUser();
+  const sectionProgressController = new SectionProgressController(db);
 
   useEffect(() => {
     ScreenOrientation.lockAsync(
@@ -39,24 +47,23 @@ export default function GameScreen({ route }) {
 
   const handleMessage = (event) => {
     const data = JSON.parse(event.nativeEvent.data);
-
     switch (data.type) {
       case "READY":
         console.log("Unity listo");
         sendStartLevel();
         break;
-
       case "LEVEL_COMPLETED":
-        console.log(data);
-
-        // TODO:
-        // Guardar progreso en SQLite
-        // Navegar a pantalla de resultados
-        navigation.navigate("Questions", {
-                        level: level,
-                      })
+        const levelProgress =
+          await progressController.startLevel(
+            user.childId,
+            level.id
+          );
+        await sectionProgressController.completeSection(
+          levelProgress.id,
+          section.id
+        );
+        navigation.navigate("Levels");
         break;
-
       case "EXIT_GAME":
         console.log("Salir del juego");
         break;
@@ -67,7 +74,6 @@ export default function GameScreen({ route }) {
         console.log("Mensaje recibido:", data);
     }
   };
-
   return (
     <WebView
       ref={webviewRef}
