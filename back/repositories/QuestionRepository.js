@@ -55,7 +55,7 @@ export default class QuestionRepository {
     );
   }
 
-  async getRandomByLevel(sectionId, limit = 3) {
+  async getRandomBySection(sectionId, limit = 3) {
     return this.db.getAllAsync(
       `
       SELECT *

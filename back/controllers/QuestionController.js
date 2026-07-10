@@ -1,32 +1,35 @@
 import QuestionRepository from "../repositories/QuestionRepository";
 
-export default class ReviewController {
+export default class QuestionController {
 
   constructor(db) {
     this.repository = new QuestionRepository(db);
   }
 
-  async getAllReviews() {
+  async getAllQuestions() {
     return await this.repository.getAll();
   }
 
-  async getReviewById(id) {
+  async getQuestionById(id) {
     return await this.repository.getById(id);
   }
 
-  async createReview(review) {
-    return await this.repository.insert(review);
+  async createQuestion(question) {
+    return await this.repository.insert(question);
   }
 
-  async updateReview(review) {
-    return await this.repository.update(review);
+  async updateQuestion(question) {
+    return await this.repository.update(question);
   }
 
-  async deleteReview(id) {
+  async deleteQuestion(id) {
     return await this.repository.delete(id);
   }
-  async getLevelQuestions(levelId, amount = 3) {
-    const questions = await this.repository.getRandomByLevel(levelId, amount);
-    return questions;
-  }
+  async getSectionQuestions(sectionId, amount = 3) {
+  return await this.repository.getRandomBySection(
+    sectionId,
+    amount
+  );
+}
+
 }

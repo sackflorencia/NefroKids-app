@@ -107,7 +107,7 @@ export default function Levels() {
                       }
 
                       if (section.type === "quiz") {
-                        navigation.navigate("Quiz", {
+                        navigation.navigate("Questions", {
                           levelId: selectedLevel.id,
                           sectionId: section.id,
                         });
