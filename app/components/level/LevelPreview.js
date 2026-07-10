@@ -8,14 +8,32 @@ import {
 import Button from "../Button";
 import colors from "../../styles/colors";
 
+const SECTION_INFO = {
+  game: {
+    title: "Aprender jugando",
+    description:
+      "Realizá el procedimiento paso a paso en el simulador.",
+    button: "Jugar"
+  },
+  quiz: {
+    title: "Poné a prueba tus conocimientos",
+    description:
+      "Respondé las preguntas de repaso del nivel.",
+    button: "Responder"
+  }
+};
+
 export default function LevelPreview({
   level,
-  onStart,
+  onStartSection,
 }) {
 
-  if (!level) return null;
+  if (!level) {
+    return null;
+  }
 
   return (
+
     <View style={styles.container}>
 
       <Text style={styles.title}>
@@ -30,13 +48,65 @@ export default function LevelPreview({
         ⭐ {level.xp_reward} XP
       </Text>
 
-      <Button
-        title="Iniciar"
-        onPress={onStart}
-      />
+      {level.sections.map(section => {
+
+        const info = SECTION_INFO[section.type];
+
+        return (
+
+          <View
+            key={section.id}
+            style={styles.section}
+          >
+
+            <Text style={styles.sectionTitle}>
+              {info.title}
+            </Text>
+
+            <Text style={styles.sectionDescription}>
+              {info.description}
+            </Text>
+
+            {section.state === "completed" && (
+              <>
+                <Text style={styles.completed}>
+                  ✅ Completado
+                </Text>
+
+                <Button
+                  title="Repetir"
+                  onPress={() =>
+                    onStartSection(section)
+                  }
+                />
+              </>
+            )}
+
+            {section.state === "available" && (
+              <Button
+                title={info.button}
+                onPress={() =>
+                  onStartSection(section)
+                }
+              />
+            )}
+
+            {section.state === "blocked" && (
+              <Text style={styles.blocked}>
+                🔒 Completá la sección anterior para desbloquearla.
+              </Text>
+            )}
+
+          </View>
+
+        );
+
+      })}
 
     </View>
+
   );
+
 }
 
 const styles = StyleSheet.create({
@@ -51,21 +121,52 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: "700",
-    marginBottom: 10,
     color: colors.textDark,
+    marginBottom: 10,
   },
 
   description: {
     fontSize: 16,
-    marginBottom: 16,
     color: colors.textDark,
+    marginBottom: 16,
   },
 
   xp: {
     fontSize: 18,
     fontWeight: "600",
-    marginBottom: 20,
     color: colors.primary,
+    marginBottom: 24,
+  },
+
+  section: {
+    borderTopWidth: 1,
+    borderTopColor: "#E8E8E8",
+    paddingTop: 18,
+    marginTop: 18,
+  },
+
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: colors.textDark,
+    marginBottom: 6,
+  },
+
+  sectionDescription: {
+    fontSize: 15,
+    color: colors.textDark,
+    marginBottom: 14,
+  },
+
+  completed: {
+    color: "#4CAF50",
+    marginBottom: 10,
+    fontWeight: "600",
+  },
+
+  blocked: {
+    color: "#999",
+    fontStyle: "italic",
   },
 
 });

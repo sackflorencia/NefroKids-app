@@ -96,12 +96,22 @@ export default function Levels() {
                 <View>
                   <LevelPreview
                     level={selectedLevel}
-                    onStart={() => {
+                    onStartSection={section => {
                       setSelectedLevel(null);
 
-                      navigation.navigate("Game", {
-                        level: selectedLevel,
-                      });
+                      if (section.type === "game") {
+                        navigation.navigate("Game", {
+                          levelId: selectedLevel.id,
+                          sectionId: section.id,
+                        });
+                      }
+
+                      if (section.type === "quiz") {
+                        navigation.navigate("Quiz", {
+                          levelId: selectedLevel.id,
+                          sectionId: section.id,
+                        });
+                      }
                     }}
                   />
                 </View>
