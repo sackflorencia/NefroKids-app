@@ -1,12 +1,10 @@
-// seeds/questionSeedLevel1.js
-
 import QuestionRepository from "../repositories/QuestionRepository";
 
 const questions = [
 
   {
     id: "q1",
-    game_id: "level1",
+    section_id: "level1_section2",
     question: "¿Qué es lo primero que hay que hacer antes de lavarse las manos?",
     correct_answer: "Retirar anillos, pulseras y reloj",
     incorrect_answer1: "Mojarse las manos directamente",
@@ -22,7 +20,7 @@ const questions = [
 
   {
     id: "q2",
-    game_id: "level1",
+    section_id: "level1_section2",
     question: "¿Por qué es importante lavarse las manos antes del tratamiento?",
     correct_answer: "Para evitar transmitir microorganismos",
     incorrect_answer1: "Para que se vean limpias",
@@ -38,7 +36,7 @@ const questions = [
 
   {
     id: "q3",
-    game_id: "level1",
+    section_id: "level1_section2",
     question: "¿Qué se hace primero al comenzar el lavado de manos?",
     correct_answer: "Mojar las manos con agua",
     incorrect_answer1: "Secarlas",
@@ -54,7 +52,7 @@ const questions = [
 
   {
     id: "q4",
-    game_id: "level1",
+    section_id: "level1_section2",
     question: "¿Cuánto tiempo debe durar un lavado de manos completo?",
     correct_answer: "Aproximadamente 1 minuto",
     incorrect_answer1: "5 segundos",
@@ -70,7 +68,7 @@ const questions = [
 
   {
     id: "q5",
-    game_id: "level1",
+    section_id: "level1_section2",
     question: "¿Qué hay que hacer con la canilla mientras se enjabonan las manos?",
     correct_answer: "Cerrar la canilla",
     incorrect_answer1: "Dejarla abierta",
@@ -86,7 +84,7 @@ const questions = [
 
   {
     id: "q6",
-    game_id: "level1",
+    section_id: "level1_section2",
     question: "¿Por qué hay que secarse bien las manos?",
     correct_answer: "Porque la humedad favorece bacterias",
     incorrect_answer1: "Porque es más cómodo",
@@ -102,7 +100,7 @@ const questions = [
 
   {
     id: "q7",
-    game_id: "level1",
+    section_id: "level1_section2",
     question: "¿Cuál es el orden correcto del inicio del procedimiento?",
     correct_answer: "Retirar accesorios → mojar manos → usar jabón",
     incorrect_answer1: "Jabón → accesorios → agua",
@@ -118,7 +116,7 @@ const questions = [
 
   {
     id: "q8",
-    game_id: "level1",
+    section_id: "level1_section2",
     question: "¿Qué puede pasar si no nos lavamos bien las manos?",
     correct_answer: "Aumenta el riesgo de infecciones",
     incorrect_answer1: "Nada importante",
@@ -134,7 +132,7 @@ const questions = [
 
   {
     id: "q9",
-    game_id: "level1",
+    section_id: "level1_section2",
     question: "¿Qué enseña la frase de Riku: 'Primero lo más importante, la limpieza'?",
     correct_answer: "La higiene es la base del procedimiento",
     incorrect_answer1: "Que lo importante es terminar rápido",
@@ -150,7 +148,7 @@ const questions = [
 
   {
     id: "q10",
-    game_id: "level1",
+    section_id: "level1_section2",
     question: "¿Qué se debe hacer al finalizar el lavado de manos?",
     correct_answer: "Secarse completamente las manos",
     incorrect_answer1: "Volver a usar accesorios",

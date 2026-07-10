@@ -13,9 +13,11 @@ import { appointmentRulesTable } from "./schemas/appointmentRulesSchema";
 import { appointmentWeekdaysTable } from "./schemas/appointmentWeekdaysSchema";
 import { tutorsTable } from "./schemas/tutorsSchema";
 
-import { seedGames } from "./seeds/levelSeed";
+import { seedLevels } from "./seeds/levelSeed";
 import { seedQuestions } from "./seeds/questionSeed";
 import { seedUsers } from "./seeds/userSeed";
+import { levelSectionsTable } from "./schemas/levelSectionsSchema";
+import { seedLevelSections } from "./seeds/levelSectionSeed";
 
 export default function InitDB({ children }) {
 
@@ -62,9 +64,12 @@ export default function InitDB({ children }) {
 
       // await db.execAsync(`
       //   DROP TABLE IF EXISTS question;
-      // `);
+      // `); 
       await db.execAsync(questionTable);
       console.log("questionTable OK");
+
+      await db.execAsync(levelSectionsTable)
+      console.log("level section ok")
 
       await db.execAsync(avatarsTable);
       console.log("avatarsTable OK");
@@ -81,7 +86,8 @@ export default function InitDB({ children }) {
       await db.execAsync(tutorsTable);
       console.log("tutorsTable OK");
 
-      await seedGames(db);
+      await seedLevels(db);
+      await seedLevelSections(db);
       await seedQuestions(db);
       await seedUsers(db);
 

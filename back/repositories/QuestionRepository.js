@@ -8,7 +8,7 @@ export default class QuestionRepository {
     const query = `
       INSERT INTO question (
         id,
-        level_id,
+        section_id,
         question,
         correct_answer,
         incorrect_answer1,
@@ -26,7 +26,7 @@ export default class QuestionRepository {
 
     await this.db.runAsync(query, [
       q.id,
-      q.game_id,
+      q.section_id,
       q.question,
       q.correct_answer,
       q.incorrect_answer1,
@@ -48,23 +48,23 @@ export default class QuestionRepository {
     );
   }
 
-  async getByLevel(levelId) {
+  async getByLevel(sectionId) {
     return this.db.getAllAsync(
-      `SELECT * FROM question WHERE level_id = ?`,
+      `SELECT * FROM question WHERE section_id = ?`,
       [levelId]
     );
   }
 
-  async getRandomByLevel(levelId, limit = 3) {
+  async getRandomByLevel(sectionId, limit = 3) {
     return this.db.getAllAsync(
       `
       SELECT *
       FROM question
-      WHERE level_id = ?
+      WHERE section_id = ?
       ORDER BY RANDOM()
       LIMIT ?
       `,
-      [levelId, limit]
+      [sectionId, limit]
     );
   }
 }

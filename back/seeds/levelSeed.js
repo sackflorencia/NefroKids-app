@@ -1,7 +1,7 @@
 import LevelRepository from "../repositories/LevelRepository";
 import Level from "../models/levelModel";
 
-export async function seedGames(db) {
+export async function seedLevels(db) {
 
   const repository = new LevelRepository(db);
 
