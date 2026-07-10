@@ -123,5 +123,7 @@ export default class SectionProgressRepository {
       `,
       [id]
     );
+
   }
+
 }
