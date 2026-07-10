@@ -18,6 +18,7 @@ import { seedQuestions } from "./seeds/questionSeed";
 import { seedUsers } from "./seeds/userSeed";
 import { levelSectionsTable } from "./schemas/levelSectionsSchema";
 import { seedLevelSections } from "./seeds/levelSectionSeed";
+import { sectionProgressTable } from "./schemas/sectionProgressSchema";
 
 export default function InitDB({ children }) {
 
@@ -59,8 +60,14 @@ export default function InitDB({ children }) {
       await db.execAsync(alertsTable);
       console.log("alertsTable OK");
 
+      // await db.execAsync(`
+      //    DROP TABLE IF EXISTS child_progress;
+      //  `); 
       await db.execAsync(progressTable);
       console.log("progressTable OK");
+
+      await db.execAsync(sectionProgressTable)
+      console.log("sectionprogressTable OK");
 
       // await db.execAsync(`
       //   DROP TABLE IF EXISTS question;
