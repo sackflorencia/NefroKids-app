@@ -20,3 +20,5 @@ export default function App() {
     </>
   );
 }
+
+// si ponemos en statusBar, style="auto"?
