@@ -6,7 +6,6 @@ import {
   ActivityIndicator,
   StyleSheet,
 } from "react-native";
-
 import { useSQLiteContext } from "expo-sqlite";
 import {
   useNavigation,
@@ -143,50 +142,35 @@ export default function Questions() {
   }
 
   async function nextQuestion() {
-
-    if (
-      index <
-      questions.length - 1
-    ) {
-
+    console.log("NEXT", index, questions.length);
+    if (index < questions.length - 1) {
       setIndex(index + 1);
-
       return;
-
     }
-
+    console.log("Llamando finishQuiz");
     await finishQuiz();
-
   }
-
   async function finishQuiz() {
-
-    const score =
-      answers.filter(
-        a => a.correct
-      ).length;
-
-    if (
-      selected?.correct
-    ) {
-      score++;
-    }
-
+    console.log("Entró a finishQuiz");
+    let score =
+      [...answers, {
+        questionId: questions[index].id,
+        correct: selected.correct
+      }]
+        .filter(a => a.correct)
+        .length;
+    console.log("Score", score);
     await progressController.completeSection(
       user.childId,
       levelId,
       sectionId,
       {
         score,
-        total:
-          questions.length,
+        total: questions.length,
       }
     );
-
-    navigation.navigate(
-      "Levels"
-    );
-
+    console.log("Se guardó");
+    navigation.navigate("Levels");
   }
 
   if (loading) {
@@ -281,7 +265,7 @@ export default function Questions() {
             <Text>
 
               {index ===
-              questions.length - 1
+                questions.length - 1
                 ? "Finalizar"
                 : "Siguiente"}
 
