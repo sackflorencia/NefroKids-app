@@ -7,34 +7,28 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import InputField from "../../components/InputField";
 import Button from "../../components/Button";
 
-import AuthService from "../../../back/services/AuthService";
+import { useUser } from "../../context/UserContext";
 
 const LogIn = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const { login } = useUser();
 
     async function handleLogin() {
-
-        const authService = new AuthService();
         try {
-
-            await authService.login(
+            await login(
                 email,
                 password
             );
-
             Alert.alert(
                 "Éxito",
                 "Login correcto"
             );
-
         } catch (error) {
-
             Alert.alert(
                 "Error",
                 error.message
             );
-
         }
     }
 

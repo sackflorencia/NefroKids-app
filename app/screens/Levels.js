@@ -7,35 +7,43 @@ import SectionHeader from "../components/level/SectionHeader";
 import LevelPreview from "../components/level/LevelPreview";
 
 import { useSQLiteContext } from "expo-sqlite";
-import GameController from "../../back/controllers/gameController";
+import ProgressController from "../../back/controllers/progressController";
 import { useNavigation } from "@react-navigation/native";
-
+import { useUser } from "../context/UserContext";
 
 export default function Levels() {
   const navigation = useNavigation();
   const db = useSQLiteContext();
+  const { user } = useUser();
   const [levels, setLevels] = useState([]);
   const [selectedLevel, setSelectedLevel] = useState(null);
 
   useEffect(() => {
 
+    console.log("Entró al useEffect");
     async function loadLevels() {
+      console.log("Entró al loadLevels");
 
       try {
+        console.log("user:", user);
 
-        const controller = new GameController(db);
+        if (!user?.childId) {
+          console.log("No hay childId");
+          return;
+        }
 
-        const data = await controller.getLevels();
+        console.log("childId:", user.childId);
 
-        console.log("LEVELS:");
-        console.log(data);
+        const controller = new ProgressController(db);
+        console.log("Controller creado");
+
+        const data = await controller.getLevelsForChild(user.childId);
+        console.log("Data:", data);
 
         setLevels(data);
 
       } catch (error) {
-
-        console.error(error);
-
+        console.error("ERROR:", error);
       }
     }
 
@@ -68,8 +76,12 @@ export default function Levels() {
 
             <LevelNode
               number={level.numero}
-              unlocked={true}
-              onPress={() => setSelectedLevel(level)}
+              sections={level.sections}
+              onPress={() => {
+                if (level.state !== "bloqueado") {
+                  setSelectedLevel(level);
+                }
+              }}
             />
 
           </View>
@@ -84,12 +96,22 @@ export default function Levels() {
                 <View>
                   <LevelPreview
                     level={selectedLevel}
-                    onStart={() => {
+                    onStartSection={section => {
                       setSelectedLevel(null);
 
-                      navigation.navigate("Game", {
-                        level: selectedLevel,
-                      });
+                      if (section.type === "game") {
+                        navigation.navigate("Game", {
+                          level: selectedLevel,
+                          section: section,
+                        });
+                      }
+
+                      if (section.type === "quiz") {
+                        navigation.navigate("Questions", {
+                          levelId: selectedLevel.id,
+                          sectionId: section.id,
+                        });
+                      }
                     }}
                   />
                 </View>

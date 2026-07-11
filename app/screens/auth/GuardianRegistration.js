@@ -11,9 +11,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import InputField from "../../components/InputField";
 import Button from "../../components/Button";
-import AuthService from "../../../back/services/AuthService";
 import { useSQLiteContext } from "expo-sqlite";
 import RegistrationService from "../../../back/services/RegistrationService";
+import { useUser } from "../../context/UserContext";
 
 const MAX_GUARDIANS = 5;
 
@@ -24,6 +24,7 @@ export default function GuardianRegistration({
 
     const { userData } = route.params;
     const db = useSQLiteContext();
+    const { register } = useUser();
     const [guardians, setGuardians] = useState([
         {
             full_name: "",
@@ -117,14 +118,10 @@ export default function GuardianRegistration({
 
         try {
             console.log("1 - Empieza registro");
-            const authService =
-                new AuthService();
-
             const firebaseUser =
-                await authService.registerTutor(
+                await register(
                     guardians[0].email,
                     password
-
                 );
             console.log("2 - Usuario Firebase creado");
 
