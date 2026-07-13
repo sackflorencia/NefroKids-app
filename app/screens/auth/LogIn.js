@@ -65,7 +65,8 @@ const LogIn = () => {
             <View style={styles.petWrapper} pointerEvents="none">
                 <Image source={images.happyRiku} style={styles.petImage} resizeMode="contain" />
                 <View style={styles.speechWrapper}>
-                    <SpeechBubble message="¡Bienvenido!" direction="left" backgroundColor="#fff" textColor="#666" />
+                    <SpeechBubble message="¡Bienvenido!" direction="left" backgroundColor="#fff" textColor="#666" /> 
+                    {/* cuando pueda solucionar esto */}
                 </View>
             </View>
 
@@ -102,20 +103,20 @@ const styles = StyleSheet.create({
         position: "absolute",
         left: 8,
         bottom: 0,
-        width: 220,
-        height: 260,
+        width: 200,
+        height: 340,
         alignItems: "flex-start",
         justifyContent: "flex-end",
     },
     petImage: {
-        width: 200,
-        height: 220,
+        width: 280,
+        height: 300,
         opacity: 0.95,
     },
     speechWrapper: {
         position: "absolute",
         top: 30,
-        left: 110,
+        left: 150,
         transform: [{ translateY: -10 }],
     },
 });
