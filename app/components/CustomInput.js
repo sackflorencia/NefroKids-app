@@ -4,7 +4,11 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  Pressable,
+  Text,
+  Platform,
 } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { Ionicons } from '@expo/vector-icons';
 // Si no usas Expo, reemplaza el import de arriba por:
 // import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -51,6 +55,12 @@ const TYPE_PRESETS = {
     keyboardType: 'default',
     autoCapitalize: 'none',
   },
+  date: {
+    icon: 'calendar-outline',
+    secureTextEntry: false,
+    keyboardType: 'default',
+    autoCapitalize: 'none',
+  },
 };
 
 export default function CustomInput({
@@ -67,11 +77,31 @@ export default function CustomInput({
 }) {
   const preset = TYPE_PRESETS[type] || TYPE_PRESETS.default;
   const isPasswordType = type === 'password';
+  const isDateType = type === 'date';
 
   // Solo relevante si es tipo password: controla si se muestra u oculta el texto
   const [isSecure, setIsSecure] = useState(preset.secureTextEntry);
+  const [showPicker, setShowPicker] = useState(false);
 
   const finalIconName = iconName || preset.icon;
+
+  const dateValue = value instanceof Date ? value : value ? new Date(value) : null;
+
+  function formatDate(date) {
+    if (!date) {
+      return '';
+    }
+    return date.toLocaleDateString('es-AR');
+  }
+
+  function handleDateChange(event, selectedDate) {
+    if (Platform.OS === 'android') {
+      setShowPicker(false);
+    }
+    if (selectedDate) {
+      onChangeText?.(selectedDate);
+    }
+  }
 
   return (
     <View>
@@ -94,19 +124,30 @@ export default function CustomInput({
           />
         </View>
 
-        {/* Input de texto */}
-        <TextInput
-          style={[styles.input, inputStyle]}
-          placeholder={placeholder}
-          placeholderTextColor="#A0A0A0"
-          value={value}
-          onChangeText={onChangeText}
-          secureTextEntry={isPasswordType ? isSecure : false}
-          keyboardType={preset.keyboardType}
-          autoCapitalize={preset.autoCapitalize}
-          editable={editable}
-          {...restProps}
-        />
+        {/* Input de texto o selector de fecha */}
+        {isDateType ? (
+          <Pressable
+            style={[styles.datePressable, inputStyle]}
+            onPress={() => editable && setShowPicker(true)}
+          >
+            <Text style={dateValue ? styles.input : styles.placeholderText}>
+              {dateValue ? formatDate(dateValue) : placeholder}
+            </Text>
+          </Pressable>
+        ) : (
+          <TextInput
+            style={[styles.input, inputStyle]}
+            placeholder={placeholder}
+            placeholderTextColor="#A0A0A0"
+            value={value}
+            onChangeText={onChangeText}
+            secureTextEntry={isPasswordType ? isSecure : false}
+            keyboardType={preset.keyboardType}
+            autoCapitalize={preset.autoCapitalize}
+            editable={editable}
+            {...restProps}
+          />
+        )}
 
         {/* Icono de "ojo" para mostrar/ocultar contraseña, solo si type === 'password' */}
         {isPasswordType && (
@@ -120,6 +161,16 @@ export default function CustomInput({
               color="#A0A0A0"
             />
           </TouchableOpacity>
+        )}
+
+        {showPicker && (
+          <DateTimePicker
+            value={dateValue || new Date()}
+            mode="date"
+            display="default"
+            maximumDate={new Date()}
+            onChange={handleDateChange}
+          />
         )}
       </View>
     </View>
@@ -164,6 +215,18 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     color: '#666666',
+    paddingVertical: 0,
+    paddingRight: 8,
+  },
+  datePressable: {
+    flex: 1,
+    justifyContent: 'center',
+    minHeight: 54,
+  },
+  placeholderText: {
+    flex: 1,
+    fontSize: 16,
+    color: '#A0A0A0',
     paddingVertical: 0,
     paddingRight: 8,
   },
