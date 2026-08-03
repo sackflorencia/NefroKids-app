@@ -14,18 +14,22 @@ import { useUser } from "../context/UserContext";
 export default function Levels() {
   const navigation = useNavigation();
   const db = useSQLiteContext();
-  const { user } = useUser();
+  const { user, loading } = useUser();
+
   const [levels, setLevels] = useState([]);
   const [selectedLevel, setSelectedLevel] = useState(null);
 
   useEffect(() => {
-
-    console.log("Entró al useEffect");
     async function loadLevels() {
-      console.log("Entró al loadLevels");
-
       try {
+        console.log("Entró al loadLevels");
+        console.log("loading:", loading);
         console.log("user:", user);
+
+        if (loading) {
+          console.log("Todavía cargando usuario");
+          return;
+        }
 
         if (!user?.childId) {
           console.log("No hay childId");
@@ -35,34 +39,28 @@ export default function Levels() {
         console.log("childId:", user.childId);
 
         const controller = new ProgressController(db);
-        console.log("Controller creado");
-
         const data = await controller.getLevelsForChild(user.childId);
+
         console.log("Data:", data);
 
         setLevels(data);
-
       } catch (error) {
         console.error("ERROR:", error);
       }
     }
 
     loadLevels();
-
-  }, []);
+  }, [loading, user, db]);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-
       <SectionHeader
         section={1}
         title="Introducción a la diálisis peritoneal manual"
       />
 
       <View style={styles.mapContainer}>
-
         {levels.map((level, index) => (
-
           <View
             key={level.id}
             style={[
@@ -73,7 +71,6 @@ export default function Levels() {
               },
             ]}
           >
-
             <LevelNode
               number={level.numero}
               sections={level.sections}
@@ -83,10 +80,9 @@ export default function Levels() {
                 }
               }}
             />
-
           </View>
-
         ))}
+
         {selectedLevel && (
           <TouchableWithoutFeedback
             onPress={() => setSelectedLevel(null)}
@@ -96,13 +92,13 @@ export default function Levels() {
                 <View>
                   <LevelPreview
                     level={selectedLevel}
-                    onStartSection={section => {
+                    onStartSection={(section) => {
                       setSelectedLevel(null);
 
                       if (section.type === "game") {
                         navigation.navigate("Game", {
                           level: selectedLevel,
-                          section: section,
+                          section,
                         });
                       }
 
@@ -119,9 +115,7 @@ export default function Levels() {
             </View>
           </TouchableWithoutFeedback>
         )}
-
       </View>
-
     </SafeAreaView>
   );
 }

@@ -15,12 +15,15 @@ export function UserProvider({ children }) {
         const authService = new AuthService();
 
         const unsubscribe = authService.subscribeToAuthChanges(async (firebaseUser) => {
+            console.log("Firebase cambió:", firebaseUser);
             if (firebaseUser) {
                 const tutorController = new TutorController(db);
                 const tutor =
                     await tutorController.getTutorByFirebaseUid(
                         firebaseUser.uid
                     );
+                console.log("firebaseUser:", firebaseUser);
+                console.log("tutor:", tutor);
                 setUser({
                     tutorId: tutor.id,
                     firebaseUid: firebaseUser.uid,
@@ -46,6 +49,7 @@ export function UserProvider({ children }) {
             email,
             password
         );
+        console.log(firebaseUser);
 
         //setUser(firebaseUser);
 
