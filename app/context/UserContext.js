@@ -18,12 +18,18 @@ export function UserProvider({ children }) {
             console.log("Firebase cambió:", firebaseUser);
             if (firebaseUser) {
                 const tutorController = new TutorController(db);
+
                 const tutor =
                     await tutorController.getTutorByFirebaseUid(
                         firebaseUser.uid
                     );
-                console.log("firebaseUser:", firebaseUser);
-                console.log("tutor:", tutor);
+
+                if (!tutor) {
+                    console.log("Tutor todavía no creado");
+                    setLoading(false);
+                    return;
+                }
+
                 setUser({
                     tutorId: tutor.id,
                     firebaseUid: firebaseUser.uid,
@@ -31,6 +37,8 @@ export function UserProvider({ children }) {
                     fullName: tutor.full_name,
                     email: tutor.email
                 });
+
+                setLoading(false);
 
             } else {
                 console.log("NO USER");
@@ -58,6 +66,7 @@ export function UserProvider({ children }) {
         const authService = new AuthService();
         await authService.logout();
         setUser(null);
+        setLoading(false);
     }
     async function register(email, password) {
 
@@ -69,9 +78,40 @@ export function UserProvider({ children }) {
         );
 
     }
+    async function refreshUser() {
+        const authService = new AuthService();
 
+        const firebaseUser = authService.getCurrentTutor();
+
+        if (!firebaseUser) {
+            setUser(null);
+            return;
+        }
+
+        const tutorController = new TutorController(db);
+        const tutor =
+            await tutorController.getTutorByFirebaseUid(
+                firebaseUser.uid
+            );
+
+        if (!tutor) {
+            console.log("Tutor todavía no creado");
+            setLoading(false);
+            return;
+        }
+
+        setUser({
+            tutorId: tutor.id,
+            firebaseUid: firebaseUser.uid,
+            childId: tutor.child_id,
+            fullName: tutor.full_name,
+            email: tutor.email
+        });
+
+        setLoading(false);
+    }
     return (
-        <UserContext.Provider value={{ user, login, logout, loading, register }}>
+        <UserContext.Provider value={{ user, login, logout, loading, register, refreshUser }}>
             {children}
         </UserContext.Provider>
     );

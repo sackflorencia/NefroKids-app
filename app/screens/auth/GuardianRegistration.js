@@ -21,10 +21,9 @@ export default function GuardianRegistration({
     route,
     navigation,
 }) {
-
+    const { register, refreshUser } = useUser();
     const { userData } = route.params;
     const db = useSQLiteContext();
-    const { register } = useUser();
     const [guardians, setGuardians] = useState([
         {
             full_name: "",
@@ -96,6 +95,7 @@ export default function GuardianRegistration({
 
             return;
         }
+
         if (!password.trim()) {
 
             Alert.alert(
@@ -117,28 +117,35 @@ export default function GuardianRegistration({
         }
 
         try {
+
             console.log("1 - Empieza registro");
-            const firebaseUser =
-                await register(
-                    guardians[0].email,
-                    password
-                );
+
+            const firebaseUser = await register(
+                guardians[0].email,
+                password
+            );
+
             console.log("2 - Usuario Firebase creado");
 
             const registrationService =
                 new RegistrationService(db);
+
             console.log("3 - Antes de completeRegistration");
 
             await registrationService.completeRegistration(
-
                 userData,
-
                 guardians,
-
                 firebaseUser.uid
-
             );
+
             console.log("4 - Registro completo");
+
+            await refreshUser();
+
+            console.log("5 - Context actualizado");
+
+            // Si corresponde:
+            // navigation.replace("Home");
 
         } catch (error) {
 
@@ -150,6 +157,7 @@ export default function GuardianRegistration({
             );
 
         }
+
     }
 
     function removeGuardian(index) {
