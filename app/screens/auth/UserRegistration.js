@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import {
     View,
+    Image,
     StyleSheet,
     Alert,
     ScrollView,
@@ -13,6 +14,7 @@ import Button from "../../components/Button";
 import ToggleSwitch from "../../components/ToggleSwitch";
 import colors from "../../styles/colors";
 import Header from "../../components/header/Header";
+import PerfilVacio from '../../../assets/images/PerfilVacio.png';
 
 
 export default function UserRegistration({ navigation }) {
@@ -49,15 +51,14 @@ export default function UserRegistration({ navigation }) {
                 {/* Avatar */}
                 <View style={styles.avatarContainer}>
                     <View style={styles.avatar}>
-                        <Ionicons
-                            name="person"
-                            size={60}
-                            color="#FFFFFF"
+                        <Image
+                            source={PerfilVacio}
+                            style={styles.avatarImage}
+                            resizeMode="cover"
                         />
                     </View>
                 </View>
 
-                {/* Nombre centrado en naranja */}
                 <TextInput
                     placeholder="Nombre del niño"
                     value={fullName}
@@ -69,10 +70,10 @@ export default function UserRegistration({ navigation }) {
 
                 <CustomInput
                     type="date"
-                    placeholder="Seleccionar fecha"
+                    placeholder="Fecha de nacimiento"
                     label="Fecha de nacimiento"
                     value={birthDate}
-                    onChange={setBirthDate}
+                    onChangeText={setBirthDate}
                 />
                 
 
@@ -104,17 +105,20 @@ const styles = StyleSheet.create({
     avatarContainer: {
         alignItems: "center",
         justifyContent: "center",
-        marginBottom: 10,
+        marginBottom: 0,
     },
     avatar: {
-        width: 120,
-        height: 120,
-        borderRadius: 60,
-        backgroundColor: colors.primary,
+        width: 160,
+        height: 160,
+        borderRadius: 80,
+        backgroundColor: "transparent",
         alignItems: "center",
         justifyContent: "center",
-        borderWidth: 8,
-        borderColor: colors.primary,
+    },
+    avatarImage: {
+        width: '100%',
+        height: '100%',
+        borderRadius: 80,
     },
     nameInput: {
         textAlign: "center",
@@ -122,5 +126,6 @@ const styles = StyleSheet.create({
         fontWeight: "600",
         color: colors.textLight,
         paddingVertical: 10,
+        marginBottom: 20,
     },
 });

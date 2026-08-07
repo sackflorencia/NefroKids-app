@@ -215,7 +215,8 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     color: '#666666',
-    paddingVertical: 0,
+    paddingVertical: 14,
+    textAlignVertical: 'center',
     paddingRight: 8,
   },
   datePressable: {
@@ -227,7 +228,8 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     color: '#A0A0A0',
-    paddingVertical: 0,
+    paddingVertical: 14,
+    textAlignVertical: 'center',
     paddingRight: 8,
   },
 });
