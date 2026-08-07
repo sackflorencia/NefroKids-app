@@ -19,10 +19,14 @@ export function UserProvider({ children }) {
             if (firebaseUser) {
                 const tutorController = new TutorController(db);
 
+                console.log("Firebase UID:", firebaseUser.uid);
+
                 const tutor =
                     await tutorController.getTutorByFirebaseUid(
                         firebaseUser.uid
                     );
+
+                console.log("Tutor encontrado:", tutor);
 
                 if (!tutor) {
                     console.log("Tutor todavía no creado");
@@ -57,10 +61,29 @@ export function UserProvider({ children }) {
             email,
             password
         );
-        console.log(firebaseUser);
 
-        //setUser(firebaseUser);
+        console.log("Firebase UID:", firebaseUser.uid);
 
+        const tutorController = new TutorController(db);
+
+        const tutor = await tutorController.getTutorByFirebaseUid(
+            firebaseUser.uid
+        );
+
+        console.log("Tutor encontrado:", tutor);
+
+        if (!tutor) {
+            console.log("No existe tutor local");
+            return;
+        }
+
+        setUser({
+            tutorId: tutor.id,
+            firebaseUid: firebaseUser.uid,
+            childId: tutor.child_id,
+            fullName: tutor.full_name,
+            email: tutor.email
+        });
     }
     async function logout() {
         const authService = new AuthService();
