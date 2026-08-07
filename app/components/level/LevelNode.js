@@ -65,6 +65,16 @@ const SIZE = 90;
 const styles = StyleSheet.create({
   wrapper: {
     alignItems: "center",
+    width: SIZE,
+    height: SIZE + SHADOW_OFFSET,
+  },
+  arcsContainer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: SIZE,
+    height: SIZE,
+    zIndex: 1,
   },
 
   container: {
@@ -80,6 +90,7 @@ const styles = StyleSheet.create({
     borderRadius: SIZE / 2,
     justifyContent: "center",
     alignItems: "center",
+    overflow: "hidden",
     zIndex: 2,
   },
 
@@ -97,7 +108,7 @@ const styles = StyleSheet.create({
 
   text: {
     color: "#fff",
-    fontSize: 28,
+    fontSize: 34,
     fontWeight: "700",
   }
 

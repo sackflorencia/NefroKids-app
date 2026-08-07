@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { View, StyleSheet, TouchableWithoutFeedback } from "react-native";
+import React, { useState, useEffect, useCallback } from "react";
+import { View, StyleSheet, TouchableWithoutFeedback, ScrollView, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import LevelNode from "../components/level/LevelNode";
@@ -9,6 +9,7 @@ import LevelPreview from "../components/level/LevelPreview";
 import { useSQLiteContext } from "expo-sqlite";
 import ProgressController from "../../back/controllers/progressController";
 import { useNavigation } from "@react-navigation/native";
+import colors from "../styles/colors";
 import { useUser } from "../context/UserContext";
 
 export default function Levels() {
@@ -18,6 +19,7 @@ export default function Levels() {
 
   const [levels, setLevels] = useState([]);
   const [selectedLevel, setSelectedLevel] = useState(null);
+  const [currentSection, setCurrentSection] = useState(getSectionInfo(0));
 
   useEffect(() => {
     async function loadLevels() {
@@ -50,43 +52,89 @@ export default function Levels() {
     }
 
     loadLevels();
+  }, []);
+
+  const handleScroll = useCallback(
+    (event) => {
+      const offsetY = event.nativeEvent.contentOffset.y;
+      const firstVisibleIndex = Math.max(
+        0,
+        Math.min(levels.length - 1, Math.floor((offsetY + 60) / 120))
+      );
+      setCurrentSection(getSectionInfo(firstVisibleIndex));
+    },
+    [levels.length]
+  );
+
+  const getNodeStyle = (index) => {
+    const isLeft = index % 2 === 0;
+
+    return {
+      top: index * 120,
+      left: isLeft ? 56 : undefined,
+      right: isLeft ? undefined : 56,
+    };
+  };
+
+  const canvasHeight = Math.max(700, levels.length * 130 + 60);
+
+  return (
+    <SafeAreaView style={styles.safeArea}>
   }, [loading, user, db]);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <SectionHeader
-        section={1}
-        title="Introducción a la diálisis peritoneal manual"
+        section={currentSection.section}
+        title={currentSection.title}
       />
 
       <View style={styles.mapContainer}>
-        {levels.map((level, index) => (
-          <View
-            key={level.id}
-            style={[
-              styles.node,
-              {
-                top: index * 120,
-                left: index % 2 === 0 ? 40 : 180,
-              },
-            ]}
-          >
-            <LevelNode
-              number={level.numero}
-              sections={level.sections}
-              onPress={() => {
-                if (level.state !== "bloqueado") {
-                  setSelectedLevel(level);
-                }
-              }}
-            />
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          onScroll={handleScroll}
+          scrollEventThrottle={16}
+          contentContainerStyle={styles.scrollContent}
+        >
+          <View style={[styles.mapCanvas, { height: canvasHeight }]}>
+            {levels.map((level, index) => {
+              const isSectionStart = index % SECTION_SIZE === 0 && index > 0;
+              const sectionNumber = Math.floor(index / SECTION_SIZE) + 1;
+
+              return (
+                <React.Fragment key={level.id}>
+                  {isSectionStart && (
+                    <View style={[styles.sectionGate, { top: index * 120 - 70 }]}>
+                      <View style={styles.sectionGateLabelBox}>
+                        <Text style={styles.sectionGateLabel}>⭐ {REQUIRED_STARS_PER_SECTION}</Text>
+                      </View>
+
+                      <View style={styles.sectionGateBadge}>
+                        <Text style={styles.sectionGateBadgeText}>SECCIÓN {sectionNumber}</Text>
+                      </View>
+
+                      <View style={styles.sectionGateLabelBox}>
+                        <Text style={styles.sectionGateLabel}>⭐ {REQUIRED_STARS_PER_SECTION}</Text>
+                      </View>
+                    </View>
+                  )}
+
+                  <View style={[styles.node, getNodeStyle(index)]}>
+                    <LevelNode
+                      number={level.numero}
+                      unlocked={true}
+                      onPress={() => setSelectedLevel(level)}
+                      estrellas={2}
+                    />
+                  </View>
+                </React.Fragment>
+              );
+            })}
           </View>
-        ))}
+        </ScrollView>
 
         {selectedLevel && (
-          <TouchableWithoutFeedback
-            onPress={() => setSelectedLevel(null)}
-          >
+          <TouchableWithoutFeedback onPress={() => setSelectedLevel(null)}>
             <View style={styles.previewOverlay}>
               <TouchableWithoutFeedback>
                 <View>
@@ -94,6 +142,7 @@ export default function Levels() {
                     level={selectedLevel}
                     onStartSection={(section) => {
                       setSelectedLevel(null);
+                      navigation.navigate("Game", { level: selectedLevel });
 
                       if (section.type === "game") {
                         navigation.navigate("Game", {
@@ -121,9 +170,59 @@ export default function Levels() {
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: colors.background || "#f7f8fc",
+  },
   mapContainer: {
     flex: 1,
-    marginTop: 20,
+    marginTop: 16,
+  },
+  scrollContent: {
+    paddingBottom: 24,
+  },
+  mapCanvas: {
+    position: "relative",
+    width: "100%",
+  },
+  sectionGate: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    zIndex: 3,
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+    paddingHorizontal: 12,
+  },
+  sectionGateBadge: {
+    backgroundColor: colors.secondary || "#5f7fff",
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 999,
+    marginHorizontal: 10,
+    shadowColor: "#000",
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 4,
+  },
+  sectionGateBadgeText: {
+    color: "#fff",
+    fontSize: 13,
+    fontWeight: "700",
+    letterSpacing: 0.5,
+  },
+  sectionGateLabelBox: {
+    backgroundColor: "rgba(255,255,255,0.9)",
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 999,
+  },
+  sectionGateLabel: {
+    color: colors.textDark,
+    fontSize: 12,
+    fontWeight: "700",
   },
   node: {
     position: "absolute",
