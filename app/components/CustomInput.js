@@ -55,6 +55,12 @@ const TYPE_PRESETS = {
     keyboardType: 'default',
     autoCapitalize: 'none',
   },
+  phone: {
+    icon: 'call-outline',
+    secureTextEntry: false,
+    keyboardType: 'phone-pad',
+    autoCapitalize: 'none',
+  },
   date: {
     icon: 'calendar-outline',
     secureTextEntry: false,
@@ -116,7 +122,7 @@ export default function CustomInput({
         ]}
       >
         {/* Icono izquierdo (wrapper circular) */}
-        <View style={styles.leftIconWrapper}>
+        <View style={[styles.leftIconWrapper, isDateType ? styles.leftIconAbsolute : null]}>
           <Ionicons
             name={finalIconName}
             size={18}
@@ -127,11 +133,11 @@ export default function CustomInput({
         {/* Input de texto o selector de fecha */}
         {isDateType ? (
           <Pressable
-            style={[styles.datePressable, inputStyle]}
+            style={[styles.datePressable, inputStyle, isDateType ? styles.centeredPressable : null]}
             onPress={() => editable && setShowPicker(true)}
           >
-            <Text style={dateValue ? styles.input : styles.placeholderText}>
-              {dateValue ? formatDate(dateValue) : placeholder}
+            <Text style={[styles.dateLabel, styles.dateText]}>
+              {placeholder}
             </Text>
           </Pressable>
         ) : (
@@ -231,5 +237,24 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     textAlignVertical: 'center',
     paddingRight: 8,
+  },
+  dateLabel: {
+    fontSize: 16,
+    color: '#A0A0A0',
+    textAlignVertical: 'center',
+    paddingRight: 8,
+  },
+  leftIconAbsolute: {
+    position: 'absolute',
+    left: 14,
+    zIndex: 2,
+  },
+  centeredPressable: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '100%',
+  },
+  dateText: {
+    textAlign: 'center',
   },
 });

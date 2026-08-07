@@ -15,6 +15,9 @@ import ToggleSwitch from "../../components/ToggleSwitch";
 import colors from "../../styles/colors";
 import Header from "../../components/header/Header";
 import PerfilVacio from '../../../assets/images/PerfilVacio.png';
+import SpeechBubble from "../../components/speechBubble.js/SpeechBubble";
+import images from "../../../assets/images";
+
 
 
 export default function UserRegistration({ navigation }) {
@@ -84,6 +87,24 @@ export default function UserRegistration({ navigation }) {
                     rightLabel="No orino"
                 />
 
+                <View style={styles.bottomArea}>
+                    <View style={styles.petRow}>
+                        <View style={styles.speechWrapper}>
+                            <SpeechBubble
+                                message={"¿Listo para explorar?"}
+                                direction="right"
+                                backgroundColor="#FFFFFF"
+                                textColor="#999"
+                            />
+                        </View>
+
+                        <View style={styles.petImageWrapper}>
+                            <Image source={images.confusedRiku} style={styles.petImage} />
+                        </View>
+                    </View>
+
+                </View>
+
                 <Button
                     title="Siguiente"
                     onPress={handleNext}
@@ -126,6 +147,28 @@ const styles = StyleSheet.create({
         fontWeight: "600",
         color: colors.textLight,
         paddingVertical: 10,
-        marginBottom: 20,
+        marginBottom: 0,
+    },
+    petRow: {
+        flexDirection: "row",
+        alignItems: "flex-end",
+        justifyContent: "space-between",
+        width: "100%",
+        marginTop: 10,
+    },
+    petImageWrapper: {
+        alignItems: "center",
+        justifyContent: "flex-end",
+        marginLeft: "auto",
+    },
+    petImage: {
+        width: 160,
+        height: 210,
+        opacity: 0.95,
+    },
+    speechWrapper: {
+        position: "absolute",
+        top: 30,
+        transform: [{ translateY: -10 }],
     },
 });
