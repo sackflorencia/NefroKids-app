@@ -21,6 +21,27 @@ export default function Levels() {
   const [selectedLevel, setSelectedLevel] = useState(null);
   const [currentSection, setCurrentSection] = useState(getSectionInfo(0));
 
+  const SECTION_SIZE = 5;
+
+  const SECTION_TITLES = [
+    "Introducción a la diálisis peritoneal manual",
+    "Preparación y conexión",
+    "Manejo y monitoreo",
+    "Cierre y seguimiento",
+    "Repaso final",
+  ];
+
+  const REQUIRED_STARS_PER_SECTION = 10;
+
+  function getSectionInfo(index) {
+    const section = Math.floor(index / SECTION_SIZE) + 1;
+
+    return {
+      section,
+      title: SECTION_TITLES[section - 1] || `Sección ${section}`,
+    };
+  }
+
   useEffect(() => {
     async function loadLevels() {
       try {
@@ -52,7 +73,7 @@ export default function Levels() {
     }
 
     loadLevels();
-  }, []);
+  }, [loading, user, db]);
 
   const handleScroll = useCallback(
     (event) => {
@@ -80,10 +101,6 @@ export default function Levels() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-  }, [loading, user, db]);
-
-  return (
-    <SafeAreaView style={{ flex: 1 }}>
       <SectionHeader
         section={currentSection.section}
         title={currentSection.title}
@@ -122,9 +139,12 @@ export default function Levels() {
                   <View style={[styles.node, getNodeStyle(index)]}>
                     <LevelNode
                       number={level.numero}
-                      unlocked={true}
-                      onPress={() => setSelectedLevel(level)}
-                      estrellas={2}
+                      sections={level.sections ?? []}
+                      onPress={() => {
+                        if (level.state !== "bloqueado") {
+                          setSelectedLevel(level);
+                        }
+                      }}
                     />
                   </View>
                 </React.Fragment>
@@ -142,8 +162,6 @@ export default function Levels() {
                     level={selectedLevel}
                     onStartSection={(section) => {
                       setSelectedLevel(null);
-                      navigation.navigate("Game", { level: selectedLevel });
-
                       if (section.type === "game") {
                         navigation.navigate("Game", {
                           level: selectedLevel,

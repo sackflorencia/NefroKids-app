@@ -62,6 +62,7 @@ export default function LevelNode({
   );
 }
 const SIZE = 90;
+const SHADOW_OFFSET = 20;
 const styles = StyleSheet.create({
   wrapper: {
     alignItems: "center",
