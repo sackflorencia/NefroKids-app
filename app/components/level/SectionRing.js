@@ -36,7 +36,7 @@ export default function SectionRing({
 
 
                 const color =
-                    section.state === "completed"
+                    section.status === "completed"
                         ? colors.textDark
                         : colors.textLight;
 

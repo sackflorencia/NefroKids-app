@@ -3,7 +3,7 @@ import { View, StyleSheet, TouchableWithoutFeedback, ScrollView, Text } from "re
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import LevelNode from "../components/level/LevelNode";
-import SectionHeader from "../components/level/SectionHeader";
+///import SectionHeader from "../components/level/SectionHeader";
 import LevelPreview from "../components/level/LevelPreview";
 
 import { useSQLiteContext } from "expo-sqlite";
@@ -19,28 +19,28 @@ export default function Levels() {
 
   const [levels, setLevels] = useState([]);
   const [selectedLevel, setSelectedLevel] = useState(null);
-  const [currentSection, setCurrentSection] = useState(getSectionInfo(0));
+  //const [currentSection, setCurrentSection] = useState(getSectionInfo(0));
 
-  const SECTION_SIZE = 5;
+  // const SECTION_SIZE = 5;
 
-  const SECTION_TITLES = [
-    "Introducción a la diálisis peritoneal manual",
-    "Preparación y conexión",
-    "Manejo y monitoreo",
-    "Cierre y seguimiento",
-    "Repaso final",
-  ];
+  // const SECTION_TITLES = [
+  //   "Introducción a la diálisis peritoneal manual",
+  //   "Preparación y conexión",
+  //   "Manejo y monitoreo",
+  //   "Cierre y seguimiento",
+  //   "Repaso final",
+  // ];
 
-  const REQUIRED_STARS_PER_SECTION = 10;
+  //const REQUIRED_STARS_PER_SECTION = 10;
 
-  function getSectionInfo(index) {
-    const section = Math.floor(index / SECTION_SIZE) + 1;
+  // function getSectionInfo(index) {
+  //   const section = Math.floor(index / SECTION_SIZE) + 1;
 
-    return {
-      section,
-      title: SECTION_TITLES[section - 1] || `Sección ${section}`,
-    };
-  }
+  //   return {
+  //     section,
+  //     title: SECTION_TITLES[section - 1] || `Sección ${section}`,
+  //   };
+  // }
 
   useEffect(() => {
     async function loadLevels() {
@@ -101,10 +101,10 @@ export default function Levels() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <SectionHeader
+      {/* <SectionHeader
         section={currentSection.section}
         title={currentSection.title}
-      />
+      /> */}
 
       <View style={styles.mapContainer}>
         <ScrollView
@@ -115,12 +115,12 @@ export default function Levels() {
         >
           <View style={[styles.mapCanvas, { height: canvasHeight }]}>
             {levels.map((level, index) => {
-              const isSectionStart = index % SECTION_SIZE === 0 && index > 0;
-              const sectionNumber = Math.floor(index / SECTION_SIZE) + 1;
+              //const isSectionStart = index % SECTION_SIZE === 0 && index > 0;
+              //const sectionNumber = Math.floor(index / SECTION_SIZE) + 1;
 
               return (
                 <React.Fragment key={level.id}>
-                  {isSectionStart && (
+                  {/* {isSectionStart && (
                     <View style={[styles.sectionGate, { top: index * 120 - 70 }]}>
                       <View style={styles.sectionGateLabelBox}>
                         <Text style={styles.sectionGateLabel}>⭐ {REQUIRED_STARS_PER_SECTION}</Text>
@@ -134,7 +134,7 @@ export default function Levels() {
                         <Text style={styles.sectionGateLabel}>⭐ {REQUIRED_STARS_PER_SECTION}</Text>
                       </View>
                     </View>
-                  )}
+                  )} */}
 
                   <View style={[styles.node, getNodeStyle(index)]}>
                     <LevelNode
