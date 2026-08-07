@@ -11,6 +11,7 @@ export default class TutorController {
 
     const tutor = {
       id: uuidv4(),
+      firebase_uid: data.firebase_uid ?? null,
       child_id: data.child_id,
       full_name: data.full_name,
       email: data.email,
@@ -30,6 +31,9 @@ export default class TutorController {
 
   async getTutorById(id) {
     return await this.repository.getById(id);
+  }
+  async getTutorByFirebaseUid(firebaseUid) {
+    return await this.repository.getByFirebaseUid(firebaseUid);
   }
 
   async getTutorsByChildId(childId) {

@@ -3,19 +3,22 @@ import { SQLiteProvider } from "expo-sqlite";
 import { usersTable } from "./schemas/userSchema";
 import { alertsTable } from "./schemas/alertsSchema";
 import { symptomLogsTable } from "./schemas/symptomsSchema";
-import { gameTable } from "./schemas/gameSchema";
+import { levelTable } from "./schemas/levelSchema";
 import { progressTable } from "./schemas/progressSchema";
 import { rankDefinitionsTable } from "./schemas/rankDefinitionsSchema";
-import { reviewTable } from "./schemas/reviewschema";
+import { questionTable } from "./schemas/questionSchema";
 import { avatarsTable } from "./schemas/avatarsSchema";
 import { reportHistoryTable } from "./schemas/reportHistorySchema";
 import { appointmentRulesTable } from "./schemas/appointmentRulesSchema";
 import { appointmentWeekdaysTable } from "./schemas/appointmentWeekdaysSchema";
 import { tutorsTable } from "./schemas/tutorsSchema";
 
-import { seedGames } from "./seeds/gameSeed";
-import { seedReviews } from "./seeds/reviewSeed";
+import { seedLevels } from "./seeds/levelSeed";
+import { seedQuestions } from "./seeds/questionSeed";
 import { seedUsers } from "./seeds/userSeed";
+import { levelSectionsTable } from "./schemas/levelSectionsSchema";
+import { seedLevelSections } from "./seeds/levelSectionSeed";
+import { sectionProgressTable } from "./schemas/sectionProgressSchema";
 
 export default function InitDB({ children }) {
 
@@ -28,25 +31,25 @@ export default function InitDB({ children }) {
       await db.execAsync(`
         PRAGMA foreign_keys = ON;
       `);
-      /*await db.execAsync(`
-  DROP TABLE IF EXISTS alerts;
-  DROP TABLE IF EXISTS symptom_logs;
-  DROP TABLE IF EXISTS child_progress;
-  DROP TABLE IF EXISTS reportHistory;
-  DROP TABLE IF EXISTS appointmentWeekdays;
-  DROP TABLE IF EXISTS appointmentRules;
-  DROP TABLE IF EXISTS tutors;
-  DROP TABLE IF EXISTS users;
-`);
-OJO CON ESTO: SOLO CUANDO PROBAMOS, DESP HAY Q HACER UNA BUENA MIGRACION PARA QUE NO SE BORREN LOS DATOS*/
+//       await db.execAsync(`
+//   DROP TABLE IF EXISTS alerts;
+//   DROP TABLE IF EXISTS symptom_logs;
+//   DROP TABLE IF EXISTS child_progress;
+//   DROP TABLE IF EXISTS reportHistory;
+//   DROP TABLE IF EXISTS appointmentWeekdays;
+//   DROP TABLE IF EXISTS appointmentRules;
+//   DROP TABLE IF EXISTS tutors;
+//   DROP TABLE IF EXISTS users;
+// `);
+// //OJO CON ESTO: SOLO CUANDO PROBAMOS, DESP HAY Q HACER UNA BUENA MIGRACION PARA QUE NO SE BORREN LOS DATOS*/
 
       console.log("PRAGMA OK");
 
       await db.execAsync(usersTable);
       console.log("usersTable OK");
 
-      await db.execAsync(gameTable);
-      console.log("gameTable OK");
+      await db.execAsync(levelTable);
+      console.log("levelTable OK");
 
       await db.execAsync(rankDefinitionsTable);
       console.log("rankDefinitionsTable OK");
@@ -57,11 +60,23 @@ OJO CON ESTO: SOLO CUANDO PROBAMOS, DESP HAY Q HACER UNA BUENA MIGRACION PARA QU
       await db.execAsync(alertsTable);
       console.log("alertsTable OK");
 
+      // await db.execAsync(`
+      //    DROP TABLE IF EXISTS child_progress;
+      //  `); 
       await db.execAsync(progressTable);
       console.log("progressTable OK");
 
-      await db.execAsync(reviewTable);
-      console.log("reviewTable OK");
+      await db.execAsync(sectionProgressTable)
+      console.log("sectionprogressTable OK");
+
+      // await db.execAsync(`
+      //   DROP TABLE IF EXISTS question;
+      // `); 
+      await db.execAsync(questionTable);
+      console.log("questionTable OK");
+
+      await db.execAsync(levelSectionsTable)
+      console.log("level section ok")
 
       await db.execAsync(avatarsTable);
       console.log("avatarsTable OK");
@@ -78,8 +93,9 @@ OJO CON ESTO: SOLO CUANDO PROBAMOS, DESP HAY Q HACER UNA BUENA MIGRACION PARA QU
       await db.execAsync(tutorsTable);
       console.log("tutorsTable OK");
 
-      await seedGames(db);
-      await seedReviews(db);
+      await seedLevels(db);
+      await seedLevelSections(db);
+      await seedQuestions(db);
       await seedUsers(db);
 
       console.log("DATABASE READY");

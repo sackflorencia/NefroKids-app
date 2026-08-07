@@ -7,31 +7,16 @@ import SectionHeader from "../components/level/SectionHeader";
 import LevelPreview from "../components/level/LevelPreview";
 
 import { useSQLiteContext } from "expo-sqlite";
-import GameController from "../../back/controllers/gameController";
+import ProgressController from "../../back/controllers/progressController";
 import { useNavigation } from "@react-navigation/native";
 import colors from "../styles/colors";
-
-const SECTION_SIZE = 5;
-const SECTION_TITLES = [
-  "Introducción a la diálisis peritoneal manual",
-  "Preparación y conexión",
-  "Manejo y monitoreo",
-  "Cierre y seguimiento",
-  "Repaso final",
-];
-const REQUIRED_STARS_PER_SECTION = 10;
-
-function getSectionInfo(index) {
-  const section = Math.floor(index / SECTION_SIZE) + 1;
-  return {
-    section,
-    title: SECTION_TITLES[section - 1] || `Sección ${section}`,
-  };
-}
+import { useUser } from "../context/UserContext";
 
 export default function Levels() {
   const navigation = useNavigation();
   const db = useSQLiteContext();
+  const { user, loading } = useUser();
+
   const [levels, setLevels] = useState([]);
   const [selectedLevel, setSelectedLevel] = useState(null);
   const [currentSection, setCurrentSection] = useState(getSectionInfo(0));
@@ -39,21 +24,30 @@ export default function Levels() {
   useEffect(() => {
     async function loadLevels() {
       try {
-        const controller = new GameController(db);
-        const data = await controller.getLevels();
+        console.log("Entró al loadLevels");
+        console.log("loading:", loading);
+        console.log("user:", user);
 
-        const baseLevels = Array.isArray(data) ? data : [];
-        const generatedLevels = Array.from({ length: 15 - baseLevels.length }, (_, index) => ({
-          id: `generated-${index + 1}`,
-          numero: baseLevels.length + index + 1,
-          nombre: `Nivel ${baseLevels.length + index + 1}`,
-          descripcion: `Contenido del nivel ${baseLevels.length + index + 1}.`,
-          xp_reward: 50 + index,
-        }));
+        if (loading) {
+          console.log("Todavía cargando usuario");
+          return;
+        }
 
-        setLevels([...baseLevels, ...generatedLevels].slice(0, 15));
+        if (!user?.childId) {
+          console.log("No hay childId");
+          return;
+        }
+
+        console.log("childId:", user.childId);
+
+        const controller = new ProgressController(db);
+        const data = await controller.getLevelsForChild(user.childId);
+
+        console.log("Data:", data);
+
+        setLevels(data);
       } catch (error) {
-        console.error(error);
+        console.error("ERROR:", error);
       }
     }
 
@@ -86,6 +80,10 @@ export default function Levels() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+  }, [loading, user, db]);
+
+  return (
+    <SafeAreaView style={{ flex: 1 }}>
       <SectionHeader
         section={currentSection.section}
         title={currentSection.title}
@@ -142,9 +140,23 @@ export default function Levels() {
                 <View>
                   <LevelPreview
                     level={selectedLevel}
-                    onStart={() => {
+                    onStartSection={(section) => {
                       setSelectedLevel(null);
                       navigation.navigate("Game", { level: selectedLevel });
+
+                      if (section.type === "game") {
+                        navigation.navigate("Game", {
+                          level: selectedLevel,
+                          section,
+                        });
+                      }
+
+                      if (section.type === "quiz") {
+                        navigation.navigate("Questions", {
+                          levelId: selectedLevel.id,
+                          sectionId: section.id,
+                        });
+                      }
                     }}
                   />
                 </View>

@@ -16,19 +16,28 @@ import SpeechBubble from "../../components/speechBubble.js/SpeechBubble";
 import images from "../../../assets/images";
 import colors from "../../styles/colors";
 
-import AuthService from "../../../back/services/AuthService";
+import { useUser } from "../../context/UserContext";
 
 const LogIn = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const { login } = useUser();
 
     async function handleLogin() {
-        const authService = new AuthService();
         try {
-            await authService.login(email, password);
-            Alert.alert("Éxito", "Login correcto");
+            await login(
+                email,
+                password
+            );
+            Alert.alert(
+                "Éxito",
+                "Login correcto"
+            );
         } catch (error) {
-            Alert.alert("Error", error.message);
+            Alert.alert(
+                "Error",
+                error.message
+            );
         }
     }
 
