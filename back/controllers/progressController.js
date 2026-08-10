@@ -47,13 +47,19 @@ export default class ProgressController {
 
     async getLevelsForChild(childId) {
 
+        console.log("GET LEVELS FOR CHILD:", childId);
+
         const levels =
             await this.levelController.getLevels();
+
+        console.log("LEVELS:", levels);
 
         const allProgress =
             await this.progressRepository.getByChild(
                 childId
             );
+
+        console.log("PROGRESS:", allProgress);
 
         const result = [];
 
@@ -61,10 +67,14 @@ export default class ProgressController {
 
             const level = levels[index];
 
+            console.log("CURRENT LEVEL:", level);
+
             const currentProgress =
                 allProgress.find(
                     p => p.level_id === level.id
                 );
+
+            console.log("CURRENT PROGRESS:", currentProgress);
 
             const state = this.getLevelState(
                 currentProgress,
@@ -72,6 +82,8 @@ export default class ProgressController {
                 levels,
                 index
             );
+
+            console.log("STATE:", state);
 
             const sections =
                 await this.sectionProgressController
@@ -81,17 +93,24 @@ export default class ProgressController {
                         state
                     );
 
+            console.log("SECTIONS:", sections);
+
+            console.log("ANTES DEL SPREAD LEVEL:", level);
+
             result.push({
                 ...level,
                 state,
                 sections
             });
 
+            console.log("DESPUES DEL SPREAD");
         }
 
-        return result;
+        console.log("FINAL RESULT:", result);
 
+        return result;
     }
+
 
     getLevelState(
         currentProgress,

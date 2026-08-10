@@ -67,7 +67,7 @@ export default function LevelPreview({
               {info.description}
             </Text>
 
-            {section.state === "completed" && (
+            {section.status === "completed" && (
               <>
                 <Text style={styles.completed}>
                   ✅ Completado
@@ -82,7 +82,7 @@ export default function LevelPreview({
               </>
             )}
 
-            {section.state === "available" && (
+            {section.status === "available" && (
               <Button
                 title={info.button}
                 onPress={() =>
@@ -91,7 +91,7 @@ export default function LevelPreview({
               />
             )}
 
-            {section.state === "blocked" && (
+            {section.status === "blocked" && (
               <Text style={styles.blocked}>
                 🔒 Completá la sección anterior para desbloquearla.
               </Text>

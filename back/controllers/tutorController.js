@@ -19,7 +19,7 @@ export default class TutorController {
       relationship: data.relationship,
       is_primary: data.is_primary ?? 0,
     };
-
+    console.log("Tutor a insertar:", tutor);
     await this.repository.insert(tutor);
 
     return tutor;

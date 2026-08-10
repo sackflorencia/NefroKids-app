@@ -18,6 +18,7 @@ import { useSQLiteContext } from "expo-sqlite";
 import RegistrationService from "../../../back/services/RegistrationService";
 import { useUser } from "../../context/UserContext";
 import images from "../../../assets/images";
+import TutorController from "../../../back/controllers/tutorController";
 
 const MAX_GUARDIANS = 5;
 
@@ -141,6 +142,9 @@ export default function GuardianRegistration({
                 guardians,
                 firebaseUser.uid
             );
+            const tutors = await new TutorController(db).getAllTutors();
+
+            console.log("TUTORES DESPUÉS DEL SIGNUP:", tutors);
 
             console.log("4 - Registro completo");
 
