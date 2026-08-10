@@ -6,14 +6,18 @@ import {
     Alert,
     ScrollView,
     TouchableOpacity,
+    Image,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import colors from "../../styles/colors";
 
 import CustomInput from "../../components/CustomInput";
 import Button from "../../components/Button";
+import Header from "../../components/header/Header";
 import { useSQLiteContext } from "expo-sqlite";
 import RegistrationService from "../../../back/services/RegistrationService";
 import { useUser } from "../../context/UserContext";
+import images from "../../../assets/images";
 import TutorController from "../../../back/controllers/tutorController";
 
 const MAX_GUARDIANS = 5;
@@ -179,12 +183,12 @@ export default function GuardianRegistration({
 
     return (
         <SafeAreaView style={styles.container}>
+            <Header />
 
             <ScrollView
                 contentContainerStyle={styles.content}
                 showsVerticalScrollIndicator={false}
             >
-
                 <Text style={styles.title}>
                     ¿Quién te acompaña a los turnos médicos?
                 </Text>
@@ -197,91 +201,99 @@ export default function GuardianRegistration({
 
                     <View
                         key={index}
-                        style={styles.guardianCard}
+                        style={[
+                            styles.guardianCard,
+                            (index + 1) % 2 === 0 ? styles.evenCard : null,
+                        ]}
                     >
 
-                        <Text style={styles.guardianTitle}>
-                            Tutor #{index + 1}
-                        </Text>
+                        <View style={styles.headerRow}>
+                            <Text style={styles.guardianTitle}>
+                                Tutor {index + 1}:
+                            </Text>
 
-                        {guardians.length > 1 && (
-                            <TouchableOpacity
-                                onPress={() => removeGuardian(index)}
-                            >
-                                <Text style={styles.deleteText}>
-                                    ✕
-                                </Text>
-                            </TouchableOpacity>
-                        )}
+                            {guardians.length > 1 && (
+                                <TouchableOpacity
+                                    onPress={() => removeGuardian(index)}
+                                >
+                                    <Text style={styles.deleteText}>
+                                        ✕
+                                    </Text>
+                                </TouchableOpacity>
+                            )}
+                        </View>
 
-                        <CustomInput
-                            label="Nombre completo"
-                            value={guardian.full_name}
-                            onChangeText={(text) =>
-                                updateGuardian(
-                                    index,
-                                    "full_name",
-                                    text
-                                )
-                            }
-                            autoCapitalize="words"
-                        />
+                        <View style={styles.fieldRow}>
+                            <Text style={styles.inputLabel}>Nombre completo:</Text>
+                            <CustomInput
+                                type="default"
+                                value={guardian.full_name}
+                                onChangeText={(text) =>
+                                    updateGuardian(
+                                        index,
+                                        "full_name",
+                                        text
+                                    )
+                                }
+                                autoCapitalize="words"
+                            />
+                        </View>
 
-                        <CustomInput
-                            label="Email"
-                            value={guardian.email}
-                            onChangeText={(text) =>
-                                updateGuardian(
-                                    index,
-                                    "email",
-                                    text
-                                )
-                            }
-                            keyboardType="email-address"
-                            autoCapitalize="none"
-                        />
-                        <CustomInput
-                            label="Teléfono"
-                            value={guardian.phone}
-                            onChangeText={(text) =>
-                                updateGuardian(
-                                    index,
-                                    "phone",
-                                    text
-                                )
-                            }
-                            keyboardType="phone-pad"
-                        />
+                        <View style={styles.fieldRow}>
+                            <Text style={styles.inputLabel}>Email:</Text>
+                            <CustomInput
+                                type="email"
+                                value={guardian.email}
+                                onChangeText={(text) =>
+                                    updateGuardian(
+                                        index,
+                                        "email",
+                                        text
+                                    )
+                                }
+                                keyboardType="email-address"
+                                autoCapitalize="none"
+                            />
+                                
+                        </View>
+
                         {index === 0 && (
                             <>
-                                <CustomInput
-                                    label="Contraseña"
-                                    value={password}
-                                    onChangeText={setPassword}
-                                    secureTextEntry
-                                />
+                                <View style={styles.fieldRow}>
+                                    <Text style={styles.inputLabel}>Contraseña:</Text>
+                                    <CustomInput
+                                        type="password"
+                                        value={password}
+                                        onChangeText={setPassword}
+                                    />
+                                </View>
 
-                                <CustomInput
-                                    label="Confirmar contraseña"
-                                    value={confirmPassword}
-                                    onChangeText={setConfirmPassword}
-                                    secureTextEntry
-                                />
+                                <View style={styles.fieldRow}>
+                                    <Text style={styles.inputLabel}>Repetir contraseña:</Text>
+                                    <CustomInput
+                                        type="password"
+                                        value={confirmPassword}
+                                        onChangeText={setConfirmPassword}
+                                    />
+                                </View>
                             </>
                         )}
 
-                        <CustomInput
-                            label="Relacion con el niño"
-                            value={guardian.relationship}
-                            onChangeText={(text) =>
-                                updateGuardian(
-                                    index,
-                                    "relationship",
-                                    text
-                                )
-                            }
-                            placeholder="Madre, Padre, Abuelo, Tía..."
-                        />
+                        <View style={styles.fieldRow}>
+                            <Text style={styles.inputLabel}>Relación con el niño:</Text>
+                            <CustomInput
+                                type="default"
+                                value={guardian.relationship}
+                                onChangeText={(text) =>
+                                    updateGuardian(
+                                        index,
+                                        "relationship",
+                                        text
+                                    )
+                                }
+                                placeholder="Madre, Padre, Abuelo, Tía..."
+                            />
+                        </View>
 
                     </View>
 
@@ -290,12 +302,13 @@ export default function GuardianRegistration({
                 {guardians.length < MAX_GUARDIANS && (
 
                     <Button
-                        title="+ Agrega otro tutor"
+                        title="Agregar familiar"
                         variant="secondary"
                         onPress={addGuardian}
                     />
 
                 )}
+
 
                 <Button
                     title="Siguiente"
@@ -312,31 +325,11 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
-
-    content: {
-        padding: 24,
-        gap: 20,
-    },
-
-    title: {
-        fontSize: 24,
-        fontWeight: "700",
-    },
-
-    subtitle: {
-        fontSize: 16,
-        lineHeight: 22,
-        opacity: 0.7,
-    },
-
-    guardianCard: {
-        marginTop: 12,
-    },
-
     guardianTitle: {
         fontSize: 18,
         fontWeight: "600",
-        marginBottom: 16,
+        marginBottom: 0,
+        color: colors.textLight,
     },
     headerRow: {
         flexDirection: "row",
@@ -346,5 +339,28 @@ const styles = StyleSheet.create({
 
     deleteText: {
         fontSize: 24,
+    },
+    inputLabel: {
+        color: '#000',
+        fontSize: 15,
+        marginBottom: 6,
+        marginTop: 2,
+        fontWeight: '600',
+    },
+    oddCard: {
+        backgroundColor: colors.secondary,
+        borderRadius: 12,
+        padding: 12,
+    },
+    inputWrapper: {
+        marginBottom: 14,
+    },
+    fieldRow: {
+        marginBottom: 12,
+    },
+    evenCard: {
+        backgroundColor: colors.secondary,
+        borderRadius: 12,
+        padding: 12,
     },
 });

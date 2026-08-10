@@ -1,11 +1,11 @@
-import React from "react";
 import { View, Text, StyleSheet } from "react-native";
+
 
 // Componente Arrow separado
 function Arrow({ direction, color }) {
   const getArrowSize = () => {
     const size = 18;
-    
+   
     switch (direction) {
       case "top":
         return {
@@ -64,15 +64,17 @@ function Arrow({ direction, color }) {
     }
   };
 
+
   return <View style={getArrowSize()} />;
 }
+
 
 export default function SpeechBubble({
   message,
   direction = "bottom",
   backgroundColor = "#fff",
   textColor = "#666",
-  maxWidth = "80%",
+  maxWidth = 280,
   style,
   textStyle,
 }) {
@@ -91,6 +93,7 @@ export default function SpeechBubble({
         return { flexDirection: "column" };
     }
   };
+
 
   return (
     <View
@@ -120,16 +123,19 @@ export default function SpeechBubble({
         </Text>
       </View>
 
+
       <Arrow direction={direction} color={backgroundColor} />
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   wrapper: {
     alignItems: "center",
     justifyContent: "center",
   },
+
 
   bubble: {
     borderRadius: 30,
@@ -144,11 +150,13 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
 
+
   text: {
     fontSize: 16,
     textAlign: "center",
     fontWeight: "500",
     lineHeight: 22,
     color: "#666",
+    flexShrink: 1,
   },
 });
