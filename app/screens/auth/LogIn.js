@@ -21,11 +21,7 @@ import { useUser } from "../../context/UserContext";
 const LogIn = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const userContext = useUser();
-
-    console.log("USER CONTEXT:", userContext);
-
-    const { login } = userContext;
+    const { login } = useUser();
 
     async function handleLogin() {
         try {
