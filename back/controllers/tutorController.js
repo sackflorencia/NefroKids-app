@@ -47,4 +47,19 @@ export default class TutorController {
   async deleteTutor(id) {
     await this.repository.delete(id);
   }
+  async getTutorProfile(firebaseUid) {
+    const tutor = await this.repository.getByFirebaseUid(firebaseUid);
+
+    if (!tutor) {
+      return null;
+    }
+
+    const tutors = await this.repository.getByChildId(tutor.child_id);
+
+    return {
+      childId: tutor.child_id,
+      currentTutor: tutor,
+      tutors,
+    };
+  }
 }

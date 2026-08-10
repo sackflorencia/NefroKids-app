@@ -14,8 +14,7 @@ export default function Profile() {
 
     const authService = new AuthService();
 
-    const user =
-        authService.getCurrentTutor();
+    const user = authService.getCurrentTutor();
 
     async function handleLogout() {
         try {
