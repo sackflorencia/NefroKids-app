@@ -21,7 +21,11 @@ import { useUser } from "../../context/UserContext";
 const LogIn = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const { login } = useUser();
+    const userContext = useUser();
+
+    console.log("USER CONTEXT:", userContext);
+
+    const { login } = userContext;
 
     async function handleLogin() {
         try {
@@ -74,7 +78,7 @@ const LogIn = () => {
             <View style={styles.petWrapper} pointerEvents="none">
                 <Image source={images.happyRiku} style={styles.petImage} resizeMode="contain" />
                 <View style={styles.speechWrapper}>
-                    <SpeechBubble message="¡Bienvenido!" direction="left" backgroundColor="#fff" textColor="#666" /> 
+                    <SpeechBubble message="¡Bienvenido!" direction="left" backgroundColor="#fff" textColor="#666" />
                     {/* cuando pueda solucionar esto */}
                 </View>
             </View>

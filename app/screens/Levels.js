@@ -75,17 +75,17 @@ export default function Levels() {
     loadLevels();
   }, [loading, user, db]);
 
-  const handleScroll = useCallback(
-    (event) => {
-      const offsetY = event.nativeEvent.contentOffset.y;
-      const firstVisibleIndex = Math.max(
-        0,
-        Math.min(levels.length - 1, Math.floor((offsetY + 60) / 120))
-      );
-      setCurrentSection(getSectionInfo(firstVisibleIndex));
-    },
-    [levels.length]
-  );
+  // const handleScroll = useCallback(
+  //   (event) => {
+  //     const offsetY = event.nativeEvent.contentOffset.y;
+  //     const firstVisibleIndex = Math.max(
+  //       0,
+  //       Math.min(levels.length - 1, Math.floor((offsetY + 60) / 120))
+  //     );
+  //     setCurrentSection(getSectionInfo(firstVisibleIndex));
+  //   },
+  //   [levels.length]
+  // );
 
   const getNodeStyle = (index) => {
     const isLeft = index % 2 === 0;
@@ -109,7 +109,7 @@ export default function Levels() {
       <View style={styles.mapContainer}>
         <ScrollView
           showsVerticalScrollIndicator={false}
-          onScroll={handleScroll}
+          
           scrollEventThrottle={16}
           contentContainerStyle={styles.scrollContent}
         >
