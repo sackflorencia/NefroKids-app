@@ -51,7 +51,9 @@ export default function LevelPreview({
       {level.sections.map(section => {
 
         const info = SECTION_INFO[section.type];
-
+        if (!info) {
+          return null;
+        }
         return (
 
           <View
@@ -67,7 +69,7 @@ export default function LevelPreview({
               {info.description}
             </Text>
 
-            {section.status === "completed" && (
+            {section.state === "completed" && (
               <>
                 <Text style={styles.completed}>
                   ✅ Completado
@@ -82,7 +84,7 @@ export default function LevelPreview({
               </>
             )}
 
-            {section.status === "available" && (
+            {section.state === "available" && (
               <Button
                 title={info.button}
                 onPress={() =>
@@ -91,7 +93,7 @@ export default function LevelPreview({
               />
             )}
 
-            {section.status === "blocked" && (
+            {section.state === "blocked" && (
               <Text style={styles.blocked}>
                 🔒 Completá la sección anterior para desbloquearla.
               </Text>

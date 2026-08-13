@@ -1,67 +1,178 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import Svg, { G, Path } from "react-native-svg";
+import Svg, { Path } from "react-native-svg";
 import colors from "../../styles/colors";
-
-const getArcColor = (index, estrellas = 3) => {
-  const starCount = Math.max(0, Math.min(3, Number(estrellas) || 0));
-  return index < starCount ? colors.secondaryShadow : colors.primaryShadow;
-};
 
 const SIZE = 110;
 const SHADOW_OFFSET = 14;
 const CENTER = SIZE / 2;
 const ARC_RADIUS = SIZE / 2 - 10;
-const ARC_ANGLE = 40 * (Math.PI / 180);
-const ARC_START_X = CENTER + ARC_RADIUS * Math.cos(-ARC_ANGLE);
-const ARC_START_Y = CENTER + ARC_RADIUS * Math.sin(-ARC_ANGLE);
-const ARC_END_X = CENTER + ARC_RADIUS * Math.cos(ARC_ANGLE);
-const ARC_END_Y = CENTER + ARC_RADIUS * Math.sin(ARC_ANGLE);
-const ARC_PATH = `M ${ARC_START_X.toFixed(2)} ${ARC_START_Y.toFixed(2)} A ${ARC_RADIUS} ${ARC_RADIUS} 0 0 1 ${ARC_END_X.toFixed(2)} ${ARC_END_Y.toFixed(2)}`;
 
-export default function LevelNode({ number, unlocked = true, onPress}) {
-  const arcColors = [0, 1, 2].map((index) => getArcColor(index));
+const getColorByState = (state) => {
+  switch (state) {
+    case "completado":
+      return colors.secondaryShadow;
+
+    case "en_progreso":
+      return colors.secondaryShadow;
+
+    case "disponible":
+      return colors.secondary;
+
+    case "bloqueado":
+    default:
+      return colors.primaryShadow;
+  }
+};
+
+const createArc = (
+  cx,
+  cy,
+  radius,
+  startAngle,
+  endAngle
+) => {
+  const start = polarToCartesian(
+    cx,
+    cy,
+    radius,
+    endAngle
+  );
+
+  const end = polarToCartesian(
+    cx,
+    cy,
+    radius,
+    startAngle
+  );
+
+  const largeArcFlag =
+    endAngle - startAngle <= 180 ? 0 : 1;
+
+  return [
+    "M",
+    start.x,
+    start.y,
+    "A",
+    radius,
+    radius,
+    0,
+    largeArcFlag,
+    0,
+    end.x,
+    end.y,
+  ].join(" ");
+};
+
+const polarToCartesian = (
+  cx,
+  cy,
+  radius,
+  angle
+) => {
+  const angleRadians = (angle * Math.PI) / 180;
+
+  return {
+    x: cx + radius * Math.cos(angleRadians),
+    y: cy + radius * Math.sin(angleRadians),
+  };
+};
+
+export default function LevelNode({
+  number,
+  state,
+  sections = [],
+  onPress,
+}) {
+  const isBlocked = state === "bloqueado";
+
+  const backgroundColor =
+    state === "bloqueado"
+      ? colors.primaryShadow
+      : colors.primary;
 
   return (
-    <TouchableOpacity activeOpacity={0.8} onPress={onPress}>
+    <TouchableOpacity
+      activeOpacity={0.8}
+      onPress={onPress}
+      disabled={isBlocked}
+    >
       <View style={styles.wrapper}>
+
         <View
           style={[
             styles.node,
             {
-              backgroundColor: colors.primary,
+              backgroundColor,
             },
           ]}
         >
-          <Svg width={SIZE} height={SIZE} style={styles.arcsContainer} pointerEvents="none">
-            {arcColors.map((color, index) => (
-              <G key={index} transform={`rotate(${index * 120}, ${CENTER}, ${CENTER})`}>
+
+          <Svg
+            width={SIZE}
+            height={SIZE}
+            style={styles.arcsContainer}
+            pointerEvents="none"
+          >
+            {sections.map((section, index) => {
+
+              const anglePerSection =
+                360 / sections.length;
+
+              const gap = 8;
+
+              const startAngle =
+                index * anglePerSection - 90 + gap;
+
+              const endAngle =
+                (index + 1) * anglePerSection -
+                90 -
+                gap;
+
+              const color =
+                getColorByState(section.state);
+
+              return (
                 <Path
-                  d={ARC_PATH}
+                  key={section.id}
+                  d={createArc(
+                    CENTER,
+                    CENTER,
+                    ARC_RADIUS,
+                    startAngle,
+                    endAngle
+                  )}
                   stroke={color}
                   strokeWidth={8}
                   strokeLinecap="round"
                   fill="none"
                 />
-              </G>
-            ))}
+              );
+            })}
           </Svg>
 
-          <Text style={styles.text}>{number}</Text>
+          <Text style={styles.text}>
+            {number}
+          </Text>
+
         </View>
 
         <View
           style={[
             styles.shadow,
             {
-              backgroundColor: colors.primaryShadow,
+              backgroundColor:
+                state === "bloqueado"
+                  ? colors.primaryShadow
+                  : colors.primaryShadow,
             },
           ]}
         />
+
       </View>
     </TouchableOpacity>
   );
-}
+};
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -69,6 +180,7 @@ const styles = StyleSheet.create({
     width: SIZE,
     height: SIZE + SHADOW_OFFSET,
   },
+
   arcsContainer: {
     position: "absolute",
     top: 0,
@@ -77,6 +189,7 @@ const styles = StyleSheet.create({
     height: SIZE,
     zIndex: 1,
   },
+
   node: {
     width: SIZE,
     height: SIZE,
@@ -86,6 +199,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     zIndex: 2,
   },
+
   shadow: {
     position: "absolute",
     top: SHADOW_OFFSET,
@@ -94,6 +208,7 @@ const styles = StyleSheet.create({
     borderRadius: SIZE / 2,
     zIndex: 0,
   },
+
   text: {
     color: "#fff",
     fontSize: 34,

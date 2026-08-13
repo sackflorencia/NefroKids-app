@@ -109,7 +109,7 @@ export default function Levels() {
       <View style={styles.mapContainer}>
         <ScrollView
           showsVerticalScrollIndicator={false}
-          
+
           scrollEventThrottle={16}
           contentContainerStyle={styles.scrollContent}
         >
@@ -139,6 +139,7 @@ export default function Levels() {
                   <View style={[styles.node, getNodeStyle(index)]}>
                     <LevelNode
                       number={level.numero}
+                      state={level.state}
                       sections={level.sections ?? []}
                       onPress={() => {
                         if (level.state !== "bloqueado") {

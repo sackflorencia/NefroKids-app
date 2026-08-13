@@ -5,13 +5,7 @@ export async function seedLevels(db) {
 
   const repository = new LevelRepository(db);
 
-  const games = await repository.getAll();
-
-  if (games.length > 0) {
-    return;
-  }
-
-  const initialGames = [
+  const initialLevels = [
 
     new Level(
       "level1",
@@ -27,12 +21,31 @@ export async function seedLevels(db) {
       "Lavarse las manos y prepararse correctamente.",
       50
     ),
+    new Level(
+      "level3",
+      3,
+      "Preparado de bolsas",
+      "Preparar correctamente la bolsa de diálisis antes de la conexión",
+      50
+    ),
+    new Level(
+      "level4",
+      4,
+      "Conexión de las bolsas",
+      "Conectar correctamente todo el sistema",
+      50
+    )
 
   ];
 
-  for (const game of initialGames) {
-    await repository.insert(game);
+  for (const level of initialLevels) {
+    const existing = await repository.getById(level.id);
+
+    if (!existing) {
+      await repository.insert(level);
+      console.log(`LEVEL SEEDED: ${level.id}`);
+    }
   }
 
-  console.log("GAMES SEEDED");
+  console.log("LEVELS SEEDED");
 }
