@@ -254,7 +254,24 @@ export default function GuardianRegistration({
                                 keyboardType="email-address"
                                 autoCapitalize="none"
                             />
-                                
+
+                        </View>
+
+                        <View style={styles.fieldRow}>
+                            <Text style={styles.inputLabel}>Teléfono:</Text>
+                            <CustomInput
+                                type="default"
+                                value={guardian.phone}
+                                onChangeText={(text) =>
+                                    updateGuardian(
+                                        index,
+                                        "phone",
+                                        text
+                                    )
+                                }
+                                keyboardType="phone-pad"
+                                placeholder="Ej. 11 1234-5678"
+                            />
                         </View>
 
                         {index === 0 && (

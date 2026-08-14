@@ -203,10 +203,10 @@ export function UserProvider({ children }) {
                                     firebaseUser.uid
                                 );
 
-                        console.log(
-                            "Tutor encontrado:",
-                            tutor
-                        );
+                        console.log("================================");
+                        console.log("FIREBASE UID:", firebaseUser.uid);
+                        console.log("TUTOR BUSCADO:", tutor);
+                        console.log("================================");
 
                         if (!tutor) {
 
