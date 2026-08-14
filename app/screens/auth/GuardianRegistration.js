@@ -322,6 +322,7 @@ export default function GuardianRegistration({
                         title="Agregar familiar"
                         variant="secondary"
                         onPress={addGuardian}
+                        style={styles.button}
                     />
 
                 )}
@@ -330,6 +331,7 @@ export default function GuardianRegistration({
                 <Button
                     title="Siguiente"
                     onPress={handleNext}
+                    style={styles.button}
                 />
 
             </ScrollView>
@@ -342,42 +344,85 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
+
+    content: {
+        paddingHorizontal: 20,
+        paddingBottom: 30,
+    },
+
+    title: {
+        fontSize: 26,
+        fontWeight: "700",
+        color: colors.textLight,
+        textAlign: "left",
+        marginTop: 20,
+        marginBottom: 8,
+    },
+
+    subtitle: {
+        fontSize: 15,
+        lineHeight: 22,
+        color: colors.textDark,
+        textAlign: "left",
+        marginBottom: 10,
+    },
+
+    guardianCard: {
+        borderRadius: 12,
+        padding: 16,
+        marginBottom: 18,
+    },
+
+    oddCard: {
+        backgroundColor: "#F5F5F5",
+        borderRadius: 12,
+        padding: 16,
+        marginBottom: 18,
+    },
+
+    evenCard: {
+        backgroundColor: colors.secondary,
+        borderRadius: 12,
+        padding: 16,
+        marginBottom: 18,
+    },
+
     guardianTitle: {
         fontSize: 18,
         fontWeight: "600",
         marginBottom: 0,
         color: colors.textLight,
     },
+
     headerRow: {
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
+        marginBottom: 16,
     },
 
     deleteText: {
         fontSize: 24,
     },
+
     inputLabel: {
-        color: '#000',
+        color: "#000",
         fontSize: 15,
         marginBottom: 6,
         marginTop: 2,
-        fontWeight: '600',
+        fontWeight: "600",
     },
-    oddCard: {
-        backgroundColor: colors.secondary,
-        borderRadius: 12,
-        padding: 12,
-    },
-    inputWrapper: {
-        marginBottom: 14,
-    },
+
     fieldRow: {
         marginBottom: 12,
     },
-    evenCard: {
-        backgroundColor: colors.secondary,
-        borderRadius: 12,
-        padding: 12,
+
+    inputWrapper: {
+        marginBottom: 14,
+    },
+
+    button: {
+        marginTop: 6,
+        marginBottom: 10,
     },
 });
