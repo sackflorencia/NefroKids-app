@@ -49,7 +49,7 @@ export default function GameScreen({ route }) {
     setTimeout(() => {
       const message = {
         type: "START_LEVEL",
-        level: level.numerp,
+        level: level.numero,
       };
 
       webviewRef.current.injectJavaScript(`
