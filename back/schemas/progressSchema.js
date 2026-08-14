@@ -1,31 +1,40 @@
 export const progressTable = `
 CREATE TABLE IF NOT EXISTS child_progress (
 
-  id TEXT PRIMARY KEY,
+    id TEXT PRIMARY KEY,
 
-  child_id TEXT NOT NULL,
+    child_id TEXT NOT NULL,
 
-  level_id TEXT NOT NULL,
+    level_id TEXT NOT NULL,
 
-  status TEXT NOT NULL
-    CHECK(status IN (
-      'en_progreso',
-      'completado'
-    )),
+    status TEXT NOT NULL
+        CHECK(status IN (
+            'bloqueado',
+            'disponible',
+            'completado'
+        )),
 
-  started_at TEXT,
+    attempts INTEGER NOT NULL
+        DEFAULT 0
+        CHECK(attempts >= 0),
 
-  completed_at TEXT,
+    xp_gained INTEGER NOT NULL
+        DEFAULT 0
+        CHECK(xp_gained >= 0),
 
-  FOREIGN KEY (child_id)
-    REFERENCES users(id)
-    ON DELETE CASCADE,
+    started_at TEXT,
 
-  FOREIGN KEY (level_id)
-    REFERENCES level(id)
-    ON DELETE CASCADE,
+    completed_at TEXT,
 
-  UNIQUE(child_id, level_id)
+    FOREIGN KEY (child_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (level_id)
+        REFERENCES level(id)
+        ON DELETE CASCADE,
+
+    UNIQUE(child_id, level_id)
 
 );
 `;

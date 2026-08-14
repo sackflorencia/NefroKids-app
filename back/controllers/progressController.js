@@ -1,13 +1,14 @@
 import { v4 as uuidv4 } from "uuid";
 
 import ProgressRepository from "../repositories/ProgressRepository";
-
 import LevelController from "./levelController";
 import SectionProgressController from "./sectionProgressController";
 
 export default class ProgressController {
 
     constructor(db) {
+
+        this.db = db;
 
         this.progressRepository =
             new ProgressRepository(db);
@@ -17,19 +18,16 @@ export default class ProgressController {
 
         this.sectionProgressController =
             new SectionProgressController(db);
-
     }
 
     async getAllProgress() {
 
         return await this.progressRepository.getAll();
-
     }
 
     async getProgressById(id) {
 
         return await this.progressRepository.getById(id);
-
     }
 
     async getProgressByChildAndLevel(
@@ -42,7 +40,6 @@ export default class ProgressController {
                 childId,
                 levelId
             );
-
     }
 
     async getLevelsForChild(childId) {
@@ -67,23 +64,18 @@ export default class ProgressController {
 
             const level = levels[index];
 
-            console.log("CURRENT LEVEL:", level);
-
             const currentProgress =
                 allProgress.find(
                     p => p.level_id === level.id
                 );
 
-            console.log("CURRENT PROGRESS:", currentProgress);
-
-            const state = this.getLevelState(
-                currentProgress,
-                allProgress,
-                levels,
-                index
-            );
-
-            console.log("STATE:", state);
+            const state =
+                this.getLevelState(
+                    currentProgress,
+                    allProgress,
+                    levels,
+                    index
+                );
 
             const sections =
                 await this.sectionProgressController
@@ -93,24 +85,15 @@ export default class ProgressController {
                         state
                     );
 
-            console.log("SECTIONS:", sections);
-
-            console.log("ANTES DEL SPREAD LEVEL:", level);
-
             result.push({
                 ...level,
                 state,
                 sections
             });
-
-            console.log("DESPUES DEL SPREAD");
         }
-
-        console.log("FINAL RESULT:", result);
 
         return result;
     }
-
 
     getLevelState(
         currentProgress,
@@ -119,7 +102,7 @@ export default class ProgressController {
         index
     ) {
 
-        // LEVEL 1
+        // Primer nivel
         if (index === 0) {
 
             if (currentProgress) {
@@ -129,20 +112,18 @@ export default class ProgressController {
             return "disponible";
         }
 
-        // NIVEL ANTERIOR
-        const previousLevel = levels[index - 1];
+        const previousLevel =
+            levels[index - 1];
 
         const previousProgress =
             allProgress.find(
                 p => p.level_id === previousLevel.id
             );
 
-        // El nivel anterior debe estar COMPLETAMENTE terminado
+        // El nivel anterior tiene que estar completo
         if (previousProgress?.status !== "completado") {
             return "bloqueado";
         }
-
-        // Llegamos acá solamente si el nivel anterior está completo
 
         if (currentProgress) {
             return currentProgress.status;
@@ -156,8 +137,62 @@ export default class ProgressController {
         levelId
     ) {
 
+        console.log("=== START LEVEL ===");
+        console.log("childId:", childId);
+        console.log("levelId:", levelId);
+
+        // ==========================================
+        // VERIFICAR CHILD
+        // ==========================================
+
+        const child =
+            await this.db.getFirstAsync(
+                `
+                SELECT *
+                FROM users
+                WHERE id = ?
+                `,
+                [childId]
+            );
+
+        console.log("CHILD EN DB:", child);
+
+        if (!child) {
+            throw new Error(
+                `El child ${childId} no existe en users`
+            );
+        }
+
+        // ==========================================
+        // VERIFICAR GAME
+        // ==========================================
+
+        const game =
+            await this.db.getFirstAsync(
+                `
+                SELECT *
+                FROM level
+                WHERE id = ?
+                `,
+                [levelId]
+            );
+
+        console.log("GAME EN DB:", game);
+
+        if (!game) {
+            throw new Error(
+                `El game ${levelId} no existe en levels`
+            );
+        }
+
+        // ==========================================
+        // OBTENER TODOS LOS NIVELES
+        // ==========================================
+
         const levels =
             await this.levelController.getLevels();
+
+        console.log("LEVELS:", levels);
 
         const levelIndex =
             levels.findIndex(
@@ -165,11 +200,16 @@ export default class ProgressController {
             );
 
         if (levelIndex === -1) {
-            throw new Error("Nivel no encontrado");
+
+            throw new Error(
+                "Nivel no encontrado"
+            );
         }
 
-        // Si no es el primer nivel,
-        // verificar que el anterior esté completado
+        // ==========================================
+        // VERIFICAR NIVEL ANTERIOR
+        // ==========================================
+
         if (levelIndex > 0) {
 
             const previousLevel =
@@ -181,12 +221,25 @@ export default class ProgressController {
                     previousLevel.id
                 );
 
-            if (previousProgress?.status !== "completado") {
+            console.log(
+                "PROGRESS NIVEL ANTERIOR:",
+                previousProgress
+            );
+
+            if (
+                previousProgress?.status !==
+                "completado"
+            ) {
+
                 throw new Error(
                     "El nivel anterior todavía no está completado"
                 );
             }
         }
+
+        // ==========================================
+        // BUSCAR PROGRESS EXISTENTE
+        // ==========================================
 
         let progress =
             await this.getProgressByChildAndLevel(
@@ -195,19 +248,40 @@ export default class ProgressController {
             );
 
         if (progress) {
+
+            console.log(
+                "PROGRESS YA EXISTE:",
+                progress
+            );
+
             return progress;
         }
+
+        // ==========================================
+        // CREAR PROGRESS
+        // ==========================================
 
         progress = {
             id: uuidv4(),
             child_id: childId,
             level_id: levelId,
-            status: "en_progreso",
+            status: "disponible",
             started_at: new Date().toISOString(),
             completed_at: null
         };
 
-        await this.progressRepository.insert(progress);
+        console.log(
+            "PROGRESS A INSERTAR:",
+            progress
+        );
+
+        await this.progressRepository.insert(
+            progress
+        );
+
+        console.log(
+            "PROGRESS INSERTADO CORRECTAMENTE"
+        );
 
         return progress;
     }
@@ -219,11 +293,32 @@ export default class ProgressController {
         data = {}
     ) {
 
+        console.log(
+            "=== COMPLETE SECTION ==="
+        );
+
+        console.log("childId:", childId);
+        console.log("levelId:", levelId);
+        console.log("sectionId:", levelSectionId);
+
+        // ==========================================
+        // 1. START LEVEL
+        // ==========================================
+
         const levelProgress =
             await this.startLevel(
                 childId,
                 levelId
             );
+
+        console.log(
+            "LEVEL PROGRESS:",
+            levelProgress
+        );
+
+        // ==========================================
+        // 2. COMPLETAR SECTION
+        // ==========================================
 
         const sectionProgress =
             await this.sectionProgressController
@@ -233,6 +328,16 @@ export default class ProgressController {
                     data
                 );
 
+        console.log(
+            "SECTION PROGRESS:",
+            sectionProgress
+        );
+
+        // ==========================================
+        // 3. VERIFICAR SI TODAS LAS SECTIONS
+        //    ESTÁN COMPLETAS
+        // ==========================================
+
         const completed =
             await this.sectionProgressController
                 .areAllSectionsCompleted(
@@ -240,26 +345,41 @@ export default class ProgressController {
                     levelId
                 );
 
+        console.log(
+            "ALL SECTIONS COMPLETED:",
+            completed
+        );
+
+        // ==========================================
+        // 4. COMPLETAR LEVEL
+        // ==========================================
+
         if (completed) {
+
+            console.log(
+                "COMPLETANDO LEVEL"
+            );
 
             await this.completeLevel(
                 levelProgress.id
             );
-
         }
 
         return sectionProgress;
-
     }
 
     async completeLevel(
         progressId
     ) {
 
-        await this.progressRepository.complete(
+        console.log(
+            "COMPLETANDO PROGRESS:",
             progressId
         );
 
+        await this.progressRepository.complete(
+            progressId
+        );
     }
 
     async createProgress(progress) {
@@ -267,7 +387,6 @@ export default class ProgressController {
         return await this.progressRepository.insert(
             progress
         );
-
     }
 
     async updateProgress(progress) {
@@ -275,7 +394,6 @@ export default class ProgressController {
         return await this.progressRepository.update(
             progress
         );
-
     }
 
     async deleteProgress(id) {
@@ -283,7 +401,5 @@ export default class ProgressController {
         return await this.progressRepository.delete(
             id
         );
-
     }
-
 }

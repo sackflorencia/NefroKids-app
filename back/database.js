@@ -111,6 +111,22 @@ export default function InitDB({ children }) {
 
       console.log("DATABASE READY");
 
+      const triggers = await db.getAllAsync(`
+    SELECT name, sql
+    FROM sqlite_master
+    WHERE type = 'trigger';
+`);
+
+      console.log("=== TRIGGERS ===", triggers);
+      const table = await db.getFirstAsync(`
+    SELECT sql
+    FROM sqlite_master
+    WHERE type = 'table'
+    AND name = 'child_progress';
+`);
+
+      console.log("=== CHILD_PROGRESS REAL ===", table);
+
     } catch (error) {
 
       console.error("DATABASE ERROR:");

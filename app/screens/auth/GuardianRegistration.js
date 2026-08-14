@@ -142,6 +142,16 @@ export default function GuardianRegistration({
                 guardians,
                 firebaseUser.uid
             );
+            const users = await db.getAllAsync(
+                "SELECT * FROM users"
+            );
+
+            const tutorsLog = await db.getAllAsync(
+                "SELECT * FROM tutors"
+            );
+
+            console.log("USERS SQLITE:", users);
+            console.log("TUTORS SQLITE:", tutorsLog);
             const tutors = await new TutorController(db).getAllTutors();
 
             console.log("TUTORES DESPUÉS DEL SIGNUP:", tutors);

@@ -65,14 +65,34 @@ export default function GameScreen({ route }) {
 
   async function completeCurrentSection() {
 
-    await progressController.completeSection(
-      user.childId,
-      level.id,
-      section.id
-    );
+    console.log("=== COMPLETAR NIVEL ===");
+    console.log("childId:", user?.childId);
+    console.log("levelId:", level?.id);
+    console.log("sectionId:", section?.id);
 
-    navigation.navigate("Levels");
+    try {
 
+      console.log("ANTES DE completeSection");
+
+      const result = await progressController.completeSection(
+        user.childId,
+        level.id,
+        section.id
+      );
+
+      console.log("RESULTADO completeSection:", result);
+      console.log("DESPUÉS DE completeSection");
+
+      navigation.navigate("Levels");
+
+    } catch (error) {
+
+      console.error(
+        "ERROR EN completeSection:",
+        error
+      );
+
+    }
   }
 
   const handleMessage = async (event) => {
