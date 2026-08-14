@@ -4,7 +4,8 @@ import {
     collection,
     setDoc,
     addDoc,
-    serverTimestamp
+    serverTimestamp,
+    getDoc
 } from "firebase/firestore";
 export default class FirestoreService {
 
@@ -37,7 +38,7 @@ export default class FirestoreService {
 
                 first_register_date:
                     child.first_register_date,
-              
+
                 total_xp:
                     child.total_xp ?? 0,
 
@@ -353,6 +354,44 @@ export default class FirestoreService {
 
         );
 
+    }
+    async getTutorByUid(tutorUid) {
+
+        const tutorRef = doc(
+            this.db,
+            "tutors",
+            tutorUid
+        );
+
+        const snapshot = await getDoc(tutorRef);
+
+        if (!snapshot.exists()) {
+            return null;
+        }
+
+        return {
+            id: snapshot.id,
+            ...snapshot.data()
+        };
+    }
+    async getChildById(childId) {
+
+        const childRef = doc(
+            this.db,
+            "children",
+            childId
+        );
+
+        const snapshot = await getDoc(childRef);
+
+        if (!snapshot.exists()) {
+            return null;
+        }
+
+        return {
+            id: snapshot.id,
+            ...snapshot.data()
+        };
     }
 
 }

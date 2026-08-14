@@ -21,6 +21,30 @@ export default class UserController {
     return user;
   }
 
+  async createUserFromFirestore(child) {
+
+    const user = {
+      id: child.id,
+      birth_date: child.birth_date,
+      full_name: child.full_name,
+      urinates: child.urinates ? 1 : 0,
+      total_xp: child.total_xp ?? 0,
+      avatar_id: child.avatar_id ?? null,
+      first_register_date:
+        child.first_register_date ??
+        new Date().toISOString(),
+    };
+
+    console.log(
+      "USER DESDE FIRESTORE:",
+      user
+    );
+
+    await this.repository.insert(user);
+
+    return user;
+  }
+
   async getAllUsers() {
     return await this.repository.getAll();
   }
