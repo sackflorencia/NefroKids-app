@@ -119,14 +119,17 @@ export default class ProgressController {
         index
     ) {
 
-        if (currentProgress) {
-            return currentProgress.status;
-        }
-
+        // LEVEL 1
         if (index === 0) {
+
+            if (currentProgress) {
+                return currentProgress.status;
+            }
+
             return "disponible";
         }
 
+        // NIVEL ANTERIOR
         const previousLevel = levels[index - 1];
 
         const previousProgress =
@@ -134,16 +137,56 @@ export default class ProgressController {
                 p => p.level_id === previousLevel.id
             );
 
-        return previousProgress?.status === "completado"
-            ? "disponible"
-            : "bloqueado";
+        // El nivel anterior debe estar COMPLETAMENTE terminado
+        if (previousProgress?.status !== "completado") {
+            return "bloqueado";
+        }
 
+        // Llegamos acá solamente si el nivel anterior está completo
+
+        if (currentProgress) {
+            return currentProgress.status;
+        }
+
+        return "disponible";
     }
 
     async startLevel(
         childId,
         levelId
     ) {
+
+        const levels =
+            await this.levelController.getLevels();
+
+        const levelIndex =
+            levels.findIndex(
+                level => level.id === levelId
+            );
+
+        if (levelIndex === -1) {
+            throw new Error("Nivel no encontrado");
+        }
+
+        // Si no es el primer nivel,
+        // verificar que el anterior esté completado
+        if (levelIndex > 0) {
+
+            const previousLevel =
+                levels[levelIndex - 1];
+
+            const previousProgress =
+                await this.getProgressByChildAndLevel(
+                    childId,
+                    previousLevel.id
+                );
+
+            if (previousProgress?.status !== "completado") {
+                throw new Error(
+                    "El nivel anterior todavía no está completado"
+                );
+            }
+        }
 
         let progress =
             await this.getProgressByChildAndLevel(
@@ -164,12 +207,9 @@ export default class ProgressController {
             completed_at: null
         };
 
-        await this.progressRepository.insert(
-            progress
-        );
+        await this.progressRepository.insert(progress);
 
         return progress;
-
     }
 
     async completeSection(

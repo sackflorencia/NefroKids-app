@@ -86,10 +86,23 @@ export default function LevelNode({
 }) {
   const isBlocked = state === "bloqueado";
 
-  const backgroundColor =
-    state === "bloqueado"
-      ? colors.primaryShadow
-      : colors.primary;
+  const getNodeColor = (state) => {
+    switch (state) {
+      case "disponible":
+        return colors.secondary;
+
+      case "en_progreso":
+        return colors.secondary;
+
+      case "completado":
+        return colors.primary;
+
+      case "bloqueado":
+      default:
+        return colors.primaryShadow;
+    }
+  };
+  const backgroundColor = getNodeColor(state);
 
   return (
     <TouchableOpacity
