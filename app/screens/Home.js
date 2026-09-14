@@ -9,7 +9,7 @@ import colors from "../styles/colors";
 import Header from "../components/header/Header";
 
 import images from "../../assets/images";
-import { useNavigation } from "expo-router/react-navigation";
+import { useNavigation } from "@react-navigation/native"
 
 // images.confusedRiku({
 //   width: 300,

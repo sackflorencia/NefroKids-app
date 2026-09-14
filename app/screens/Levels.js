@@ -8,7 +8,7 @@ import LevelPreview from "../components/level/LevelPreview";
 
 import { useSQLiteContext } from "expo-sqlite";
 import ProgressController from "../../back/controllers/progressController";
-import { useNavigation } from "expo-router/react-navigation";
+import { useNavigation } from "@react-navigation/native"
 import colors from "../styles/colors";
 import { useUser } from "../context/UserContext";
 
