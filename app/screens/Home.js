@@ -57,12 +57,6 @@ const Home = () => {
             variant="secondary" 
             style={styles.button}
           />
-          <Button 
-            title="Repasar" 
-            variant="secondary" 
-            style={styles.button}
-            onPress={() => navigation.navigate("Review")}
-          />
         </View>
       </View>
     </SafeAreaView>
