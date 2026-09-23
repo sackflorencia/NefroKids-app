@@ -5,11 +5,15 @@ import {
     View,
     Text,
     Image,
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import CustomInput from "../../components/CustomInput";
 import Button from "../../components/Button";
+import BackButton from "../../components/BackButton";
 import Header from "../../components/header/Header";
 import SpeechBubble from "../../components/speechBubble.js/SpeechBubble";
 
@@ -42,44 +46,57 @@ const LogIn = () => {
     }
 
     return (
-        <SafeAreaView style={styles.container}>
+        <KeyboardAvoidingView
+            style={styles.container}
+            behavior={Platform.OS === "ios" ? "padding" : undefined}
+            keyboardVerticalOffset={Platform.OS === "ios" ? 20 : 0}
+        >
+            <SafeAreaView style={styles.safeArea}>
+                <Header />
 
-            <Header />
-
-            <View style={styles.form}>
-                <Text style={styles.label}>Email del tutor</Text>
-                <CustomInput
-                    type="email"
-                    placeholder="Escribe aqui"
-                    value={email}
-                    onChangeText={setEmail}
-                />
-
-                <Text style={styles.label}>Contraseña</Text>
-                <CustomInput
-                    type="password"
-                    placeholder="Escribe aqui"
-                    value={password}
-                    onChangeText={setPassword}
-                />
-
-                <Button
-                    title="Siguiente"
-                    onPress={handleLogin}
-                    variant="secondary"
-                    style={styles.submitButton}
-                />
-            </View>
-
-            <View style={styles.petWrapper} pointerEvents="none">
-                <Image source={images.happyRiku} style={styles.petImage} resizeMode="contain" />
-                <View style={styles.speechWrapper}>
-                    <SpeechBubble message="¡Bienvenido!" direction="left" backgroundColor="#fff" textColor="#666" />
-                    {/* cuando pueda solucionar esto */}
+                <View style={styles.topBar}>
+                    <BackButton />
                 </View>
-            </View>
 
-        </SafeAreaView>
+                <ScrollView
+                    contentContainerStyle={styles.scrollContent}
+                    keyboardShouldPersistTaps="handled"
+                    showsVerticalScrollIndicator={false}
+                >
+                    <View style={styles.form}>
+                        <Text style={styles.label}>Email del tutor</Text>
+                        <CustomInput
+                            type="email"
+                            placeholder="Escribe aqui"
+                            value={email}
+                            onChangeText={setEmail}
+                        />
+
+                        <Text style={styles.label}>Contraseña</Text>
+                        <CustomInput
+                            type="password"
+                            placeholder="Escribe aqui"
+                            value={password}
+                            onChangeText={setPassword}
+                        />
+
+                        <Button
+                            title="Siguiente"
+                            onPress={handleLogin}
+                            variant="secondary"
+                            style={styles.submitButton}
+                        />
+                    </View>
+                </ScrollView>
+
+                <View style={styles.petWrapper} pointerEvents="none">
+                    <Image source={images.happyRiku} style={styles.petImage} resizeMode="contain" />
+                    <View style={styles.speechWrapper}>
+                        <SpeechBubble message="¡Bienvenido!" direction="left" backgroundColor="#fff" textColor="#666" />
+                    </View>
+                </View>
+            </SafeAreaView>
+        </KeyboardAvoidingView>
     );
 };
 
@@ -89,6 +106,17 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#fff",
+    },
+    safeArea: {
+        flex: 1,
+    },
+    topBar: {
+        paddingHorizontal: 20,
+        paddingTop: 8,
+        paddingBottom: 0,
+    },
+    scrollContent: {
+        flexGrow: 1,
     },
     form: {
         paddingHorizontal: 24,

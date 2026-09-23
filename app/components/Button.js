@@ -50,7 +50,7 @@ export default Button;
 
 const styles = StyleSheet.create({
   button: {
-    paddingVertical: 14,
+    paddingVertical: 16,
     borderRadius: 20,
     alignItems: "center",
     flexDirection: "row",
@@ -66,7 +66,8 @@ const styles = StyleSheet.create({
     borderRadius: 9,
   },
   text: {
-    ...typography.button,
+    fontSize: 20,
+    fontWeight: "600",
   },
   shadow: {
     position: "absolute",

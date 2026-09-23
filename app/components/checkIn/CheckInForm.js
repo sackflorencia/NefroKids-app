@@ -27,7 +27,14 @@ export default function CheckInForm({ onFinish }) {
   }
 
   async function handleNext() {
-    if (!selectedValue) return;
+    // Validación: para preguntas de dolor, debe haber al menos una selección
+    if (currentQuestion.id === "pain") {
+      if (!selectedValue || (Array.isArray(selectedValue) && selectedValue.length === 0)) {
+        return;
+      }
+    } else if (!selectedValue) {
+      return;
+    }
 
     const updatedAnswers = {
       ...answers,
@@ -41,7 +48,7 @@ export default function CheckInForm({ onFinish }) {
     if (isLastQuestion) {
       await onFinish({
         general_mood:  updatedAnswers.mood,
-        pain_location: updatedAnswers.pain,
+        pain_location: JSON.stringify(updatedAnswers.pain || []), // Serializar array a JSON
         urine_color:   updatedAnswers.urineColor,
       });
       return;
@@ -50,6 +57,13 @@ export default function CheckInForm({ onFinish }) {
     setSelectedValue(null);
     setCurrentIndex(currentIndex + 1);
   }
+
+  const isValid = () => {
+    if (currentQuestion.id === "pain") {
+      return Array.isArray(selectedValue) && selectedValue.length > 0;
+    }
+    return !!selectedValue;
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -101,7 +115,7 @@ export default function CheckInForm({ onFinish }) {
           title="Siguiente pregunta"
           variant="secondary"
           onPress={handleNext}
-          style={[styles.nextButton, !selectedValue && styles.disabled]}
+          style={[styles.nextButton, !isValid() && styles.disabled]}
         />
       </View>
 
@@ -124,7 +138,7 @@ const styles = StyleSheet.create({
   },
   stepCircleWrapper: {
     alignItems: "center",
-    marginTop: -30, // se superpone sobre el header
+    marginTop: -30,
     marginBottom: 24,
   },
   stepCircle: {
@@ -138,20 +152,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   stepNumber: {
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: "700",
     color: colors.primaryShadow,
   },
   questionContainer: {
-    marginBottom: 28,
+    marginBottom: 32,
     paddingHorizontal: 8,
   },
   question: {
-    fontSize: 22,
-    fontWeight: "600",
+    fontSize: 26,
+    fontWeight: "700",
     color: colors.textDark,
     textAlign: "center",
-    lineHeight: 30,
+    lineHeight: 35,
+    letterSpacing: 0.3,
   },
   optionsContainer: {
     flex: 1,
