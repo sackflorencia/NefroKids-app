@@ -6,7 +6,6 @@ import {
     Alert,
     ScrollView,
     TouchableOpacity,
-    Image,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import colors from "../../styles/colors";
@@ -17,8 +16,6 @@ import Header from "../../components/header/Header";
 import { useSQLiteContext } from "expo-sqlite";
 import RegistrationService from "../../../back/services/RegistrationService";
 import { useUser } from "../../context/UserContext";
-import images from "../../../assets/images";
-import TutorController from "../../../back/controllers/tutorController";
 
 const MAX_GUARDIANS = 5;
 
@@ -26,9 +23,19 @@ export default function GuardianRegistration({
     route,
     navigation,
 }) {
-    const { register, refreshUser } = useUser();
+
+    const {
+        register,
+        refreshUser,
+        user
+    } = useUser();
+
+    const [registering, setRegistering] = useState(false);
+
     const { userData } = route.params;
+
     const db = useSQLiteContext();
+
     const [guardians, setGuardians] = useState([
         {
             full_name: "",
@@ -37,9 +44,10 @@ export default function GuardianRegistration({
             phone: ""
         },
     ]);
-    const [password, setPassword] = useState("");
 
+    const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+
 
     function updateGuardian(
         index,
@@ -53,6 +61,7 @@ export default function GuardianRegistration({
 
         setGuardians(updated);
     }
+
 
     function addGuardian() {
 
@@ -70,6 +79,7 @@ export default function GuardianRegistration({
             },
         ]);
     }
+
 
     function validateGuardians() {
 
@@ -89,9 +99,48 @@ export default function GuardianRegistration({
         return true;
     }
 
+
     async function handleNext() {
 
+        console.log(
+            "========================================"
+        );
+
+        console.log(
+            "SIGN UP - handleNext INICIADO"
+        );
+
+        console.log(
+            "SIGN UP - Email:",
+            guardians[0].email.trim()
+        );
+
+        console.log(
+            "SIGN UP - Cantidad de tutores:",
+            guardians.length
+        );
+
+        console.log(
+            "SIGN UP - UserContext ANTES:",
+            user
+        );
+
+
+        if (registering) {
+
+            console.log(
+                "SIGN UP - Registro ya en progreso. Se cancela segundo click."
+            );
+
+            return;
+        }
+
+
         if (!validateGuardians()) {
+
+            console.log(
+                "SIGN UP - Validación fallida: campos incompletos"
+            );
 
             Alert.alert(
                 "Datos incompletos",
@@ -101,7 +150,12 @@ export default function GuardianRegistration({
             return;
         }
 
+
         if (!password.trim()) {
+
+            console.log(
+                "SIGN UP - Validación fallida: contraseña vacía"
+            );
 
             Alert.alert(
                 "Contraseña",
@@ -111,7 +165,12 @@ export default function GuardianRegistration({
             return;
         }
 
+
         if (password !== confirmPassword) {
+
+            console.log(
+                "SIGN UP - Validación fallida: contraseñas diferentes"
+            );
 
             Alert.alert(
                 "Contraseña",
@@ -121,62 +180,130 @@ export default function GuardianRegistration({
             return;
         }
 
+
         try {
 
-            console.log("1 - Empieza registro");
+            setRegistering(true);
+
+            console.log(
+                "SIGN UP - 1: Iniciando registro en Firebase"
+            );
+
+
+            /*
+             * ==================================================
+             * FIREBASE
+             * ==================================================
+             */
 
             const firebaseUser = await register(
-                guardians[0].email,
+                guardians[0].email.trim(),
                 password
             );
 
-            console.log("2 - Usuario Firebase creado");
+
+            console.log(
+                "SIGN UP - 2: Firebase register() TERMINÓ"
+            );
+
+            console.log(
+                "SIGN UP - Firebase UID:",
+                firebaseUser?.uid
+            );
+
+            console.log(
+                "SIGN UP - Firebase email:",
+                firebaseUser?.email
+            );
+
+
+            /*
+             * ==================================================
+             * REGISTRATION SERVICE
+             * ==================================================
+             */
+
+            console.log(
+                "SIGN UP - 3: Creando RegistrationService"
+            );
 
             const registrationService =
                 new RegistrationService(db);
 
-            console.log("3 - Antes de completeRegistration");
+
+            console.log(
+                "SIGN UP - 4: Iniciando completeRegistration()"
+            );
+
 
             await registrationService.completeRegistration(
                 userData,
                 guardians,
                 firebaseUser.uid
             );
-            const users = await db.getAllAsync(
-                "SELECT * FROM users"
+
+
+            console.log(
+                "SIGN UP - 5: completeRegistration() TERMINÓ OK"
             );
 
-            const tutorsLog = await db.getAllAsync(
-                "SELECT * FROM tutors"
+
+            /*
+             * ==================================================
+             * REFRESH USER
+             * ==================================================
+             */
+
+            console.log(
+                "SIGN UP - 6: Antes de refreshUser()"
             );
-
-            console.log("USERS SQLITE:", users);
-            console.log("TUTORS SQLITE:", tutorsLog);
-            const tutors = await new TutorController(db).getAllTutors();
-
-            console.log("TUTORES DESPUÉS DEL SIGNUP:", tutors);
-
-            console.log("4 - Registro completo");
 
             await refreshUser();
 
-            console.log("5 - Context actualizado");
+            console.log(
+                "SIGN UP - 7: refreshUser() TERMINÓ"
+            );
 
-            // Si corresponde:
-            // navigation.replace("Home");
+            console.log(
+                "SIGN UP - UserContext DESPUÉS:",
+                user
+            );
+
+
+            /*
+             * ==================================================
+             * FIN
+             * ==================================================
+             */
+
+            console.log(
+                "SIGN UP - 8: REGISTRO COMPLETADO CORRECTAMENTE"
+            );
+
+            console.log(
+                "========================================"
+            );
+
 
         } catch (error) {
 
-            console.error(error);
-
             Alert.alert(
-                "Error",
-                "No se pudo completar el registro."
+                "No pudimos crear la cuenta",
+                error?.message ||
+                "Ocurrió un error al completar el registro."
             );
 
-        }
 
+        } finally {
+
+            setRegistering(false);
+
+            console.log(
+                "SIGN UP - finally → registering = false"
+            );
+        }
     }
+
 
     function removeGuardian(index) {
 
@@ -191,14 +318,17 @@ export default function GuardianRegistration({
         setGuardians(updated);
     }
 
+
     return (
         <SafeAreaView style={styles.container}>
+
             <Header />
 
             <ScrollView
                 contentContainerStyle={styles.content}
                 showsVerticalScrollIndicator={false}
             >
+
                 <Text style={styles.title}>
                     ¿Quién te acompaña a los turnos médicos?
                 </Text>
@@ -207,34 +337,48 @@ export default function GuardianRegistration({
                     Agrega a las personas que ayudan a manejar el tratamiento del niño y deberían recibir su información médica.
                 </Text>
 
+
                 {guardians.map((guardian, index) => (
 
                     <View
                         key={index}
                         style={[
                             styles.guardianCard,
-                            (index + 1) % 2 === 0 ? styles.evenCard : null,
+                            (index + 1) % 2 === 0
+                                ? styles.evenCard
+                                : null,
                         ]}
                     >
 
                         <View style={styles.headerRow}>
+
                             <Text style={styles.guardianTitle}>
                                 Tutor {index + 1}:
                             </Text>
 
                             {guardians.length > 1 && (
+
                                 <TouchableOpacity
-                                    onPress={() => removeGuardian(index)}
+                                    onPress={() =>
+                                        removeGuardian(index)
+                                    }
                                 >
                                     <Text style={styles.deleteText}>
                                         ✕
                                     </Text>
                                 </TouchableOpacity>
+
                             )}
+
                         </View>
 
+
                         <View style={styles.fieldRow}>
-                            <Text style={styles.inputLabel}>Nombre completo:</Text>
+
+                            <Text style={styles.inputLabel}>
+                                Nombre completo:
+                            </Text>
+
                             <CustomInput
                                 type="default"
                                 value={guardian.full_name}
@@ -247,10 +391,16 @@ export default function GuardianRegistration({
                                 }
                                 autoCapitalize="words"
                             />
+
                         </View>
 
+
                         <View style={styles.fieldRow}>
-                            <Text style={styles.inputLabel}>Email:</Text>
+
+                            <Text style={styles.inputLabel}>
+                                Email:
+                            </Text>
+
                             <CustomInput
                                 type="email"
                                 value={guardian.email}
@@ -267,8 +417,13 @@ export default function GuardianRegistration({
 
                         </View>
 
+
                         <View style={styles.fieldRow}>
-                            <Text style={styles.inputLabel}>Teléfono:</Text>
+
+                            <Text style={styles.inputLabel}>
+                                Teléfono:
+                            </Text>
+
                             <CustomInput
                                 type="default"
                                 value={guardian.phone}
@@ -282,32 +437,54 @@ export default function GuardianRegistration({
                                 keyboardType="phone-pad"
                                 placeholder="Ej. 11 1234-5678"
                             />
+
                         </View>
 
+
                         {index === 0 && (
+
                             <>
+
                                 <View style={styles.fieldRow}>
-                                    <Text style={styles.inputLabel}>Contraseña:</Text>
+
+                                    <Text style={styles.inputLabel}>
+                                        Contraseña:
+                                    </Text>
+
                                     <CustomInput
                                         type="password"
                                         value={password}
                                         onChangeText={setPassword}
                                     />
+
                                 </View>
 
+
                                 <View style={styles.fieldRow}>
-                                    <Text style={styles.inputLabel}>Repetir contraseña:</Text>
+
+                                    <Text style={styles.inputLabel}>
+                                        Repetir contraseña:
+                                    </Text>
+
                                     <CustomInput
                                         type="password"
                                         value={confirmPassword}
                                         onChangeText={setConfirmPassword}
                                     />
+
                                 </View>
+
                             </>
+
                         )}
 
+
                         <View style={styles.fieldRow}>
-                            <Text style={styles.inputLabel}>Relación con el niño:</Text>
+
+                            <Text style={styles.inputLabel}>
+                                Relación con el niño:
+                            </Text>
+
                             <CustomInput
                                 type="default"
                                 value={guardian.relationship}
@@ -320,11 +497,13 @@ export default function GuardianRegistration({
                                 }
                                 placeholder="Madre, Padre, Abuelo, Tía..."
                             />
+
                         </View>
 
                     </View>
 
                 ))}
+
 
                 {guardians.length < MAX_GUARDIANS && (
 
@@ -333,14 +512,20 @@ export default function GuardianRegistration({
                         variant="secondary"
                         onPress={addGuardian}
                         style={styles.button}
+                        disabled={registering}
                     />
 
                 )}
 
 
                 <Button
-                    title="Siguiente"
+                    title={
+                        registering
+                            ? "Creando cuenta..."
+                            : "Siguiente"
+                    }
                     onPress={handleNext}
+                    disabled={registering}
                     style={styles.button}
                 />
 
@@ -350,7 +535,9 @@ export default function GuardianRegistration({
     );
 }
 
+
 const styles = StyleSheet.create({
+
     container: {
         flex: 1,
     },
@@ -378,13 +565,6 @@ const styles = StyleSheet.create({
     },
 
     guardianCard: {
-        borderRadius: 12,
-        padding: 16,
-        marginBottom: 18,
-    },
-
-    oddCard: {
-        backgroundColor: "#F5F5F5",
         borderRadius: 12,
         padding: 16,
         marginBottom: 18,
@@ -425,10 +605,6 @@ const styles = StyleSheet.create({
 
     fieldRow: {
         marginBottom: 12,
-    },
-
-    inputWrapper: {
-        marginBottom: 14,
     },
 
     button: {

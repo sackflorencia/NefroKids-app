@@ -1,47 +1,102 @@
 import React from "react";
-import { TouchableOpacity, Text, StyleSheet, View } from "react-native";
+import {
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  View
+} from "react-native";
+
 import colors from "../styles/colors";
 import typography from "../styles/typography";
 
-const Button = ({ title, onPress, variant = "primary", style, selected, accentColor }) => {
-  const isPrimary   = variant === "primary";
+const Button = ({
+  title,
+  onPress,
+  variant = "primary",
+  style,
+  selected,
+  accentColor,
+  disabled = false,
+}) => {
+
+  const isPrimary = variant === "primary";
   const isSecondary = variant === "secondary";
-  const isOption    = variant === "option";
+  const isOption = variant === "option";
 
-  const bgColor     = isPrimary   ? colors.primary
-                    : isSecondary ? colors.secondary
-                    : selected    ? "#EDFDF5"
-                    : "#FAFAFA";
+  const bgColor = disabled
+    ? "#D6D6D6"
+    : isPrimary
+      ? colors.primary
+      : isSecondary
+        ? colors.secondary
+        : selected
+          ? "#EDFDF5"
+          : "#FAFAFA";
 
-  const shadowColor = isPrimary   ? colors.primaryShadow
-                    : isSecondary ? colors.secondaryShadow
-                    : selected    ? "#A4F1CC"
-                    : "#D6D6D6";
+  const shadowColor = disabled
+    ? "#BDBDBD"
+    : isPrimary
+      ? colors.primaryShadow
+      : isSecondary
+        ? colors.secondaryShadow
+        : selected
+          ? "#A4F1CC"
+          : "#D6D6D6";
 
-  const textColor   = isPrimary   ? colors.textDark
-                    : isSecondary ? colors.textLight
-                    : selected    ? colors.textDark
-                    : "#999";
+  const textColor = disabled
+    ? "#999"
+    : isPrimary
+      ? colors.textDark
+      : isSecondary
+        ? colors.textLight
+        : selected
+          ? colors.textDark
+          : "#999";
 
   return (
-    <TouchableOpacity onPress={onPress} activeOpacity={0.8} style={style}>
+    <TouchableOpacity
+      onPress={onPress}
+      activeOpacity={0.8}
+      style={style}
+      disabled={disabled}
+    >
+      <View
+        style={[
+          styles.shadow,
+          { backgroundColor: shadowColor }
+        ]}
+      />
 
-      <View style={[styles.shadow, { backgroundColor: shadowColor }]} />
-
-      <View style={[
-        styles.button,
-        { backgroundColor: bgColor },
-        isOption && styles.optionBorder,
-        isOption && { borderColor: selected ? colors.primaryShadow : "#D6D6D6" },
-      ]}>
+      <View
+        style={[
+          styles.button,
+          { backgroundColor: bgColor },
+          isOption && styles.optionBorder,
+          isOption && {
+            borderColor: selected
+              ? colors.primaryShadow
+              : "#D6D6D6"
+          },
+        ]}
+      >
         {accentColor && (
-          <View style={[styles.colorDot, { backgroundColor: accentColor }]} />
+          <View
+            style={[
+              styles.colorDot,
+              { backgroundColor: accentColor }
+            ]}
+          />
         )}
-        <Text style={[styles.text, { color: textColor }]}>
+
+        <Text
+          style={[
+            styles.text,
+            { color: textColor }
+          ]}
+        >
           {title}
         </Text>
       </View>
-
     </TouchableOpacity>
   );
 };
@@ -57,17 +112,21 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 10,
   },
+
   optionBorder: {
     borderWidth: 2,
   },
+
   colorDot: {
     width: 18,
     height: 18,
     borderRadius: 9,
   },
+
   text: {
     ...typography.button,
   },
+
   shadow: {
     position: "absolute",
     width: "100%",
