@@ -23,23 +23,35 @@ const LogIn = () => {
     const [password, setPassword] = useState("");
     const { login } = useUser();
 
+
     async function handleLogin() {
+
+        if (!email.trim() || !password) {
+            Alert.alert(
+                "Campos incompletos",
+                "Completá tu email y contraseña."
+            );
+            return;
+        }
+
         try {
+
             await login(
-                email,
+                email.trim(),
                 password
             );
-            Alert.alert(
-                "Éxito",
-                "Login correcto"
-            );
+
         } catch (error) {
+
             Alert.alert(
-                "Error",
+                "No pudimos iniciar sesión",
                 error.message
             );
+
         }
     }
+
+
 
     return (
         <SafeAreaView style={styles.container}>

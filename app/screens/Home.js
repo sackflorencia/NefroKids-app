@@ -1,4 +1,4 @@
-import React, { use } from "react";
+import React, { useEffect } from "react";
 import { View, Image, StyleSheet, StatusBar } from "react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -7,6 +7,7 @@ import Button from "../components/Button";
 import SpeechBubble from "../components/speechBubble.js/SpeechBubble";
 import colors from "../styles/colors";
 import Header from "../components/header/Header";
+import * as ScreenOrientation from "expo-screen-orientation";
 
 import images from "../../assets/images";
 import { useNavigation } from "@react-navigation/native"
@@ -18,6 +19,13 @@ import { useNavigation } from "@react-navigation/native"
 // })
 
 const Home = () => {
+  useEffect(() => {
+  
+      ScreenOrientation.lockAsync(
+        ScreenOrientation.OrientationLock.PORTRAIT_UP
+      );
+  
+    }, []);
   const navigation = useNavigation();
   return (
     <SafeAreaView style={styles.container}>

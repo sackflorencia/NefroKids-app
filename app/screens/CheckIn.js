@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   StyleSheet
 } from "react-native";
+import * as ScreenOrientation from "expo-screen-orientation";
 
 import { useSQLiteContext } from "expo-sqlite";
 
@@ -17,7 +18,13 @@ import CheckInForm from "../components/checkIn/CheckInForm";
 import CheckInSummary from "../components/checkIn/CheckInSummary";
 
 export default function CheckIn() {
+  useEffect(() => {
 
+    ScreenOrientation.lockAsync(
+      ScreenOrientation.OrientationLock.PORTRAIT_UP
+    );
+
+  }, []);
   const db = useSQLiteContext();
 
   const [loading, setLoading] =

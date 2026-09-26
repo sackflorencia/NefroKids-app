@@ -35,7 +35,9 @@ export default function GameScreen({ route }) {
     );
 
     return () => {
-      ScreenOrientation.unlockAsync();
+      ScreenOrientation.lockAsync(
+        ScreenOrientation.OrientationLock.PORTRAIT_UP
+      );
     };
 
   }, []);

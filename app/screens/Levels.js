@@ -11,6 +11,8 @@ import ProgressController from "../../back/controllers/progressController";
 import { useNavigation } from "@react-navigation/native"
 import colors from "../styles/colors";
 import { useUser } from "../context/UserContext";
+import * as ScreenOrientation from "expo-screen-orientation";
+
 
 export default function Levels() {
   const navigation = useNavigation();
@@ -41,6 +43,14 @@ export default function Levels() {
   //     title: SECTION_TITLES[section - 1] || `Sección ${section}`,
   //   };
   // }
+
+  useEffect(() => {
+
+    ScreenOrientation.lockAsync(
+      ScreenOrientation.OrientationLock.PORTRAIT_UP
+    );
+
+  }, []);
 
   useEffect(() => {
     async function loadLevels() {

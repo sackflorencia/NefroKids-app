@@ -1,34 +1,40 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {
-    View,
     Text,
-    StyleSheet
+    Alert
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import * as ScreenOrientation from "expo-screen-orientation";
 
 import Button from "../components/Button";
-import AuthService from "../../back/services/AuthService";
+import { useUser } from "../context/UserContext";
 
 export default function Profile() {
 
-    const authService = new AuthService();
+    const {
+        user,
+        logout
+    } = useUser();
 
-    const user = authService.getCurrentTutor();
+    useEffect(() => {
+      
+          ScreenOrientation.lockAsync(
+            ScreenOrientation.OrientationLock.PORTRAIT_UP
+          );
+      
+        }, []);
 
     async function handleLogout() {
+
         try {
-            await authService.logout();
-            setUser(null);
-            Alert.alert(
-                "Éxito",
-                "Sesión cerrada"
-            );
+            await logout();
         } catch (error) {
+
             Alert.alert(
                 "Error",
                 error.message
             );
+
         }
     }
 
