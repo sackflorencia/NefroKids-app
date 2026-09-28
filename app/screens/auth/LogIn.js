@@ -5,15 +5,14 @@ import {
     View,
     Text,
     Image,
-    KeyboardAvoidingView,
-    Platform,
     ScrollView,
+    Keyboard,
+    TouchableWithoutFeedback,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import CustomInput from "../../components/CustomInput";
 import Button from "../../components/Button";
-import BackButton from "../../components/BackButton";
 import Header from "../../components/header/Header";
 import SpeechBubble from "../../components/speechBubble.js/SpeechBubble";
 
@@ -21,11 +20,16 @@ import images from "../../../assets/images";
 import colors from "../../styles/colors";
 
 import { useUser } from "../../context/UserContext";
+import Welcome from "./Welcome";
 
-const LogIn = () => {
+const LogIn = ({ navigation }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const { login } = useUser();
+
+    const handleRegister = () => {
+        navigation.navigate("Register");
+    };
 
     async function handleLogin() {
         try {
@@ -46,16 +50,18 @@ const LogIn = () => {
     }
 
     return (
-        <KeyboardAvoidingView
-            style={styles.container}
-            behavior={Platform.OS === "ios" ? "padding" : undefined}
-            keyboardVerticalOffset={Platform.OS === "ios" ? 20 : 0}
-        >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
             <SafeAreaView style={styles.safeArea}>
                 <Header />
 
                 <View style={styles.topBar}>
-                    <BackButton />
+                    <Button
+                        variant="back"
+                        colorVariant="secondary"
+                        direction="left"
+                        onPress={() => navigation.navigate("Welcome")}
+                        style={styles.backButton}
+                    />
                 </View>
 
                 <ScrollView
@@ -86,17 +92,16 @@ const LogIn = () => {
                             variant="secondary"
                             style={styles.submitButton}
                         />
+                        <Button
+                            title="Registrarte"
+                            onPress={handleRegister}
+                            variant="primary"
+                            style={styles.submitButton}
+                        />
                     </View>
                 </ScrollView>
-
-                <View style={styles.petWrapper} pointerEvents="none">
-                    <Image source={images.happyRiku} style={styles.petImage} resizeMode="contain" />
-                    <View style={styles.speechWrapper}>
-                        <SpeechBubble message="¡Bienvenido!" direction="left" backgroundColor="#fff" textColor="#666" />
-                    </View>
-                </View>
             </SafeAreaView>
-        </KeyboardAvoidingView>
+        </TouchableWithoutFeedback>
     );
 };
 
@@ -115,25 +120,28 @@ const styles = StyleSheet.create({
         paddingTop: 8,
         paddingBottom: 0,
     },
+    backButton: {
+        width: 90,
+        alignSelf: "flex-start",
+    },
     scrollContent: {
         flexGrow: 1,
     },
     form: {
         paddingHorizontal: 24,
-        paddingTop: 12,
-        gap: 18,
+        paddingTop: 0,
+        gap: 12,
     },
     label: {
-        color: colors.primaryShadow,
+        color: colors.textDark,
         fontSize: 18,
-        marginBottom: 6,
-        marginLeft: 6,
+        marginLeft: 4,
         fontWeight: "600",
     },
     submitButton: {
-        marginTop: 18,
+        marginTop: 0,
         alignSelf: "center",
-        width: "70%",
+        width: "100%",
         borderRadius: 28,
     },
     petWrapper: {

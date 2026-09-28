@@ -4,17 +4,15 @@ import {
     Image,
     StyleSheet,
     Alert,
-    TextInput,
     Text,
-    KeyboardAvoidingView,
-    Platform,
     ScrollView,
+    Keyboard,
+    TouchableWithoutFeedback,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import CustomInput from "../../components/CustomInput";
 import Button from "../../components/Button";
-import BackButton from "../../components/BackButton";
 import colors from "../../styles/colors";
 import Header from "../../components/header/Header";
 import PerfilVacio from "../../../assets/images/PerfilVacio.png";
@@ -26,6 +24,10 @@ export default function UserRegistration({ navigation }) {
     const [birthDate, setBirthDate] = useState("");
     const [urinates, setUrinates] = useState(true);
     const [errors, setErrors] = useState({});
+
+    const handleLogin = () => {
+        navigation.navigate("LogIn");
+    };
 
     function validateForm() {
         const newErrors = {};
@@ -72,16 +74,17 @@ export default function UserRegistration({ navigation }) {
     }
 
     return (
-        <KeyboardAvoidingView
-            style={styles.container}
-            behavior={Platform.OS === "ios" ? "padding" : undefined}
-            keyboardVerticalOffset={Platform.OS === "ios" ? 20 : 0}
-        >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
             <SafeAreaView style={styles.safeArea}>
                 <Header />
 
                 <View style={styles.topBar}>
-                    <BackButton />
+                    <Button
+                        title="<-"
+                        onPress={() => navigation.goBack()}
+                        variant="secondary"
+                        style={styles.backButton}
+                    />
                 </View>
 
                 <ScrollView
@@ -89,21 +92,12 @@ export default function UserRegistration({ navigation }) {
                     keyboardShouldPersistTaps="handled"
                     showsVerticalScrollIndicator={false}
                 >
-                    {/* Avatar */}
-                    <View style={styles.avatarContainer}>
-                        <View style={styles.avatar}>
-                            <Image
-                                source={PerfilVacio}
-                                style={styles.avatarImage}
-                                resizeMode="cover"
-                            />
-                        </View>
-                    </View>
 
                     {/* Sección Nombre */}
                     <View style={styles.section}>
                         <Text style={styles.sectionLabel}>Nombre del niño</Text>
-                        <TextInput
+                        <CustomInput
+                            type="default"
                             placeholder="Escribe aquí"
                             value={fullName}
                             onChangeText={(text) => {
@@ -113,8 +107,9 @@ export default function UserRegistration({ navigation }) {
                                 }
                             }}
                             autoCapitalize="words"
-                            style={[styles.nameInput, errors.fullName && styles.inputError]}
-                            placeholderTextColor="#BDBDBD"
+                            inputStyle={styles.nameInputText}
+                            containerStyle={[styles.nameInputContainer, errors.fullName && styles.customInputError]}
+                            error={errors.fullName}
                             maxLength={50}
                         />
                         {errors.fullName && (
@@ -186,13 +181,21 @@ export default function UserRegistration({ navigation }) {
                     <View style={styles.footer}>
                         <Button
                             title="Siguiente"
+                            variant="secondary"
                             onPress={handleNext}
                             style={styles.submitButton}
                         />
+                        <Button
+                            title="Iniciar sesión"
+                            variant="primary"
+                            onPress={handleLogin}
+                            style={[styles.submitButton, styles.loginButton]}
+                        />
                     </View>
+                    
                 </ScrollView>
             </SafeAreaView>
-        </KeyboardAvoidingView>
+        </TouchableWithoutFeedback>
     );
 }
 
@@ -207,7 +210,11 @@ const styles = StyleSheet.create({
     topBar: {
         paddingHorizontal: 20,
         paddingTop: 8,
-        paddingBottom: 4,
+        paddingBottom: 16,
+    },
+    backButton: {
+        width: 90,
+        alignSelf: "flex-start",
     },
     content: {
         flexGrow: 1,
@@ -229,43 +236,17 @@ const styles = StyleSheet.create({
         marginLeft: 4,
     },
 
-    avatarContainer: {
-        alignItems: "center",
-        justifyContent: "center",
-        marginBottom: 6,
-    },
-
-    avatar: {
-        width: 145,
-        height: 145,
-        borderRadius: 72.5,
-        backgroundColor: "transparent",
-        alignItems: "center",
-        justifyContent: "center",
-    },
-
-    avatarImage: {
+    nameInputContainer: {
         width: "100%",
-        height: "100%",
-        borderRadius: 72.5,
     },
 
-    nameInput: {
-        textAlign: "center",
-        fontSize: 20,
+    nameInputText: {
+        fontSize: 18,
         fontWeight: "600",
-        color: colors.textLight,
-        paddingVertical: 16,
-        paddingHorizontal: 16,
-        backgroundColor: "#FFFFFF",
-        borderRadius: 20,
-        borderWidth: 2,
-        borderColor: "#E8E8E8",
-    },
-
-    inputError: {
-        borderColor: "#E53935",
-        backgroundColor: "rgba(229, 57, 53, 0.05)",
+        color: colors.textDark,
+        textAlign: "left",
+        backgroundColor: "transparent",
+        borderWidth: 0,
     },
 
     customInputError: {
@@ -325,9 +306,19 @@ const styles = StyleSheet.create({
     footer: {
         paddingHorizontal: 0,
         paddingBottom: 8,
+        gap: 12,
     },
 
     submitButton: {
         width: "100%",
+    },
+
+    loginButton: {
+        marginTop: 0,
+    },
+
+    backButton: {
+        alignSelf: "flex-start",
+        paddingVertical: 8,
     },
 });

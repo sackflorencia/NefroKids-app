@@ -7,15 +7,14 @@ import {
     ScrollView,
     TouchableOpacity,
     Image,
-    KeyboardAvoidingView,
-    Platform,
+    Keyboard,
+    TouchableWithoutFeedback,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import colors from "../../styles/colors";
 
 import CustomInput from "../../components/CustomInput";
 import Button from "../../components/Button";
-import BackButton from "../../components/BackButton";
 import Header from "../../components/header/Header";
 import { useSQLiteContext } from "expo-sqlite";
 import RegistrationService from "../../../back/services/RegistrationService";
@@ -250,16 +249,17 @@ export default function GuardianRegistration({
     }
 
     return (
-        <KeyboardAvoidingView
-            style={styles.container}
-            behavior={Platform.OS === "ios" ? "padding" : undefined}
-            keyboardVerticalOffset={Platform.OS === "ios" ? 20 : 0}
-        >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
             <SafeAreaView style={styles.safeArea}>
                 <Header />
 
                 <View style={styles.topBar}>
-                    <BackButton />
+                    <Button
+                        title="<-"
+                        onPress={() => navigation.goBack()}
+                        variant="secondary"
+                        style={styles.backButton}
+                    />
                 </View>
 
                 <ScrollView
@@ -392,7 +392,7 @@ export default function GuardianRegistration({
 
                 </ScrollView>
             </SafeAreaView>
-        </KeyboardAvoidingView>
+        </TouchableWithoutFeedback>
     );
 }
 
@@ -407,7 +407,11 @@ const styles = StyleSheet.create({
     topBar: {
         paddingHorizontal: 20,
         paddingTop: 8,
-        paddingBottom: 0,
+        paddingBottom: 16,
+    },
+    backButton: {
+        width: 90,
+        alignSelf: "flex-start",
     },
     content: {
         paddingHorizontal: 20,

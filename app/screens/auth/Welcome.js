@@ -3,7 +3,6 @@ import React from "react";
 import {
   View,
   Text,
-  TouchableOpacity,
   Image,
   StyleSheet,
   SafeAreaView,
@@ -14,6 +13,7 @@ import typography from "../../styles/typography";
 import images from "../../../assets/images";
 import SpeechBubble from "../../components/speechBubble.js/SpeechBubble";
 import Logo from "../../components/logo/logo";
+import Button from "../../components/Button";
 
 export default function Welcome({ navigation }) {
   const handleLogin = () => {
@@ -54,25 +54,19 @@ export default function Welcome({ navigation }) {
 
         {/* Buttons */}
         <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={[styles.button, styles.buttonOutline]}
+          <Button
+            title="Iniciar sesion"
+            variant="secondary"
             onPress={handleLogin}
-            activeOpacity={0.85}
-          >
-            <Text style={[typography.button, styles.buttonOutlineText]}>
-              Iniciar sesion
-            </Text>
-          </TouchableOpacity>
+            style={styles.buttonOutline}
+          />
 
-          <TouchableOpacity
-            style={[styles.button, styles.buttonFilled]}
+          <Button
+            title="Crear cuenta"
+            variant="primary"
             onPress={handleSignUp}
-            activeOpacity={0.85}
-          >
-            <Text style={[typography.button, styles.buttonFilledText]}>
-              Crear cuenta
-            </Text>
-          </TouchableOpacity>
+            style={styles.buttonFilled}
+          />
         </View>
       </View>
     </SafeAreaView>
@@ -113,36 +107,13 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   buttonContainer: {
-    gap: 14,
+    gap: 12,
     paddingBottom: 32,
   },
-  button: {
-    borderRadius: 30,
-    paddingVertical: 16,
-    alignItems: "center",
-    justifyContent: "center",
-    borderBottomWidth: 4,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
   buttonOutline: {
-    backgroundColor: colors.background,
-    borderWidth: 2,
-    borderColor: colors.secondaryShadow,
-    borderBottomWidth: 4,
-    borderBottomColor: colors.secondaryShadow,
-  },
-  buttonOutlineText: {
-    color: colors.textLight,
+    width: "100%",
   },
   buttonFilled: {
-    backgroundColor: colors.secondary,
-    borderBottomColor: colors.secondaryShadow,
-  },
-  buttonFilledText: {
-    color: colors.textLight,
+    width: "100%",
   },
 });
