@@ -120,11 +120,7 @@ const styles = StyleSheet.create({
         paddingTop: 8,
         paddingBottom: 0,
     },
-    backButton: {
-        width: 90,
-        alignSelf: "flex-start",
-    },
-    scrollContent: {
+        scrollContent: {
         flexGrow: 1,
     },
     form: {

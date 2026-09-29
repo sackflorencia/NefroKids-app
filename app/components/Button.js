@@ -35,17 +35,12 @@ const Button = ({
                     : selected    ? "#A4F1CC"
                     : "#D6D6D6";
 
-  const textColor   = resolvedColorVariant === "primary"
-                    ? colors.textDark
-                    : resolvedColorVariant === "secondary"
-                    ? colors.textLight
-                    : selected    ? colors.textDark
-                    : "#999";
+  const textColor   = "#2e2e2e"
 
   if (isBack) {
     return (
       <TouchableOpacity onPress={onPress} activeOpacity={0.8} style={[styles.backTouchable, style]}>
-        <View style={[styles.shadow, { backgroundColor: shadowColor }]} />
+        <View style={[styles.shadow, { backgroundColor: shadowColor, borderRadius: 24, top: 4, left: 0, right: 0 }]} />
         <View
           style={[
             styles.backButton,
@@ -65,10 +60,10 @@ const Button = ({
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.8} style={style}>
 
-      <View style={[styles.shadow, { backgroundColor: shadowColor }]} />
+      <View style={[styles.shadow, { backgroundColor: shadowColor, left: 6, right: 6, top: 8 }]} />
 
       <View style={[
-        styles.button,
+          styles.button,
         { backgroundColor: bgColor },
         isOption && styles.optionBorder,
         isOption && { borderColor: selected ? colors.primaryShadow : "#D6D6D6" },
@@ -110,10 +105,13 @@ const styles = StyleSheet.create({
   },
   shadow: {
     position: "absolute",
-    width: "100%",
+    left: 0,
+    right: 0,
+    top: 6,
     height: "100%",
     borderRadius: 20,
-    top: 4,
+    zIndex: -1,
+    opacity: 0.95,
   },
   backTouchable: {
     alignSelf: "flex-start",

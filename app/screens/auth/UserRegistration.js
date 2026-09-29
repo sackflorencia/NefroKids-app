@@ -80,9 +80,9 @@ export default function UserRegistration({ navigation }) {
 
                 <View style={styles.topBar}>
                     <Button
-                        title="<-"
                         onPress={() => navigation.goBack()}
-                        variant="secondary"
+                        variant="back"
+                         colorVariant="secondary"
                         style={styles.backButton}
                     />
                 </View>
@@ -159,25 +159,6 @@ export default function UserRegistration({ navigation }) {
                         </View>
                     </View>
 
-                    {/* Mascota y mensaje */}
-                    <View style={styles.petRow}>
-                        <View style={styles.speechWrapper}>
-                            <SpeechBubble
-                                message="¿Listo para explorar?"
-                                direction="right"
-                                backgroundColor="#FFFFFF"
-                                textColor="#999"
-                            />
-                        </View>
-
-                        <View style={styles.petImageWrapper}>
-                            <Image
-                                source={images.confusedRiku}
-                                style={styles.petImage}
-                            />
-                        </View>
-                    </View>
-
                     <View style={styles.footer}>
                         <Button
                             title="Siguiente"
@@ -211,10 +192,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         paddingTop: 8,
         paddingBottom: 16,
-    },
-    backButton: {
-        width: 90,
-        alignSelf: "flex-start",
     },
     content: {
         flexGrow: 1,
@@ -315,10 +292,5 @@ const styles = StyleSheet.create({
 
     loginButton: {
         marginTop: 0,
-    },
-
-    backButton: {
-        alignSelf: "flex-start",
-        paddingVertical: 8,
     },
 });
