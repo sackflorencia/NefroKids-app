@@ -1,6 +1,12 @@
 import React from "react";
-import { TouchableOpacity, Text, StyleSheet, View } from "react-native";
+import {
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  View,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+
 import colors from "../styles/colors";
 import typography from "../styles/typography";
 
@@ -13,34 +19,71 @@ const Button = ({
   accentColor,
   colorVariant,
   direction = "left",
+  disabled = false,
 }) => {
-  const isPrimary   = variant === "primary";
+  const isPrimary = variant === "primary";
   const isSecondary = variant === "secondary";
-  const isOption    = variant === "option";
-  const isBack      = variant === "back";
+  const isOption = variant === "option";
+  const isBack = variant === "back";
 
-  const resolvedColorVariant = isBack ? (colorVariant || "primary") : variant;
+  // Para el botón back se puede elegir qué variante de color usar.
+  // Para el resto, se usa directamente variant.
+  const resolvedColorVariant = isBack
+    ? colorVariant || "primary"
+    : variant;
 
-  const bgColor     = resolvedColorVariant === "primary"
-                    ? colors.primary
-                    : resolvedColorVariant === "secondary"
-                    ? colors.secondary
-                    : selected    ? "#EDFDF5"
-                    : "#FAFAFA";
+  const bgColor = disabled
+    ? "#D6D6D6"
+    : resolvedColorVariant === "primary"
+      ? colors.primary
+      : resolvedColorVariant === "secondary"
+        ? colors.secondary
+        : selected
+          ? "#EDFDF5"
+          : "#FAFAFA";
 
-  const shadowColor = resolvedColorVariant === "primary"
-                    ? colors.primaryShadow
-                    : resolvedColorVariant === "secondary"
-                    ? colors.secondaryShadow
-                    : selected    ? "#A4F1CC"
-                    : "#D6D6D6";
+  const shadowColor = disabled
+    ? "#BDBDBD"
+    : resolvedColorVariant === "primary"
+      ? colors.primaryShadow
+      : resolvedColorVariant === "secondary"
+        ? colors.secondaryShadow
+        : selected
+          ? "#A4F1CC"
+          : "#D6D6D6";
 
-  const textColor   = "#666"
+  const textColor = disabled
+    ? "#999"
+    : isPrimary
+      ? colors.textDark
+      : isSecondary
+        ? colors.textLight
+        : selected
+          ? colors.textDark
+          : "#666";
 
+  // Botón de volver / avanzar
   if (isBack) {
     return (
-      <TouchableOpacity onPress={onPress} activeOpacity={0.8} style={[styles.backTouchable, style]}>
-        <View style={[styles.shadow, { backgroundColor: shadowColor, borderRadius: 24, top: 4, left: 0, right: 0 }]} />
+      <TouchableOpacity
+        onPress={onPress}
+        activeOpacity={0.8}
+        style={[styles.backTouchable, style]}
+        disabled={disabled}
+      >
+        <View
+          style={[
+            styles.shadow,
+            {
+              backgroundColor: shadowColor,
+              borderRadius: 24,
+              top: 4,
+              left: 0,
+              right: 0,
+            },
+          ]}
+        />
+
         <View
           style={[
             styles.backButton,
@@ -58,24 +101,49 @@ const Button = ({
   }
 
   return (
-    <TouchableOpacity onPress={onPress} activeOpacity={0.8} style={style}>
+    <TouchableOpacity
+      onPress={onPress}
+      activeOpacity={0.8}
+      style={style}
+      disabled={disabled}
+    >
+      <View
+        style={[
+          styles.shadow,
+          { backgroundColor: shadowColor },
+        ]}
+      />
 
-      <View style={[styles.shadow, { backgroundColor: shadowColor, left: 6, right: 6, top: 8 }]} />
-
-      <View style={[
+      <View
+        style={[
           styles.button,
-        { backgroundColor: bgColor },
-        isOption && styles.optionBorder,
-        isOption && { borderColor: selected ? colors.primaryShadow : "#D6D6D6" },
-      ]}>
+          { backgroundColor: bgColor },
+          isOption && styles.optionBorder,
+          isOption && {
+            borderColor: selected
+              ? colors.primaryShadow
+              : "#D6D6D6",
+          },
+        ]}
+      >
         {accentColor && (
-          <View style={[styles.colorDot, { backgroundColor: accentColor }]} />
+          <View
+            style={[
+              styles.colorDot,
+              { backgroundColor: accentColor },
+            ]}
+          />
         )}
-        <Text style={[styles.text, { color: textColor }]}>
+
+        <Text
+          style={[
+            styles.text,
+            { color: textColor },
+          ]}
+        >
           {title}
         </Text>
       </View>
-
     </TouchableOpacity>
   );
 };
@@ -91,18 +159,22 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 10,
   },
+
   optionBorder: {
     borderWidth: 2,
   },
+
   colorDot: {
     width: 18,
     height: 18,
     borderRadius: 9,
   },
+
   text: {
     fontSize: 20,
     fontWeight: "600",
   },
+
   shadow: {
     position: "absolute",
     left: 0,
@@ -113,10 +185,12 @@ const styles = StyleSheet.create({
     zIndex: -1,
     opacity: 0.95,
   },
+
   backTouchable: {
     alignSelf: "flex-start",
     marginBottom: 16,
   },
+
   backButton: {
     width: 48,
     height: 48,

@@ -15,9 +15,17 @@ import {
 import QuestionController from "../../back/controllers/QuestionController";
 import ProgressController from "../../back/controllers/progressController";
 import { useUser } from "../context/UserContext";
+import * as ScreenOrientation from "expo-screen-orientation";
+
 
 export default function Questions() {
+  useEffect(() => {
 
+    ScreenOrientation.lockAsync(
+      ScreenOrientation.OrientationLock.PORTRAIT_UP
+    );
+
+  }, []);
   const db = useSQLiteContext();
   const navigation = useNavigation();
   const route = useRoute();

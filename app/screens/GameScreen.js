@@ -35,7 +35,9 @@ export default function GameScreen({ route }) {
     );
 
     return () => {
-      ScreenOrientation.unlockAsync();
+      ScreenOrientation.lockAsync(
+        ScreenOrientation.OrientationLock.PORTRAIT_UP
+      );
     };
 
   }, []);
@@ -83,7 +85,7 @@ export default function GameScreen({ route }) {
       console.log("RESULTADO completeSection:", result);
       console.log("DESPUÉS DE completeSection");
 
-      navigation.navigate("Levels");
+      navigation.replace("Levels");
 
     } catch (error) {
 

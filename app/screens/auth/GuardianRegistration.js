@@ -6,10 +6,10 @@ import {
     Alert,
     ScrollView,
     TouchableOpacity,
-    Image,
     Keyboard,
     TouchableWithoutFeedback,
 } from "react-native";
+
 import { SafeAreaView } from "react-native-safe-area-context";
 import colors from "../../styles/colors";
 
@@ -19,8 +19,6 @@ import Header from "../../components/header/Header";
 import { useSQLiteContext } from "expo-sqlite";
 import RegistrationService from "../../../back/services/RegistrationService";
 import { useUser } from "../../context/UserContext";
-import images from "../../../assets/images";
-import TutorController from "../../../back/controllers/tutorController";
 
 const MAX_GUARDIANS = 5;
 
@@ -28,9 +26,18 @@ export default function GuardianRegistration({
     route,
     navigation,
 }) {
-    const { register, refreshUser } = useUser();
+    const {
+        register,
+        refreshUser,
+        user
+    } = useUser();
+
+    const [registering, setRegistering] = useState(false);
+
     const { userData } = route.params;
+
     const db = useSQLiteContext();
+
     const [guardians, setGuardians] = useState([
         {
             full_name: "",
@@ -39,16 +46,11 @@ export default function GuardianRegistration({
             phone: ""
         },
     ]);
-    const [password, setPassword] = useState("");
 
+    const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
 
-    function updateGuardian(
-        index,
-        field,
-        value
-    ) {
-
+    function updateGuardian(index, field, value) {
         const updated = [...guardians];
 
         updated[index][field] = value;
@@ -57,7 +59,6 @@ export default function GuardianRegistration({
     }
 
     function addGuardian() {
-
         if (guardians.length >= MAX_GUARDIANS) {
             return;
         }
@@ -85,40 +86,47 @@ export default function GuardianRegistration({
             return false;
         }
 
-        // Validar email format básico
+        // Validar email
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
         if (!emailRegex.test(primaryGuardian.email)) {
             return false;
         }
 
-        // Validar teléfono (al menos 8 caracteres numéricos)
-        const phoneNumbers = primaryGuardian.phone.replace(/\D/g, '');
+        // Validar teléfono
+        const phoneNumbers =
+            primaryGuardian.phone.replace(/\D/g, "");
+
         if (phoneNumbers.length < 8) {
             return false;
         }
 
-        // Validar solo tutores adicionales que tengan al menos un campo completo
+        // Validar tutores adicionales
         for (let i = 1; i < guardians.length; i++) {
             const guardian = guardians[i];
-            const hasAnyField = guardian.full_name?.trim() || 
-                              guardian.email?.trim() || 
-                              guardian.phone?.trim();
-            
+
+            const hasAnyField =
+                guardian.full_name?.trim() ||
+                guardian.email?.trim() ||
+                guardian.phone?.trim();
+
             if (hasAnyField) {
-                // Si tiene al menos un campo, debe tener todos
-                if (!guardian.full_name?.trim() || 
-                    !guardian.email?.trim() || 
-                    !guardian.phone?.trim()) {
+                // Si tiene algún campo, debe completar todos
+                if (
+                    !guardian.full_name?.trim() ||
+                    !guardian.email?.trim() ||
+                    !guardian.phone?.trim()
+                ) {
                     return false;
                 }
-                
-                // Validar email
+
                 if (!emailRegex.test(guardian.email)) {
                     return false;
                 }
-                
-                // Validar teléfono
-                const guardianPhoneNumbers = guardian.phone.replace(/\D/g, '');
+
+                const guardianPhoneNumbers =
+                    guardian.phone.replace(/\D/g, "");
+
                 if (guardianPhoneNumbers.length < 8) {
                     return false;
                 }
@@ -129,8 +137,41 @@ export default function GuardianRegistration({
     }
 
     async function handleNext() {
+        console.log(
+            "========================================"
+        );
+
+        console.log(
+            "SIGN UP - handleNext INICIADO"
+        );
+
+        console.log(
+            "SIGN UP - Email:",
+            guardians[0].email.trim()
+        );
+
+        console.log(
+            "SIGN UP - Cantidad de tutores:",
+            guardians.length
+        );
+
+        console.log(
+            "SIGN UP - UserContext ANTES:",
+            user
+        );
+
+        if (registering) {
+            console.log(
+                "SIGN UP - Registro ya en progreso. Se cancela segundo click."
+            );
+
+            return;
+        }
 
         if (!validateGuardians()) {
+            console.log(
+                "SIGN UP - Validación fallida: campos incompletos"
+            );
 
             Alert.alert(
                 "Datos incompletos",
@@ -141,6 +182,9 @@ export default function GuardianRegistration({
         }
 
         if (!password?.trim()) {
+            console.log(
+                "SIGN UP - Validación fallida: contraseña vacía"
+            );
 
             Alert.alert(
                 "Contraseña",
@@ -151,7 +195,6 @@ export default function GuardianRegistration({
         }
 
         if (password.length < 6) {
-
             Alert.alert(
                 "Contraseña débil",
                 "La contraseña debe tener al menos 6 caracteres."
@@ -161,6 +204,9 @@ export default function GuardianRegistration({
         }
 
         if (password !== confirmPassword) {
+            console.log(
+                "SIGN UP - Validación fallida: contraseñas diferentes"
+            );
 
             Alert.alert(
                 "Contraseña",
@@ -171,59 +217,85 @@ export default function GuardianRegistration({
         }
 
         try {
+            setRegistering(true);
 
-            console.log("1 - Empieza registro");
+            console.log(
+                "SIGN UP - 1: Iniciando registro en Firebase"
+            );
 
             const firebaseUser = await register(
-                guardians[0].email,
+                guardians[0].email.trim(),
                 password
             );
 
-            console.log("2 - Usuario Firebase creado");
+            console.log(
+                "SIGN UP - 2: Firebase register() TERMINÓ"
+            );
+
+            console.log(
+                "SIGN UP - Firebase UID:",
+                firebaseUser?.uid
+            );
+
+            console.log(
+                "SIGN UP - Firebase email:",
+                firebaseUser?.email
+            );
+
+            console.log(
+                "SIGN UP - 3: Creando RegistrationService"
+            );
 
             const registrationService =
                 new RegistrationService(db);
 
-            console.log("3 - Antes de completeRegistration");
+            console.log(
+                "SIGN UP - 4: Iniciando completeRegistration()"
+            );
 
             await registrationService.completeRegistration(
                 userData,
                 guardians,
                 firebaseUser.uid
             );
-            const users = await db.getAllAsync(
-                "SELECT * FROM users"
+
+            console.log(
+                "SIGN UP - 5: completeRegistration() TERMINÓ OK"
             );
 
-            const tutorsLog = await db.getAllAsync(
-                "SELECT * FROM tutors"
+            console.log(
+                "SIGN UP - 6: Antes de refreshUser()"
             );
-
-            console.log("USERS SQLITE:", users);
-            console.log("TUTORS SQLITE:", tutorsLog);
-            const tutors = await new TutorController(db).getAllTutors();
-
-            console.log("TUTORES DESPUÉS DEL SIGNUP:", tutors);
-
-            console.log("4 - Registro completo");
 
             await refreshUser();
 
-            console.log("5 - Context actualizado");
+            console.log(
+                "SIGN UP - 7: refreshUser() TERMINÓ"
+            );
 
-            // Si corresponde:
-            // navigation.replace("Home");
+            console.log(
+                "SIGN UP - UserContext DESPUÉS:",
+                user
+            );
+
+            console.log(
+                "SIGN UP - 8: REGISTRO COMPLETADO CORRECTAMENTE"
+            );
+
+            console.log(
+                "========================================"
+            );
 
         } catch (error) {
+            let errorMessage =
+                "No se pudo completar el registro.";
 
-            console.error(error);
-
-            let errorMessage = "No se pudo completar el registro.";
-            
             if (error.message?.includes("email")) {
-                errorMessage = "Este email ya está registrado. Intenta con otro.";
+                errorMessage =
+                    "Este email ya está registrado. Intentá con otro.";
             } else if (error.message?.includes("password")) {
-                errorMessage = "La contraseña no es válida.";
+                errorMessage =
+                    "La contraseña no es válida.";
             }
 
             Alert.alert(
@@ -231,12 +303,16 @@ export default function GuardianRegistration({
                 errorMessage
             );
 
-        }
+        } finally {
+            setRegistering(false);
 
+            console.log(
+                "SIGN UP - finally → registering = false"
+            );
+        }
     }
 
     function removeGuardian(index) {
-
         if (guardians.length === 1) {
             return;
         }
@@ -249,7 +325,10 @@ export default function GuardianRegistration({
     }
 
     return (
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <TouchableWithoutFeedback
+            onPress={Keyboard.dismiss}
+            accessible={false}
+        >
             <SafeAreaView style={styles.safeArea}>
                 <Header />
 
@@ -258,9 +337,12 @@ export default function GuardianRegistration({
                         variant="back"
                         colorVariant="secondary"
                         direction="left"
-                        onPress={() => navigation.navigate("Register")}
+                        onPress={() =>
+                            navigation.navigate("Register")
+                        }
                         style={styles.backButton}
                     />
+
                     <Text style={styles.title}>
                         Tutores
                     </Text>
@@ -274,61 +356,101 @@ export default function GuardianRegistration({
                     keyboardDismissMode="on-drag"
                 >
                     <Text style={styles.subtitle}>
-                        Agrega al tutor que recibirá información médica del niño y podrá acceder a la aplicación.
+                        Agregá al tutor que recibirá información
+                        médica del niño y podrá acceder a la
+                        aplicación.
                     </Text>
 
                     {guardians.map((guardian, index) => (
-
                         <View
                             key={index}
                             style={[
                                 styles.guardianCard,
-                                index > 0 && (index + 1) % 2 === 0 ? styles.evenCard : null,
+                                index > 0 &&
+                                (index + 1) % 2 === 0
+                                    ? styles.evenCard
+                                    : null,
                             ]}
                         >
-
                             <View style={styles.headerRow}>
                                 <Text style={styles.guardianTitle}>
-                                    {index === 0 ? "Tutor principal" : `Tutor adicional ${index}`}
+                                    {index === 0
+                                        ? "Tutor principal"
+                                        : `Tutor adicional ${index}`}
                                 </Text>
 
                                 {index > 0 && (
-                                    <TouchableOpacity onPress={() => removeGuardian(index)}>
-                                        <Text style={styles.deleteText}>✕</Text>
+                                    <TouchableOpacity
+                                        onPress={() =>
+                                            removeGuardian(index)
+                                        }
+                                    >
+                                        <Text style={styles.deleteText}>
+                                            ✕
+                                        </Text>
                                     </TouchableOpacity>
                                 )}
                             </View>
 
                             <View style={styles.fieldRow}>
-                                <Text style={styles.inputLabel}>Nombre completo {index === 0 ? "*" : ""}</Text>
+                                <Text style={styles.inputLabel}>
+                                    Nombre completo{" "}
+                                    {index === 0 ? "*" : ""}
+                                </Text>
+
                                 <CustomInput
                                     type="default"
                                     value={guardian.full_name}
-                                    onChangeText={(text) => updateGuardian(index, "full_name", text)}
+                                    onChangeText={(text) =>
+                                        updateGuardian(
+                                            index,
+                                            "full_name",
+                                            text
+                                        )
+                                    }
                                     autoCapitalize="words"
                                     placeholder="Nombre del tutor"
                                 />
                             </View>
 
                             <View style={styles.fieldRow}>
-                                <Text style={styles.inputLabel}>Email {index === 0 ? "*" : ""}</Text>
+                                <Text style={styles.inputLabel}>
+                                    Email{" "}
+                                    {index === 0 ? "*" : ""}
+                                </Text>
+
                                 <CustomInput
                                     type="email"
                                     value={guardian.email}
-                                    onChangeText={(text) => updateGuardian(index, "email", text)}
+                                    onChangeText={(text) =>
+                                        updateGuardian(
+                                            index,
+                                            "email",
+                                            text
+                                        )
+                                    }
                                     keyboardType="email-address"
                                     autoCapitalize="none"
                                     placeholder="ejemplo@correo.com"
                                 />
-
                             </View>
 
                             <View style={styles.fieldRow}>
-                                <Text style={styles.inputLabel}>Teléfono {index === 0 ? "*" : ""}</Text>
+                                <Text style={styles.inputLabel}>
+                                    Teléfono{" "}
+                                    {index === 0 ? "*" : ""}
+                                </Text>
+
                                 <CustomInput
                                     type="default"
                                     value={guardian.phone}
-                                    onChangeText={(text) => updateGuardian(index, "phone", text)}
+                                    onChangeText={(text) =>
+                                        updateGuardian(
+                                            index,
+                                            "phone",
+                                            text
+                                        )
+                                    }
                                     keyboardType="phone-pad"
                                     placeholder="11 1234-5678"
                                 />
@@ -337,7 +459,10 @@ export default function GuardianRegistration({
                             {index === 0 && (
                                 <>
                                     <View style={styles.fieldRow}>
-                                        <Text style={styles.inputLabel}>Contraseña *</Text>
+                                        <Text style={styles.inputLabel}>
+                                            Contraseña *
+                                        </Text>
+
                                         <CustomInput
                                             type="password"
                                             value={password}
@@ -347,11 +472,16 @@ export default function GuardianRegistration({
                                     </View>
 
                                     <View style={styles.fieldRow}>
-                                        <Text style={styles.inputLabel}>Repetir contraseña *</Text>
+                                        <Text style={styles.inputLabel}>
+                                            Repetir contraseña *
+                                        </Text>
+
                                         <CustomInput
                                             type="password"
                                             value={confirmPassword}
-                                            onChangeText={setConfirmPassword}
+                                            onChangeText={
+                                                setConfirmPassword
+                                            }
                                             placeholder="Confirmá tu contraseña"
                                         />
                                     </View>
@@ -360,38 +490,46 @@ export default function GuardianRegistration({
 
                             {index > 0 && (
                                 <View style={styles.fieldRow}>
-                                    <Text style={styles.inputLabel}>Relación con el niño</Text>
+                                    <Text style={styles.inputLabel}>
+                                        Relación con el niño
+                                    </Text>
+
                                     <CustomInput
                                         type="default"
                                         value={guardian.relationship}
-                                        onChangeText={(text) => updateGuardian(index, "relationship", text)}
+                                        onChangeText={(text) =>
+                                            updateGuardian(
+                                                index,
+                                                "relationship",
+                                                text
+                                            )
+                                        }
                                         placeholder="Madre, Padre, Abuelo, Tía..."
                                     />
                                 </View>
                             )}
-
                         </View>
-
                     ))}
 
                     {guardians.length < MAX_GUARDIANS && (
-
                         <Button
                             title="Agregar otro tutor (opcional)"
                             variant="secondary"
                             onPress={addGuardian}
                             style={styles.button}
                         />
-
                     )}
 
-
                     <Button
-                        title="Finalizar registro"
+                        title={
+                            registering
+                                ? "Creando cuenta..."
+                                : "Finalizar registro"
+                        }
                         onPress={handleNext}
                         style={styles.button}
+                        disabled={registering}
                     />
-
                 </ScrollView>
             </SafeAreaView>
         </TouchableWithoutFeedback>
@@ -403,9 +541,11 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: colors.background,
     },
+
     safeArea: {
         flex: 1,
     },
+
     topBar: {
         paddingHorizontal: 20,
         paddingTop: 8,
@@ -413,11 +553,17 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
     },
+
+    backButton: {
+        marginRight: 10,
+    },
+
     content: {
         paddingHorizontal: 20,
         paddingBottom: 30,
         paddingTop: 0,
     },
+
     title: {
         fontSize: 28,
         fontWeight: "800",
@@ -434,7 +580,7 @@ const styles = StyleSheet.create({
         lineHeight: 24,
         color: colors.textDark,
         textAlign: "left",
-        marginBottom: 0,
+        marginBottom: 18,
         fontWeight: "500",
     },
 
@@ -445,13 +591,6 @@ const styles = StyleSheet.create({
         backgroundColor: "#F9F9F9",
         borderWidth: 1,
         borderColor: "#E8E8E8",
-    },
-
-    oddCard: {
-        backgroundColor: "#F5F5F5",
-        borderRadius: 16,
-        padding: 20,
-        marginBottom: 12,
     },
 
     evenCard: {
@@ -495,10 +634,6 @@ const styles = StyleSheet.create({
     },
 
     fieldRow: {
-        marginBottom: 16,
-    },
-
-    inputWrapper: {
         marginBottom: 16,
     },
 

@@ -32,25 +32,33 @@ const LogIn = ({ navigation }) => {
     };
 
     async function handleLogin() {
+        if (!email.trim() || !password) {
+            Alert.alert(
+                "Campos incompletos",
+                "Completá tu email y contraseña."
+            );
+            return;
+        }
+
         try {
             await login(
-                email,
+                email.trim(),
                 password
             );
-            Alert.alert(
-                "Éxito",
-                "Login correcto"
-            );
+
         } catch (error) {
             Alert.alert(
-                "Error",
+                "No pudimos iniciar sesión",
                 error.message
             );
         }
     }
 
     return (
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <TouchableWithoutFeedback
+            onPress={Keyboard.dismiss}
+            accessible={false}
+        >
             <SafeAreaView style={styles.safeArea}>
                 <Header />
 
@@ -59,7 +67,9 @@ const LogIn = ({ navigation }) => {
                         variant="back"
                         colorVariant="secondary"
                         direction="left"
-                        onPress={() => navigation.navigate("Welcome")}
+                        onPress={() =>
+                            navigation.navigate("Welcome")
+                        }
                         style={styles.backButton}
                     />
                 </View>
@@ -70,7 +80,10 @@ const LogIn = ({ navigation }) => {
                     showsVerticalScrollIndicator={false}
                 >
                     <View style={styles.form}>
-                        <Text style={styles.label}>Email del tutor</Text>
+                        <Text style={styles.label}>
+                            Email del tutor
+                        </Text>
+
                         <CustomInput
                             type="email"
                             placeholder="Escribe aqui"
@@ -78,7 +91,10 @@ const LogIn = ({ navigation }) => {
                             onChangeText={setEmail}
                         />
 
-                        <Text style={styles.label}>Contraseña</Text>
+                        <Text style={styles.label}>
+                            Contraseña
+                        </Text>
+
                         <CustomInput
                             type="password"
                             placeholder="Escribe aqui"
@@ -92,6 +108,7 @@ const LogIn = ({ navigation }) => {
                             variant="secondary"
                             style={styles.submitButton}
                         />
+
                         <Button
                             title="Registrarte"
                             onPress={handleRegister}
@@ -112,34 +129,41 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#fff",
     },
+
     safeArea: {
         flex: 1,
     },
+
     topBar: {
         paddingHorizontal: 20,
         paddingTop: 8,
         paddingBottom: 0,
     },
-        scrollContent: {
+
+    scrollContent: {
         flexGrow: 1,
     },
+
     form: {
         paddingHorizontal: 24,
         paddingTop: 0,
         gap: 12,
     },
+
     label: {
         color: colors.textDark,
         fontSize: 18,
         marginLeft: 4,
         fontWeight: "600",
     },
+
     submitButton: {
         marginTop: 0,
         alignSelf: "center",
         width: "100%",
         borderRadius: 28,
     },
+
     petWrapper: {
         position: "absolute",
         left: 8,
@@ -149,11 +173,13 @@ const styles = StyleSheet.create({
         alignItems: "flex-start",
         justifyContent: "flex-end",
     },
+
     petImage: {
         width: 280,
         height: 300,
         opacity: 0.95,
     },
+
     speechWrapper: {
         position: "absolute",
         top: 30,
