@@ -255,22 +255,24 @@ export default function GuardianRegistration({
 
                 <View style={styles.topBar}>
                     <Button
-                        title="<-"
-                        onPress={() => navigation.goBack()}
-                        variant="secondary"
+                        variant="back"
+                        colorVariant="secondary"
+                        direction="left"
+                        onPress={() => navigation.navigate("Register")}
                         style={styles.backButton}
                     />
+                    <Text style={styles.title}>
+                        Tutores
+                    </Text>
                 </View>
 
                 <ScrollView
-                    contentContainerStyle={styles.content}
+                    style={styles.scrollView}
+                    contentContainerStyle={styles.scrollContent}
                     showsVerticalScrollIndicator={false}
                     keyboardShouldPersistTaps="handled"
+                    keyboardDismissMode="on-drag"
                 >
-                    <Text style={styles.title}>
-                        Tutor principal
-                    </Text>
-
                     <Text style={styles.subtitle}>
                         Agrega al tutor que recibirá información médica del niño y podrá acceder a la aplicación.
                     </Text>
@@ -407,11 +409,9 @@ const styles = StyleSheet.create({
     topBar: {
         paddingHorizontal: 20,
         paddingTop: 8,
-        paddingBottom: 16,
-    },
-    backButton: {
-        width: 90,
-        alignSelf: "flex-start",
+        paddingBottom: 0,
+        flexDirection: "row",
+        alignItems: "center",
     },
     content: {
         paddingHorizontal: 20,
@@ -423,9 +423,10 @@ const styles = StyleSheet.create({
         fontWeight: "800",
         color: colors.textDark,
         textAlign: "left",
-        marginTop: 24,
+        marginTop: 0,
         marginBottom: 12,
         lineHeight: 36,
+        marginLeft: 12,
     },
 
     subtitle: {
@@ -433,14 +434,14 @@ const styles = StyleSheet.create({
         lineHeight: 24,
         color: colors.textDark,
         textAlign: "left",
-        marginBottom: 24,
+        marginBottom: 0,
         fontWeight: "500",
     },
 
     guardianCard: {
         borderRadius: 16,
         padding: 20,
-        marginBottom: 20,
+        marginBottom: 12,
         backgroundColor: "#F9F9F9",
         borderWidth: 1,
         borderColor: "#E8E8E8",
@@ -450,14 +451,14 @@ const styles = StyleSheet.create({
         backgroundColor: "#F5F5F5",
         borderRadius: 16,
         padding: 20,
-        marginBottom: 20,
+        marginBottom: 12,
     },
 
     evenCard: {
         backgroundColor: "rgba(164, 241, 204, 0.15)",
         borderRadius: 16,
         padding: 20,
-        marginBottom: 20,
+        marginBottom: 12,
         borderWidth: 1,
         borderColor: "rgba(164, 241, 204, 0.3)",
     },
@@ -502,7 +503,18 @@ const styles = StyleSheet.create({
     },
 
     button: {
-        marginTop: 12,
-        marginBottom: 12,
+        marginTop: 6,
+        marginBottom: 6,
+    },
+
+    scrollView: {
+        flex: 1,
+    },
+
+    scrollContent: {
+        paddingHorizontal: 20,
+        paddingBottom: 30,
+        paddingTop: 0,
+        flexGrow: 1,
     },
 });

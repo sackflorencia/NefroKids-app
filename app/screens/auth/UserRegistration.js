@@ -80,9 +80,10 @@ export default function UserRegistration({ navigation }) {
 
                 <View style={styles.topBar}>
                     <Button
-                        onPress={() => navigation.goBack()}
                         variant="back"
-                         colorVariant="secondary"
+                        colorVariant="secondary"
+                        direction="left"
+                        onPress={() => navigation.navigate("Welcome")}
                         style={styles.backButton}
                     />
                 </View>
@@ -191,7 +192,6 @@ const styles = StyleSheet.create({
     topBar: {
         paddingHorizontal: 20,
         paddingTop: 8,
-        paddingBottom: 16,
     },
     content: {
         flexGrow: 1,

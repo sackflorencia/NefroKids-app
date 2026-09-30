@@ -35,7 +35,7 @@ const Button = ({
                     : selected    ? "#A4F1CC"
                     : "#D6D6D6";
 
-  const textColor   = "#2e2e2e"
+  const textColor   = "#666"
 
   if (isBack) {
     return (
@@ -115,6 +115,7 @@ const styles = StyleSheet.create({
   },
   backTouchable: {
     alignSelf: "flex-start",
+    marginBottom: 16,
   },
   backButton: {
     width: 48,

@@ -15,6 +15,7 @@ import SymptomLogController from "../../back/controllers/symptomsController";
 
 import CheckInForm from "../components/checkIn/CheckInForm";
 import CheckInSummary from "../components/checkIn/CheckInSummary";
+import Button from "../components/Button";
 
 export default function CheckIn() {
 
@@ -90,9 +91,12 @@ export default function CheckIn() {
   }
 
   return (
+    <>
+    
     <CheckInForm
       onFinish={handleSave}
     />
+    </>
   );
 }
 
