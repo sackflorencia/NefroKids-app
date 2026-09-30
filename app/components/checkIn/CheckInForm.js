@@ -26,6 +26,16 @@ export default function CheckInForm({ onFinish }) {
     setSelectedValue(value);
   }
 
+  function handlePrevious() {
+    if (currentIndex === 0) return;
+
+    const previousIndex = currentIndex - 1;
+    const previousQuestionId = QUESTIONS[previousIndex].id;
+
+    setSelectedValue(answers[previousQuestionId] ?? null);
+    setCurrentIndex(previousIndex);
+  }
+
   async function handleNext() {
     // Validación: para preguntas de dolor, debe haber al menos una selección
     if (currentQuestion.id === "pain") {
@@ -64,6 +74,9 @@ export default function CheckInForm({ onFinish }) {
     }
     return !!selectedValue;
   };
+
+  const isFirstQuestion = currentIndex === 0;
+  const isLastQuestion = currentIndex === QUESTIONS.length - 1;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -111,12 +124,30 @@ export default function CheckInForm({ onFinish }) {
 
       {/* Botón siguiente */}
       <View style={styles.footer}>
-        <Button
-          title="Siguiente pregunta"
-          variant="secondary"
-          onPress={handleNext}
-          style={[styles.nextButton, !isValid() && styles.disabled]}
-        />
+        {!isLastQuestion ? (
+          <Button
+            title="Siguiente pregunta"
+            variant="secondary"
+            onPress={handleNext}
+            style={[styles.nextButton, !isValid() && styles.disabled]}
+          />
+        ) : (
+          <Button
+            title="Guardar"
+            variant="secondary"
+            onPress={handleNext}
+            style={[styles.nextButton, !isValid() && styles.disabled]}
+          />
+        )}
+
+        {!isFirstQuestion && (
+          <Button
+            title="Pregunta anterior"
+            variant="primary"
+            onPress={handlePrevious}
+            style={styles.prevButton}
+          />
+        )}
       </View>
 
     </SafeAreaView>
@@ -175,9 +206,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingBottom: 36,
     paddingTop: 12,
+    gap: 12,
+  },
+  prevButton: {
+    width: "100%",
+    alignSelf: "center",
+    borderRadius: 28,
   },
   nextButton: {
     width: "100%",
+    alignSelf: "center",
+    borderRadius: 28,
   },
   disabled: {
     opacity: 0.4,

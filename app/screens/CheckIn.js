@@ -17,7 +17,7 @@ import CheckInForm from "../components/checkIn/CheckInForm";
 import CheckInSummary from "../components/checkIn/CheckInSummary";
 import Button from "../components/Button";
 
-export default function CheckIn() {
+export default function CheckIn({ navigation }) {
 
   const db = useSQLiteContext();
 
@@ -82,9 +82,8 @@ export default function CheckIn() {
     return (
       <CheckInSummary
         checkIn={todayCheckIn}
-        onEdit={() =>
-          setEditing(true)
-        }
+        onEdit={() => setEditing(true)}
+        onBack={() => navigation.navigate("Home")}
       />
     );
 

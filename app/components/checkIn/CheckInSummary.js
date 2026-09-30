@@ -5,7 +5,7 @@ import { MOODS, PAIN_LOCATIONS, URINE_COLORS, getLabel } from "../../helpers/Che
 import Button from "../Button";
 import colors from "../../styles/colors";
 
-export default function CheckInSummary({ checkIn, onEdit }) {
+export default function CheckInSummary({ checkIn, onEdit, onBack }) {
   // Parsear pain_location de JSON string a array
   let painArray = [];
   try {
@@ -25,7 +25,15 @@ export default function CheckInSummary({ checkIn, onEdit }) {
 
   return (
     <SafeAreaView style={styles.container}>
-
+      <View style={styles.topBar}>
+        <Button
+            variant="back"
+            colorVariant="secondary"
+            direction="left"
+            onPress={onBack}
+            style={styles.backButton}
+        />
+      </View>
       <View style={styles.content}>
 
         <Text style={styles.title}>¡Hoy completaste tu check-in!</Text>
@@ -85,10 +93,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
+  topBar: {
+    paddingHorizontal: 20,
+    paddingTop: 8,
+    paddingBottom: 0,
+  },
+  backButton: {
+    alignSelf: "flex-start",
+  },
   content: {
     flex: 1,
     paddingHorizontal: 24,
-    paddingTop: 40,
+    paddingTop: 0,
     gap: 24,
   },
   title: {
@@ -137,8 +153,8 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(164, 241, 204, 0.2)",
     borderRadius: 12,
     padding: 16,
-    borderLeftWidth: 4,
-    borderLeftColor: colors.primaryShadow,
+    borderBottomWidth: 4,
+    borderBottomColor: colors.primaryShadow,
   },
   infoText: {
     fontSize: 16,

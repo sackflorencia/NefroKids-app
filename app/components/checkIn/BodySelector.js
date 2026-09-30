@@ -62,7 +62,7 @@ export default function BodySelector({ selected, onSelect }) {
  
   return (
     <View style={styles.container}>
-      <Svg width={230} height={340} viewBox="0 0 240 440">
+      <Svg width={230} height={280} viewBox="0 0 240 440">
         {/* CABEZA */}
         <G onPress={() => handlePress("head")}>
           <Circle cx={120} cy={42} r={32} fill={fill("head")} {...shape} />
