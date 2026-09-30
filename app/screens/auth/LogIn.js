@@ -5,6 +5,9 @@ import {
     View,
     Text,
     Image,
+    ScrollView,
+    Keyboard,
+    TouchableWithoutFeedback,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -17,15 +20,18 @@ import images from "../../../assets/images";
 import colors from "../../styles/colors";
 
 import { useUser } from "../../context/UserContext";
+import Welcome from "./Welcome";
 
-const LogIn = () => {
+const LogIn = ({ navigation }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const { login } = useUser();
 
+    const handleRegister = () => {
+        navigation.navigate("Register");
+    };
 
     async function handleLogin() {
-
         if (!email.trim() || !password) {
             Alert.alert(
                 "Campos incompletos",
@@ -35,63 +41,84 @@ const LogIn = () => {
         }
 
         try {
-
             await login(
                 email.trim(),
                 password
             );
 
         } catch (error) {
-
             Alert.alert(
                 "No pudimos iniciar sesión",
                 error.message
             );
-
         }
     }
 
-
-
     return (
-        <SafeAreaView style={styles.container}>
+        <TouchableWithoutFeedback
+            onPress={Keyboard.dismiss}
+            accessible={false}
+        >
+            <SafeAreaView style={styles.safeArea}>
+                <Header />
 
-            <Header />
-
-            <View style={styles.form}>
-                <Text style={styles.label}>Email del tutor</Text>
-                <CustomInput
-                    type="email"
-                    placeholder="Escribe aqui"
-                    value={email}
-                    onChangeText={setEmail}
-                />
-
-                <Text style={styles.label}>Contraseña</Text>
-                <CustomInput
-                    type="password"
-                    placeholder="Escribe aqui"
-                    value={password}
-                    onChangeText={setPassword}
-                />
-
-                <Button
-                    title="Siguiente"
-                    onPress={handleLogin}
-                    variant="secondary"
-                    style={styles.submitButton}
-                />
-            </View>
-
-            <View style={styles.petWrapper} pointerEvents="none">
-                <Image source={images.happyRiku} style={styles.petImage} resizeMode="contain" />
-                <View style={styles.speechWrapper}>
-                    <SpeechBubble message="¡Bienvenido!" direction="left" backgroundColor="#fff" textColor="#666" />
-                    {/* cuando pueda solucionar esto */}
+                <View style={styles.topBar}>
+                    <Button
+                        variant="back"
+                        colorVariant="secondary"
+                        direction="left"
+                        onPress={() =>
+                            navigation.navigate("Welcome")
+                        }
+                        style={styles.backButton}
+                    />
                 </View>
-            </View>
 
-        </SafeAreaView>
+                <ScrollView
+                    contentContainerStyle={styles.scrollContent}
+                    keyboardShouldPersistTaps="handled"
+                    showsVerticalScrollIndicator={false}
+                >
+                    <View style={styles.form}>
+                        <Text style={styles.label}>
+                            Email del tutor
+                        </Text>
+
+                        <CustomInput
+                            type="email"
+                            placeholder="Escribe aqui"
+                            value={email}
+                            onChangeText={setEmail}
+                        />
+
+                        <Text style={styles.label}>
+                            Contraseña
+                        </Text>
+
+                        <CustomInput
+                            type="password"
+                            placeholder="Escribe aqui"
+                            value={password}
+                            onChangeText={setPassword}
+                        />
+
+                        <Button
+                            title="Siguiente"
+                            onPress={handleLogin}
+                            variant="secondary"
+                            style={styles.submitButton}
+                        />
+
+                        <Button
+                            title="Registrarte"
+                            onPress={handleRegister}
+                            variant="primary"
+                            style={styles.submitButton}
+                        />
+                    </View>
+                </ScrollView>
+            </SafeAreaView>
+        </TouchableWithoutFeedback>
     );
 };
 
@@ -102,24 +129,41 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#fff",
     },
+
+    safeArea: {
+        flex: 1,
+    },
+
+    topBar: {
+        paddingHorizontal: 20,
+        paddingTop: 8,
+        paddingBottom: 0,
+    },
+
+    scrollContent: {
+        flexGrow: 1,
+    },
+
     form: {
         paddingHorizontal: 24,
-        paddingTop: 12,
-        gap: 18,
+        paddingTop: 0,
+        gap: 12,
     },
+
     label: {
-        color: colors.primaryShadow,
+        color: colors.textDark,
         fontSize: 18,
-        marginBottom: 6,
-        marginLeft: 6,
+        marginLeft: 4,
         fontWeight: "600",
     },
+
     submitButton: {
-        marginTop: 18,
+        marginTop: 0,
         alignSelf: "center",
-        width: "70%",
+        width: "100%",
         borderRadius: 28,
     },
+
     petWrapper: {
         position: "absolute",
         left: 8,
@@ -129,11 +173,13 @@ const styles = StyleSheet.create({
         alignItems: "flex-start",
         justifyContent: "flex-end",
     },
+
     petImage: {
         width: 280,
         height: 300,
         opacity: 0.95,
     },
+
     speechWrapper: {
         position: "absolute",
         top: 30,

@@ -1,22 +1,17 @@
 export const URINE_COLORS = [
   {
     value: "normal",
-    label: "🟡 Normal",
+    label: "Normal",
     color: "#F7E27C"
   },
   {
     value: "dark",
-    label: "🟠 Oscura",
-    color: "#F2C94C"
-  },
-  {
-    value: "reddish",
-    label: "🔴 Rojiza",
+    label: "Oscura",
     color: "#D4A017"
   },
   {
-    value: "no_urine",
-    label: "⚫ No oriné",
+    value: "reddish",
+    label: "Rojiza",
     color: "#8B4513"
   },
   {

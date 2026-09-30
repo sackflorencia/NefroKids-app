@@ -4,7 +4,10 @@ import {
     Image,
     StyleSheet,
     Alert,
-    TextInput,
+    Text,
+    ScrollView,
+    Keyboard,
+    TouchableWithoutFeedback,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -20,149 +23,218 @@ export default function UserRegistration({ navigation }) {
     const [fullName, setFullName] = useState("");
     const [birthDate, setBirthDate] = useState("");
     const [urinates, setUrinates] = useState(true);
+    const [errors, setErrors] = useState({});
 
-    async function handleNext() {
-        if (!fullName || !birthDate) {
-            Alert.alert(
-                "Datos incompletos",
-                "Completá todos los campos"
-            );
-            return;
+    const handleLogin = () => {
+        navigation.navigate("LogIn");
+    };
+
+    function validateForm() {
+        const newErrors = {};
+
+        if (!fullName || fullName.trim() === "") {
+            newErrors.fullName = "El nombre es requerido";
+        } else if (fullName.trim().length < 2) {
+            newErrors.fullName = "El nombre debe tener al menos 2 caracteres";
         }
 
-        console.log("handlenext activated");
+        if (!birthDate) {
+            newErrors.birthDate = "La fecha de nacimiento es requerida";
+        }
 
-        navigation.navigate("GuardianRegistration", {
-            userData: {
-                full_name: fullName,
-                birth_date: birthDate.toISOString().split("T")[0],
-                urinates: urinates ? 1 : 0,
-            },
-        });
+        return newErrors;
+    }
+
+    async function handleNext() {
+        try {
+            const newErrors = validateForm();
+            
+            if (Object.keys(newErrors).length > 0) {
+                setErrors(newErrors);
+                const errorList = Object.values(newErrors).join("\n");
+                Alert.alert("Datos incompletos", errorList);
+                return;
+            }
+
+            setErrors({});
+
+            navigation.navigate("GuardianRegistration", {
+                userData: {
+                    full_name: fullName.trim(),
+                    birth_date: birthDate instanceof Date 
+                        ? birthDate.toISOString().split("T")[0]
+                        : birthDate,
+                    urinates: urinates ? 1 : 0,
+                },
+            });
+        } catch (error) {
+            console.error("Error en UserRegistration:", error);
+            Alert.alert("Error", "Ocurrió un error al procesar tus datos. Por favor intenta nuevamente.");
+        }
     }
 
     return (
-        <SafeAreaView style={styles.container}>
-            <Header />
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+            <SafeAreaView style={styles.safeArea}>
+                <Header />
 
-            <View style={styles.content}>
-                {/* Avatar */}
-                <View style={styles.avatarContainer}>
-                    <View style={styles.avatar}>
-                        <Image
-                            source={PerfilVacio}
-                            style={styles.avatarImage}
-                            resizeMode="cover"
-                        />
-                    </View>
-                </View>
-
-                {/* Nombre */}
-                <TextInput
-                    placeholder="Nombre del niño"
-                    value={fullName}
-                    onChangeText={setFullName}
-                    autoCapitalize="words"
-                    style={styles.nameInput}
-                    placeholderTextColor={colors.textLight}
-                />
-
-                {/* Fecha de nacimiento */}
-                <CustomInput
-                    type="date"
-                    placeholder="Fecha de nacimiento"
-                    label="Fecha de nacimiento"
-                    value={birthDate}
-                    onChangeText={setBirthDate}
-                />
-
-                {/* Sí / No */}
-                <View style={styles.urinatesContainer}>
+                <View style={styles.topBar}>
                     <Button
-                        title="Sí orino"
-                        variant="option"
-                        selected={urinates === true}
-                        onPress={() => setUrinates(true)}
-                        style={styles.optionButton}
-                    />
-
-                    <Button
-                        title="No orino"
-                        variant="option"
-                        selected={urinates === false}
-                        onPress={() => setUrinates(false)}
-                        style={styles.optionButton}
+                        variant="back"
+                        colorVariant="secondary"
+                        direction="left"
+                        onPress={() => navigation.navigate("Welcome")}
+                        style={styles.backButton}
                     />
                 </View>
 
-                {/* Mascota y mensaje */}
-                <View style={styles.petRow}>
-                    <View style={styles.speechWrapper}>
-                        <SpeechBubble
-                            message="¿Listo para explorar?"
-                            direction="right"
-                            backgroundColor="#FFFFFF"
-                            textColor="#999"
+                <ScrollView
+                    contentContainerStyle={styles.content}
+                    keyboardShouldPersistTaps="handled"
+                    showsVerticalScrollIndicator={false}
+                >
+
+                    {/* Sección Nombre */}
+                    <View style={styles.section}>
+                        <Text style={styles.sectionLabel}>Nombre del niño</Text>
+                        <CustomInput
+                            type="default"
+                            placeholder="Escribe aquí"
+                            value={fullName}
+                            onChangeText={(text) => {
+                                setFullName(text);
+                                if (errors.fullName) {
+                                    setErrors({ ...errors, fullName: "" });
+                                }
+                            }}
+                            autoCapitalize="words"
+                            inputStyle={styles.nameInputText}
+                            containerStyle={[styles.nameInputContainer, errors.fullName && styles.customInputError]}
+                            error={errors.fullName}
+                            maxLength={50}
                         />
+                        {errors.fullName && (
+                            <Text style={styles.errorText}>{errors.fullName}</Text>
+                        )}
                     </View>
 
-                    <View style={styles.petImageWrapper}>
-                        <Image
-                            source={images.confusedRiku}
-                            style={styles.petImage}
+                    {/* Sección Fecha de nacimiento */}
+                    <View style={styles.section}>
+                        <Text style={styles.sectionLabel}>Fecha de nacimiento</Text>
+                        <CustomInput
+                            type="date"
+                            placeholder="Selecciona tu fecha"
+                            value={birthDate}
+                            onChangeText={(date) => {
+                                setBirthDate(date);
+                                if (errors.birthDate) {
+                                    setErrors({ ...errors, birthDate: "" });
+                                }
+                            }}
+                            containerStyle={errors.birthDate && styles.customInputError}
+                        />
+                        {errors.birthDate && (
+                            <Text style={styles.errorText}>{errors.birthDate}</Text>
+                        )}
+                    </View>
+
+                    {/* Sección Orinado */}
+                    <View style={styles.section}>
+                        <Text style={styles.sectionLabel}>¿Eres una persona que orina?</Text>
+                        <View style={styles.urinatesContainer}>
+                            <Button
+                                title="Sí orino"
+                                variant="option"
+                                selected={urinates === true}
+                                onPress={() => setUrinates(true)}
+                                style={styles.optionButton}
+                            />
+
+                            <Button
+                                title="No orino"
+                                variant="option"
+                                selected={urinates === false}
+                                onPress={() => setUrinates(false)}
+                                style={styles.optionButton}
+                            />
+                        </View>
+                    </View>
+
+                    <View style={styles.footer}>
+                        <Button
+                            title="Siguiente"
+                            variant="secondary"
+                            onPress={handleNext}
+                            style={styles.submitButton}
+                        />
+                        <Button
+                            title="Iniciar sesión"
+                            variant="primary"
+                            onPress={handleLogin}
+                            style={[styles.submitButton, styles.loginButton]}
                         />
                     </View>
-                </View>
-
-                {/* Siguiente */}
-                <Button
-                    title="Siguiente"
-                    onPress={handleNext}
-                />
-            </View>
-        </SafeAreaView>
+                    
+                </ScrollView>
+            </SafeAreaView>
+        </TouchableWithoutFeedback>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: colors.background,
     },
-
-    content: {
+    safeArea: {
         flex: 1,
-        paddingHorizontal: 24,
+    },
+    topBar: {
+        paddingHorizontal: 20,
         paddingTop: 8,
-        paddingBottom: 20,
-        gap: 14,
+    },
+    content: {
+        flexGrow: 1,
+        paddingHorizontal: 24,
+        paddingTop: 0,
+        paddingBottom: 16,
+        gap: 10,
     },
 
-    avatarContainer: {
-        alignItems: "center",
-        justifyContent: "center",
+    section: {
+        gap: 8,
+        marginBottom: 4,
     },
 
-    avatar: {
-        width: 145,
-        height: 145,
-        borderRadius: 72.5,
-        backgroundColor: "transparent",
-        alignItems: "center",
-        justifyContent: "center",
-    },
-
-    avatarImage: {
-        width: "100%",
-        height: "100%",
-        borderRadius: 72.5,
-    },
-
-    nameInput: {
-        textAlign: "center",
+    sectionLabel: {
         fontSize: 18,
         fontWeight: "600",
-        color: colors.textLight,
-        paddingVertical: 6,
+        color: colors.textDark,
+        marginLeft: 4,
+    },
+
+    nameInputContainer: {
+        width: "100%",
+    },
+
+    nameInputText: {
+        fontSize: 18,
+        fontWeight: "600",
+        color: colors.textDark,
+        textAlign: "left",
+        backgroundColor: "transparent",
+        borderWidth: 0,
+    },
+
+    customInputError: {
+        borderColor: "#E53935",
+    },
+
+    errorText: {
+        fontSize: 14,
+        color: "#E53935",
+        marginLeft: 4,
+        fontWeight: "500",
     },
 
     urinatesContainer: {
@@ -177,29 +249,48 @@ const styles = StyleSheet.create({
     },
 
     petRow: {
-        flex: 1,
+        flexShrink: 0,
         flexDirection: "row",
-        alignItems: "flex-end",
+        alignItems: "center",
         justifyContent: "space-between",
         width: "100%",
-        minHeight: 170,
+        minHeight: 150,
+        marginTop: 1,
+        paddingHorizontal: 4,
     },
 
     petImageWrapper: {
+        flex: 1,
         alignItems: "center",
-        justifyContent: "flex-end",
+        justifyContent: "center",
         marginLeft: "auto",
     },
 
     petImage: {
-        width: 190,
-        height: 245,
+        width: 120,
+        height: 170,
         opacity: 0.95,
     },
 
     speechWrapper: {
-        position: "absolute",
-        top: 25,
+        position: "relative",
+        top: 8,
         left: 0,
+        marginRight: 4,
+        alignSelf: "flex-start",
+    },
+
+    footer: {
+        paddingHorizontal: 0,
+        paddingBottom: 8,
+        gap: 12,
+    },
+
+    submitButton: {
+        width: "100%",
+    },
+
+    loginButton: {
+        marginTop: 0,
     },
 });

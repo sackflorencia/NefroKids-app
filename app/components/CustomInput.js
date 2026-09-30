@@ -133,11 +133,14 @@ export default function CustomInput({
         {/* Input de texto o selector de fecha */}
         {isDateType ? (
           <Pressable
-            style={[styles.datePressable, inputStyle, isDateType ? styles.centeredPressable : null]}
+            style={[styles.datePressable, inputStyle]}
             onPress={() => editable && setShowPicker(true)}
           >
-            <Text style={[styles.dateLabel, styles.dateText]}>
-              {placeholder}
+            <Text style={[
+              styles.dateLabel,
+              !dateValue ? styles.placeholderText : styles.dateTextValue
+            ]}>
+              {dateValue ? formatDate(dateValue) : placeholder}
             </Text>
           </Pressable>
         ) : (
@@ -229,20 +232,29 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     minHeight: 54,
+    paddingLeft: 52,
+    paddingRight: 8,
   },
   placeholderText: {
     flex: 1,
-    fontSize: 16,
+    fontSize: 18,
     color: '#A0A0A0',
     paddingVertical: 14,
     textAlignVertical: 'center',
     paddingRight: 8,
   },
   dateLabel: {
-    fontSize: 16,
+    fontSize: 18,
     color: '#A0A0A0',
     textAlignVertical: 'center',
+    textAlign: 'left',
     paddingRight: 8,
+  },
+  dateTextValue: {
+    fontSize: 18,
+    color: '#666666',
+    fontWeight: '600',
+    textAlign: 'left',
   },
   leftIconAbsolute: {
     position: 'absolute',

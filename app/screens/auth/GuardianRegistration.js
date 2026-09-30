@@ -6,7 +6,10 @@ import {
     Alert,
     ScrollView,
     TouchableOpacity,
+    Keyboard,
+    TouchableWithoutFeedback,
 } from "react-native";
+
 import { SafeAreaView } from "react-native-safe-area-context";
 import colors from "../../styles/colors";
 
@@ -23,7 +26,6 @@ export default function GuardianRegistration({
     route,
     navigation,
 }) {
-
     const {
         register,
         refreshUser,
@@ -48,13 +50,7 @@ export default function GuardianRegistration({
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
 
-
-    function updateGuardian(
-        index,
-        field,
-        value
-    ) {
-
+    function updateGuardian(index, field, value) {
         const updated = [...guardians];
 
         updated[index][field] = value;
@@ -62,9 +58,7 @@ export default function GuardianRegistration({
         setGuardians(updated);
     }
 
-
     function addGuardian() {
-
         if (guardians.length >= MAX_GUARDIANS) {
             return;
         }
@@ -80,28 +74,69 @@ export default function GuardianRegistration({
         ]);
     }
 
-
     function validateGuardians() {
+        // Solo validar el primer tutor (requerido)
+        const primaryGuardian = guardians[0];
 
-        for (const guardian of guardians) {
+        if (
+            !primaryGuardian.full_name?.trim() ||
+            !primaryGuardian.email?.trim() ||
+            !primaryGuardian.phone?.trim()
+        ) {
+            return false;
+        }
 
-            if (
-                !guardian.full_name.trim() ||
-                !guardian.email.trim() ||
-                !guardian.phone.trim() ||
-                !guardian.relationship.trim()
-            ) {
+        // Validar email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-                return false;
+        if (!emailRegex.test(primaryGuardian.email)) {
+            return false;
+        }
+
+        // Validar teléfono
+        const phoneNumbers =
+            primaryGuardian.phone.replace(/\D/g, "");
+
+        if (phoneNumbers.length < 8) {
+            return false;
+        }
+
+        // Validar tutores adicionales
+        for (let i = 1; i < guardians.length; i++) {
+            const guardian = guardians[i];
+
+            const hasAnyField =
+                guardian.full_name?.trim() ||
+                guardian.email?.trim() ||
+                guardian.phone?.trim();
+
+            if (hasAnyField) {
+                // Si tiene algún campo, debe completar todos
+                if (
+                    !guardian.full_name?.trim() ||
+                    !guardian.email?.trim() ||
+                    !guardian.phone?.trim()
+                ) {
+                    return false;
+                }
+
+                if (!emailRegex.test(guardian.email)) {
+                    return false;
+                }
+
+                const guardianPhoneNumbers =
+                    guardian.phone.replace(/\D/g, "");
+
+                if (guardianPhoneNumbers.length < 8) {
+                    return false;
+                }
             }
         }
 
         return true;
     }
 
-
     async function handleNext() {
-
         console.log(
             "========================================"
         );
@@ -125,9 +160,7 @@ export default function GuardianRegistration({
             user
         );
 
-
         if (registering) {
-
             console.log(
                 "SIGN UP - Registro ya en progreso. Se cancela segundo click."
             );
@@ -135,24 +168,20 @@ export default function GuardianRegistration({
             return;
         }
 
-
         if (!validateGuardians()) {
-
             console.log(
                 "SIGN UP - Validación fallida: campos incompletos"
             );
 
             Alert.alert(
                 "Datos incompletos",
-                "Completá todos los campos de los tutores."
+                "Por favor completá todos los campos del tutor principal con datos válidos (nombre, email y teléfono)."
             );
 
             return;
         }
 
-
-        if (!password.trim()) {
-
+        if (!password?.trim()) {
             console.log(
                 "SIGN UP - Validación fallida: contraseña vacía"
             );
@@ -165,9 +194,16 @@ export default function GuardianRegistration({
             return;
         }
 
+        if (password.length < 6) {
+            Alert.alert(
+                "Contraseña débil",
+                "La contraseña debe tener al menos 6 caracteres."
+            );
+
+            return;
+        }
 
         if (password !== confirmPassword) {
-
             console.log(
                 "SIGN UP - Validación fallida: contraseñas diferentes"
             );
@@ -180,27 +216,17 @@ export default function GuardianRegistration({
             return;
         }
 
-
         try {
-
             setRegistering(true);
 
             console.log(
                 "SIGN UP - 1: Iniciando registro en Firebase"
             );
 
-
-            /*
-             * ==================================================
-             * FIREBASE
-             * ==================================================
-             */
-
             const firebaseUser = await register(
                 guardians[0].email.trim(),
                 password
             );
-
 
             console.log(
                 "SIGN UP - 2: Firebase register() TERMINÓ"
@@ -216,13 +242,6 @@ export default function GuardianRegistration({
                 firebaseUser?.email
             );
 
-
-            /*
-             * ==================================================
-             * REGISTRATION SERVICE
-             * ==================================================
-             */
-
             console.log(
                 "SIGN UP - 3: Creando RegistrationService"
             );
@@ -230,11 +249,9 @@ export default function GuardianRegistration({
             const registrationService =
                 new RegistrationService(db);
 
-
             console.log(
                 "SIGN UP - 4: Iniciando completeRegistration()"
             );
-
 
             await registrationService.completeRegistration(
                 userData,
@@ -242,17 +259,9 @@ export default function GuardianRegistration({
                 firebaseUser.uid
             );
 
-
             console.log(
                 "SIGN UP - 5: completeRegistration() TERMINÓ OK"
             );
-
-
-            /*
-             * ==================================================
-             * REFRESH USER
-             * ==================================================
-             */
 
             console.log(
                 "SIGN UP - 6: Antes de refreshUser()"
@@ -269,13 +278,6 @@ export default function GuardianRegistration({
                 user
             );
 
-
-            /*
-             * ==================================================
-             * FIN
-             * ==================================================
-             */
-
             console.log(
                 "SIGN UP - 8: REGISTRO COMPLETADO CORRECTAMENTE"
             );
@@ -284,18 +286,24 @@ export default function GuardianRegistration({
                 "========================================"
             );
 
-
         } catch (error) {
+            let errorMessage =
+                "No se pudo completar el registro.";
+
+            if (error.message?.includes("email")) {
+                errorMessage =
+                    "Este email ya está registrado. Intentá con otro.";
+            } else if (error.message?.includes("password")) {
+                errorMessage =
+                    "La contraseña no es válida.";
+            }
 
             Alert.alert(
-                "No pudimos crear la cuenta",
-                error?.message ||
-                "Ocurrió un error al completar el registro."
+                "Error en el registro",
+                errorMessage
             );
 
-
         } finally {
-
             setRegistering(false);
 
             console.log(
@@ -304,9 +312,7 @@ export default function GuardianRegistration({
         }
     }
 
-
     function removeGuardian(index) {
-
         if (guardians.length === 1) {
             return;
         }
@@ -318,297 +324,332 @@ export default function GuardianRegistration({
         setGuardians(updated);
     }
 
-
     return (
-        <SafeAreaView style={styles.container}>
+        <TouchableWithoutFeedback
+            onPress={Keyboard.dismiss}
+            accessible={false}
+        >
+            <SafeAreaView style={styles.safeArea}>
+                <Header />
 
-            <Header />
+                <View style={styles.topBar}>
+                    <Button
+                        variant="back"
+                        colorVariant="secondary"
+                        direction="left"
+                        onPress={() =>
+                            navigation.navigate("Register")
+                        }
+                        style={styles.backButton}
+                    />
 
-            <ScrollView
-                contentContainerStyle={styles.content}
-                showsVerticalScrollIndicator={false}
-            >
+                    <Text style={styles.title}>
+                        Tutores
+                    </Text>
+                </View>
 
-                <Text style={styles.title}>
-                    ¿Quién te acompaña a los turnos médicos?
-                </Text>
+                <ScrollView
+                    style={styles.scrollView}
+                    contentContainerStyle={styles.scrollContent}
+                    showsVerticalScrollIndicator={false}
+                    keyboardShouldPersistTaps="handled"
+                    keyboardDismissMode="on-drag"
+                >
+                    <Text style={styles.subtitle}>
+                        Agregá al tutor que recibirá información
+                        médica del niño y podrá acceder a la
+                        aplicación.
+                    </Text>
 
-                <Text style={styles.subtitle}>
-                    Agrega a las personas que ayudan a manejar el tratamiento del niño y deberían recibir su información médica.
-                </Text>
+                    {guardians.map((guardian, index) => (
+                        <View
+                            key={index}
+                            style={[
+                                styles.guardianCard,
+                                index > 0 &&
+                                (index + 1) % 2 === 0
+                                    ? styles.evenCard
+                                    : null,
+                            ]}
+                        >
+                            <View style={styles.headerRow}>
+                                <Text style={styles.guardianTitle}>
+                                    {index === 0
+                                        ? "Tutor principal"
+                                        : `Tutor adicional ${index}`}
+                                </Text>
 
+                                {index > 0 && (
+                                    <TouchableOpacity
+                                        onPress={() =>
+                                            removeGuardian(index)
+                                        }
+                                    >
+                                        <Text style={styles.deleteText}>
+                                            ✕
+                                        </Text>
+                                    </TouchableOpacity>
+                                )}
+                            </View>
 
-                {guardians.map((guardian, index) => (
+                            <View style={styles.fieldRow}>
+                                <Text style={styles.inputLabel}>
+                                    Nombre completo{" "}
+                                    {index === 0 ? "*" : ""}
+                                </Text>
 
-                    <View
-                        key={index}
-                        style={[
-                            styles.guardianCard,
-                            (index + 1) % 2 === 0
-                                ? styles.evenCard
-                                : null,
-                        ]}
-                    >
-
-                        <View style={styles.headerRow}>
-
-                            <Text style={styles.guardianTitle}>
-                                Tutor {index + 1}:
-                            </Text>
-
-                            {guardians.length > 1 && (
-
-                                <TouchableOpacity
-                                    onPress={() =>
-                                        removeGuardian(index)
+                                <CustomInput
+                                    type="default"
+                                    value={guardian.full_name}
+                                    onChangeText={(text) =>
+                                        updateGuardian(
+                                            index,
+                                            "full_name",
+                                            text
+                                        )
                                     }
-                                >
-                                    <Text style={styles.deleteText}>
-                                        ✕
-                                    </Text>
-                                </TouchableOpacity>
+                                    autoCapitalize="words"
+                                    placeholder="Nombre del tutor"
+                                />
+                            </View>
 
+                            <View style={styles.fieldRow}>
+                                <Text style={styles.inputLabel}>
+                                    Email{" "}
+                                    {index === 0 ? "*" : ""}
+                                </Text>
+
+                                <CustomInput
+                                    type="email"
+                                    value={guardian.email}
+                                    onChangeText={(text) =>
+                                        updateGuardian(
+                                            index,
+                                            "email",
+                                            text
+                                        )
+                                    }
+                                    keyboardType="email-address"
+                                    autoCapitalize="none"
+                                    placeholder="ejemplo@correo.com"
+                                />
+                            </View>
+
+                            <View style={styles.fieldRow}>
+                                <Text style={styles.inputLabel}>
+                                    Teléfono{" "}
+                                    {index === 0 ? "*" : ""}
+                                </Text>
+
+                                <CustomInput
+                                    type="default"
+                                    value={guardian.phone}
+                                    onChangeText={(text) =>
+                                        updateGuardian(
+                                            index,
+                                            "phone",
+                                            text
+                                        )
+                                    }
+                                    keyboardType="phone-pad"
+                                    placeholder="11 1234-5678"
+                                />
+                            </View>
+
+                            {index === 0 && (
+                                <>
+                                    <View style={styles.fieldRow}>
+                                        <Text style={styles.inputLabel}>
+                                            Contraseña *
+                                        </Text>
+
+                                        <CustomInput
+                                            type="password"
+                                            value={password}
+                                            onChangeText={setPassword}
+                                            placeholder="Mínimo 6 caracteres"
+                                        />
+                                    </View>
+
+                                    <View style={styles.fieldRow}>
+                                        <Text style={styles.inputLabel}>
+                                            Repetir contraseña *
+                                        </Text>
+
+                                        <CustomInput
+                                            type="password"
+                                            value={confirmPassword}
+                                            onChangeText={
+                                                setConfirmPassword
+                                            }
+                                            placeholder="Confirmá tu contraseña"
+                                        />
+                                    </View>
+                                </>
                             )}
 
-                        </View>
-
-
-                        <View style={styles.fieldRow}>
-
-                            <Text style={styles.inputLabel}>
-                                Nombre completo:
-                            </Text>
-
-                            <CustomInput
-                                type="default"
-                                value={guardian.full_name}
-                                onChangeText={(text) =>
-                                    updateGuardian(
-                                        index,
-                                        "full_name",
-                                        text
-                                    )
-                                }
-                                autoCapitalize="words"
-                            />
-
-                        </View>
-
-
-                        <View style={styles.fieldRow}>
-
-                            <Text style={styles.inputLabel}>
-                                Email:
-                            </Text>
-
-                            <CustomInput
-                                type="email"
-                                value={guardian.email}
-                                onChangeText={(text) =>
-                                    updateGuardian(
-                                        index,
-                                        "email",
-                                        text
-                                    )
-                                }
-                                keyboardType="email-address"
-                                autoCapitalize="none"
-                            />
-
-                        </View>
-
-
-                        <View style={styles.fieldRow}>
-
-                            <Text style={styles.inputLabel}>
-                                Teléfono:
-                            </Text>
-
-                            <CustomInput
-                                type="default"
-                                value={guardian.phone}
-                                onChangeText={(text) =>
-                                    updateGuardian(
-                                        index,
-                                        "phone",
-                                        text
-                                    )
-                                }
-                                keyboardType="phone-pad"
-                                placeholder="Ej. 11 1234-5678"
-                            />
-
-                        </View>
-
-
-                        {index === 0 && (
-
-                            <>
-
+                            {index > 0 && (
                                 <View style={styles.fieldRow}>
-
                                     <Text style={styles.inputLabel}>
-                                        Contraseña:
+                                        Relación con el niño
                                     </Text>
 
                                     <CustomInput
-                                        type="password"
-                                        value={password}
-                                        onChangeText={setPassword}
+                                        type="default"
+                                        value={guardian.relationship}
+                                        onChangeText={(text) =>
+                                            updateGuardian(
+                                                index,
+                                                "relationship",
+                                                text
+                                            )
+                                        }
+                                        placeholder="Madre, Padre, Abuelo, Tía..."
                                     />
-
                                 </View>
-
-
-                                <View style={styles.fieldRow}>
-
-                                    <Text style={styles.inputLabel}>
-                                        Repetir contraseña:
-                                    </Text>
-
-                                    <CustomInput
-                                        type="password"
-                                        value={confirmPassword}
-                                        onChangeText={setConfirmPassword}
-                                    />
-
-                                </View>
-
-                            </>
-
-                        )}
-
-
-                        <View style={styles.fieldRow}>
-
-                            <Text style={styles.inputLabel}>
-                                Relación con el niño:
-                            </Text>
-
-                            <CustomInput
-                                type="default"
-                                value={guardian.relationship}
-                                onChangeText={(text) =>
-                                    updateGuardian(
-                                        index,
-                                        "relationship",
-                                        text
-                                    )
-                                }
-                                placeholder="Madre, Padre, Abuelo, Tía..."
-                            />
-
+                            )}
                         </View>
+                    ))}
 
-                    </View>
-
-                ))}
-
-
-                {guardians.length < MAX_GUARDIANS && (
+                    {guardians.length < MAX_GUARDIANS && (
+                        <Button
+                            title="Agregar otro tutor (opcional)"
+                            variant="secondary"
+                            onPress={addGuardian}
+                            style={styles.button}
+                        />
+                    )}
 
                     <Button
-                        title="Agregar familiar"
-                        variant="secondary"
-                        onPress={addGuardian}
+                        title={
+                            registering
+                                ? "Creando cuenta..."
+                                : "Finalizar registro"
+                        }
+                        onPress={handleNext}
                         style={styles.button}
                         disabled={registering}
                     />
-
-                )}
-
-
-                <Button
-                    title={
-                        registering
-                            ? "Creando cuenta..."
-                            : "Siguiente"
-                    }
-                    onPress={handleNext}
-                    disabled={registering}
-                    style={styles.button}
-                />
-
-            </ScrollView>
-
-        </SafeAreaView>
+                </ScrollView>
+            </SafeAreaView>
+        </TouchableWithoutFeedback>
     );
 }
 
-
 const styles = StyleSheet.create({
-
     container: {
         flex: 1,
+        backgroundColor: colors.background,
+    },
+
+    safeArea: {
+        flex: 1,
+    },
+
+    topBar: {
+        paddingHorizontal: 20,
+        paddingTop: 8,
+        paddingBottom: 0,
+        flexDirection: "row",
+        alignItems: "center",
+    },
+
+    backButton: {
+        marginRight: 10,
     },
 
     content: {
         paddingHorizontal: 20,
         paddingBottom: 30,
+        paddingTop: 0,
     },
 
     title: {
-        fontSize: 26,
-        fontWeight: "700",
-        color: colors.textLight,
+        fontSize: 28,
+        fontWeight: "800",
+        color: colors.textDark,
         textAlign: "left",
-        marginTop: 20,
-        marginBottom: 8,
+        marginTop: 0,
+        marginBottom: 12,
+        lineHeight: 36,
+        marginLeft: 12,
     },
 
     subtitle: {
-        fontSize: 15,
-        lineHeight: 22,
+        fontSize: 16,
+        lineHeight: 24,
         color: colors.textDark,
         textAlign: "left",
-        marginBottom: 10,
+        marginBottom: 18,
+        fontWeight: "500",
     },
 
     guardianCard: {
-        borderRadius: 12,
-        padding: 16,
-        marginBottom: 18,
+        borderRadius: 16,
+        padding: 20,
+        marginBottom: 12,
+        backgroundColor: "#F9F9F9",
+        borderWidth: 1,
+        borderColor: "#E8E8E8",
     },
 
     evenCard: {
-        backgroundColor: colors.secondary,
-        borderRadius: 12,
-        padding: 16,
-        marginBottom: 18,
+        backgroundColor: "rgba(164, 241, 204, 0.15)",
+        borderRadius: 16,
+        padding: 20,
+        marginBottom: 12,
+        borderWidth: 1,
+        borderColor: "rgba(164, 241, 204, 0.3)",
     },
 
     guardianTitle: {
-        fontSize: 18,
-        fontWeight: "600",
+        fontSize: 20,
+        fontWeight: "700",
         marginBottom: 0,
-        color: colors.textLight,
+        color: colors.primaryShadow,
     },
 
     headerRow: {
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        marginBottom: 16,
+        marginBottom: 18,
+        paddingBottom: 12,
+        borderBottomWidth: 1,
+        borderBottomColor: "#E8E8E8",
     },
 
     deleteText: {
-        fontSize: 24,
+        fontSize: 28,
+        color: "#E53935",
+        fontWeight: "300",
     },
 
     inputLabel: {
-        color: "#000",
-        fontSize: 15,
-        marginBottom: 6,
-        marginTop: 2,
-        fontWeight: "600",
+        color: colors.textDark,
+        fontSize: 16,
+        marginBottom: 8,
+        marginTop: 6,
+        fontWeight: "700",
     },
 
     fieldRow: {
-        marginBottom: 12,
+        marginBottom: 16,
     },
 
     button: {
         marginTop: 6,
-        marginBottom: 10,
+        marginBottom: 6,
+    },
+
+    scrollView: {
+        flex: 1,
+    },
+
+    scrollContent: {
+        paddingHorizontal: 20,
+        paddingBottom: 30,
+        paddingTop: 0,
+        flexGrow: 1,
     },
 });

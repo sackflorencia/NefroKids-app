@@ -8,42 +8,40 @@ import {
   ActivityIndicator,
   StyleSheet
 } from "react-native";
-import * as ScreenOrientation from "expo-screen-orientation";
 
+import * as ScreenOrientation from "expo-screen-orientation";
 import { useSQLiteContext } from "expo-sqlite";
 
 import SymptomLogController from "../../back/controllers/symptomsController";
 
 import CheckInForm from "../components/checkIn/CheckInForm";
 import CheckInSummary from "../components/checkIn/CheckInSummary";
+import Button from "../components/Button";
 
-export default function CheckIn() {
+export default function CheckIn({ navigation }) {
+
   useEffect(() => {
-
     ScreenOrientation.lockAsync(
       ScreenOrientation.OrientationLock.PORTRAIT_UP
     );
-
   }, []);
+
   const db = useSQLiteContext();
 
-  const [loading, setLoading] =
-    useState(true);
+  const [loading, setLoading] = useState(true);
 
   const [
     todayCheckIn,
     setTodayCheckIn
   ] = useState(null);
 
-  const [editing, setEditing] =
-    useState(false);
+  const [editing, setEditing] = useState(false);
 
   useEffect(() => {
     loadTodayCheckIn();
   }, []);
 
   async function loadTodayCheckIn() {
-
     try {
 
       const controller =
@@ -88,9 +86,8 @@ export default function CheckIn() {
     return (
       <CheckInSummary
         checkIn={todayCheckIn}
-        onEdit={() =>
-          setEditing(true)
-        }
+        onEdit={() => setEditing(true)}
+        onBack={() => navigation.navigate("Home")}
       />
     );
 

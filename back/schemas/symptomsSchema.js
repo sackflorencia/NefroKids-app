@@ -1,4 +1,6 @@
 export const symptomLogsTable = `
+DROP TABLE IF EXISTS symptom_logs;
+
 CREATE TABLE IF NOT EXISTS symptom_logs (
 
   id TEXT PRIMARY KEY,
@@ -13,14 +15,7 @@ CREATE TABLE IF NOT EXISTS symptom_logs (
     'swollen'
   )),
 
-  pain_location TEXT
-    CHECK(pain_location IN (
-      'head',
-      'stomach',
-      'arm',
-      'leg',
-      'none'
-    )),
+  pain_location TEXT,
 
   urine_color TEXT
   CHECK(urine_color IN (

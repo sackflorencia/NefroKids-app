@@ -26,8 +26,25 @@ export default function CheckInForm({ onFinish }) {
     setSelectedValue(value);
   }
 
+  function handlePrevious() {
+    if (currentIndex === 0) return;
+
+    const previousIndex = currentIndex - 1;
+    const previousQuestionId = QUESTIONS[previousIndex].id;
+
+    setSelectedValue(answers[previousQuestionId] ?? null);
+    setCurrentIndex(previousIndex);
+  }
+
   async function handleNext() {
-    if (!selectedValue) return;
+    // Validación: para preguntas de dolor, debe haber al menos una selección
+    if (currentQuestion.id === "pain") {
+      if (!selectedValue || (Array.isArray(selectedValue) && selectedValue.length === 0)) {
+        return;
+      }
+    } else if (!selectedValue) {
+      return;
+    }
 
     const updatedAnswers = {
       ...answers,
@@ -41,7 +58,7 @@ export default function CheckInForm({ onFinish }) {
     if (isLastQuestion) {
       await onFinish({
         general_mood:  updatedAnswers.mood,
-        pain_location: updatedAnswers.pain,
+        pain_location: JSON.stringify(updatedAnswers.pain || []), // Serializar array a JSON
         urine_color:   updatedAnswers.urineColor,
       });
       return;
@@ -50,6 +67,16 @@ export default function CheckInForm({ onFinish }) {
     setSelectedValue(null);
     setCurrentIndex(currentIndex + 1);
   }
+
+  const isValid = () => {
+    if (currentQuestion.id === "pain") {
+      return Array.isArray(selectedValue) && selectedValue.length > 0;
+    }
+    return !!selectedValue;
+  };
+
+  const isFirstQuestion = currentIndex === 0;
+  const isLastQuestion = currentIndex === QUESTIONS.length - 1;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -97,12 +124,30 @@ export default function CheckInForm({ onFinish }) {
 
       {/* Botón siguiente */}
       <View style={styles.footer}>
-        <Button
-          title="Siguiente pregunta"
-          variant="secondary"
-          onPress={handleNext}
-          style={[styles.nextButton, !selectedValue && styles.disabled]}
-        />
+        {!isLastQuestion ? (
+          <Button
+            title="Siguiente pregunta"
+            variant="secondary"
+            onPress={handleNext}
+            style={[styles.nextButton, !isValid() && styles.disabled]}
+          />
+        ) : (
+          <Button
+            title="Guardar"
+            variant="secondary"
+            onPress={handleNext}
+            style={[styles.nextButton, !isValid() && styles.disabled]}
+          />
+        )}
+
+        {!isFirstQuestion && (
+          <Button
+            title="Pregunta anterior"
+            variant="primary"
+            onPress={handlePrevious}
+            style={styles.prevButton}
+          />
+        )}
       </View>
 
     </SafeAreaView>
@@ -124,7 +169,7 @@ const styles = StyleSheet.create({
   },
   stepCircleWrapper: {
     alignItems: "center",
-    marginTop: -30, // se superpone sobre el header
+    marginTop: -30,
     marginBottom: 24,
   },
   stepCircle: {
@@ -138,20 +183,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   stepNumber: {
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: "700",
     color: colors.primaryShadow,
   },
   questionContainer: {
-    marginBottom: 28,
+    marginBottom: 32,
     paddingHorizontal: 8,
   },
   question: {
-    fontSize: 22,
-    fontWeight: "600",
+    fontSize: 26,
+    fontWeight: "700",
     color: colors.textDark,
     textAlign: "center",
-    lineHeight: 30,
+    lineHeight: 35,
+    letterSpacing: 0.3,
   },
   optionsContainer: {
     flex: 1,
@@ -160,9 +206,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingBottom: 36,
     paddingTop: 12,
+    gap: 12,
+  },
+  prevButton: {
+    width: "100%",
+    alignSelf: "center",
+    borderRadius: 28,
   },
   nextButton: {
     width: "100%",
+    alignSelf: "center",
+    borderRadius: 28,
   },
   disabled: {
     opacity: 0.4,
