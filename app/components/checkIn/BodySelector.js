@@ -62,6 +62,15 @@ export default function BodySelector({ selected, onSelect }) {
  
   return (
     <View style={styles.container}>
+      {/* Etiquetas de lo seleccionado (feedback para el usuario) */}
+      <Text style={styles.hint}>
+        {isNone
+          ? "No te duele nada"
+          : selectedArray.length
+          ? "Tocá de nuevo una zona para quitarla"
+          : "Tocá la zona donde te duele"}
+      </Text>
+
       <Svg width={230} height={280} viewBox="0 0 240 440">
         {/* CABEZA */}
         <G onPress={() => handlePress("head")}>
@@ -109,15 +118,6 @@ export default function BodySelector({ selected, onSelect }) {
           />
         </G>
       </Svg>
- 
-      {/* Etiquetas de lo seleccionado (feedback para el usuario) */}
-      <Text style={styles.hint}>
-        {isNone
-          ? "No te duele nada"
-          : selectedArray.length
-          ? "Tocá de nuevo una zona para quitarla"
-          : "Tocá la zona donde te duele"}
-      </Text>
  
       <Button
         title="No me duele nada"
