@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS child_progress (
         CHECK(status IN (
             'bloqueado',
             'disponible',
+            'en_progreso',
             'completado'
         )),
 

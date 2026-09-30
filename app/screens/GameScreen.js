@@ -85,7 +85,7 @@ export default function GameScreen({ route }) {
       console.log("RESULTADO completeSection:", result);
       console.log("DESPUÉS DE completeSection");
 
-      navigation.navigate("Levels");
+      navigation.replace("Levels");
 
     } catch (error) {
 
