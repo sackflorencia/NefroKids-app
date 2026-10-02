@@ -34,13 +34,20 @@ export async function seedLevels(db) {
       "Conexión de las bolsas",
       "Conectar correctamente todo el sistema",
       50
+    ),
+    new Level(
+      "level5",
+      5,
+      "Entender el disco",
+      "Entender cómo y cuándo rotar el disco",
+      50
     )
 
   ];
 
   for (const level of initialLevels) {
     const existing = await repository.getById(level.id);
-
+    
     if (!existing) {
       await repository.insert(level);
       console.log(`LEVEL SEEDED: ${level.id}`);

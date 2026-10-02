@@ -65,7 +65,15 @@ const sections = [
     name: "Quiz",
     type: "quiz",
     display_order: 2
-  }
+  },
+  {
+    id: "level5_section1",
+    level_id: "level5",
+    number: 1,
+    name: "Game",
+    type: "game",
+    display_order: 1
+  },
 ];
 export async function seedLevelSections(db) {
   const repository = new LevelSectionRepository(db);
