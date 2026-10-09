@@ -1,338 +1,302 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   View,
   Text,
-  TouchableOpacity,
   ActivityIndicator,
   StyleSheet,
 } from "react-native";
 import { useSQLiteContext } from "expo-sqlite";
-import {
-  useNavigation,
-  useRoute,
-} from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import * as ScreenOrientation from "expo-screen-orientation";
 
 import QuestionController from "../../back/controllers/QuestionController";
 import ProgressController from "../../back/controllers/progressController";
 import { useUser } from "../context/UserContext";
-import * as ScreenOrientation from "expo-screen-orientation";
-
+import Button from "../components/Button";
+import colors from "../styles/colors";
 
 export default function Questions() {
   useEffect(() => {
-
-    ScreenOrientation.lockAsync(
-      ScreenOrientation.OrientationLock.PORTRAIT_UP
-    );
-
+    ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
   }, []);
+
   const db = useSQLiteContext();
   const navigation = useNavigation();
   const route = useRoute();
-
   const { user } = useUser();
 
-  const { levelId, sectionId } = route.params;
+  const routeParams = route?.params || {};
+  const { levelId = "level1", sectionId = "level1_section2" } = routeParams;
 
-  const questionController =
-    new QuestionController(db);
-
-  const progressController =
-    new ProgressController(db);
+  const questionController = new QuestionController(db);
+  const progressController = new ProgressController(db);
 
   const [loading, setLoading] = useState(true);
-
   const [questions, setQuestions] = useState([]);
-
   const [index, setIndex] = useState(0);
-
-  const [answers, setAnswers] = useState([]);
-
   const [selected, setSelected] = useState(null);
-
-  const [currentAnswers, setCurrentAnswers] =
-    useState([]);
+  const [currentAnswers, setCurrentAnswers] = useState([]);
+  const [revealedAnswers, setRevealedAnswers] = useState([]);
 
   useEffect(() => {
-
     loadQuestions();
-
   }, []);
 
   useEffect(() => {
-
-    if (
-      questions.length === 0 ||
-      index >= questions.length
-    ) {
+    if (questions.length === 0 || index >= questions.length) {
       return;
     }
 
-    const question =
-      questions[index];
+    const question = questions[index];
 
     const shuffled = [
       {
         text: question.correct_answer,
         correct: true,
-        feedback:
-          question.correct_feedback,
+        feedback: question.correct_feedback,
       },
       {
-        text:
-          question.incorrect_answer1,
+        text: question.incorrect_answer1,
         correct: false,
-        feedback:
-          question.incorrect_feedback1,
+        feedback: question.incorrect_feedback1,
       },
       question.incorrect_answer2 && {
-        text:
-          question.incorrect_answer2,
+        text: question.incorrect_answer2,
         correct: false,
-        feedback:
-          question.incorrect_feedback2,
+        feedback: question.incorrect_feedback2,
       },
       question.incorrect_answer3 && {
-        text:
-          question.incorrect_answer3,
+        text: question.incorrect_answer3,
         correct: false,
-        feedback:
-          question.incorrect_feedback3,
+        feedback: question.incorrect_feedback3,
       },
     ]
       .filter(Boolean)
       .sort(() => Math.random() - 0.5);
 
     setCurrentAnswers(shuffled);
-
     setSelected(null);
-
+    setRevealedAnswers([]);
   }, [index, questions]);
 
   async function loadQuestions() {
-
     try {
-
-      const data =
-        await questionController.getSectionQuestions(
-          sectionId,
-          3
-        );
-
+      const data = await questionController.getSectionQuestions(sectionId, 3);
       setQuestions(data);
-
     } catch (error) {
-
       console.error(error);
-
     } finally {
-
       setLoading(false);
-
     }
-
   }
 
   function handleAnswer(answer) {
+    const alreadySelected = revealedAnswers.some((item) => item.text === answer.text);
 
+    if (alreadySelected) {
+      return;
+    }
+
+    setRevealedAnswers((prev) => [...prev, answer]);
     setSelected(answer);
-
-    setAnswers(prev => [
-      ...prev,
-      {
-        questionId:
-          questions[index].id,
-        correct:
-          answer.correct,
-      }
-    ]);
-
   }
 
+  const selectedAnswerText = selected?.text;
+  const correctAnswer = revealedAnswers.find((answer) => answer.correct) || null;
+  const hasCorrectAnswer = Boolean(correctAnswer);
+  const activeFeedback = correctAnswer || selected;
+
+  const score = hasCorrectAnswer ? 1 : 0;
+
   async function nextQuestion() {
-    console.log("NEXT", index, questions.length);
     if (index < questions.length - 1) {
       setIndex(index + 1);
       return;
     }
-    console.log("Llamando finishQuiz");
+
     await finishQuiz();
   }
+
   async function finishQuiz() {
-    console.log("Entró a finishQuiz");
-    let score =
-      [...answers, {
-        questionId: questions[index].id,
-        correct: selected.correct
-      }]
-        .filter(a => a.correct)
-        .length;
-    console.log("Score", score);
-    await progressController.completeSection(
-      user.childId,
-      levelId,
-      sectionId,
-      {
-        score,
-        total: questions.length,
-      }
-    );
-    console.log("Se guardó");
+    await progressController.completeSection(user.childId, levelId, sectionId, {
+      score,
+      total: questions.length,
+    });
+
     navigation.navigate("Levels");
   }
 
+  const progressWidth = useMemo(() => {
+    if (!questions.length) return 0;
+    return (((index + 1) / questions.length) * 100);
+  }, [index, questions.length]);
+
   if (loading) {
-
     return (
-      <ActivityIndicator
-        style={{
-          flex: 1,
-        }}
-      />
-    );
-
-  }
-
-  if (
-    questions.length === 0
-  ) {
-
-    return (
-      <View style={styles.center}>
-
-        <Text>
-          No hay preguntas disponibles.
-        </Text>
-
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={colors.primaryShadow} />
       </View>
     );
-
   }
 
-  const question =
-    questions[index];
+  if (questions.length === 0) {
+    return (
+      <View style={styles.center}>
+        <Text>No hay preguntas disponibles.</Text>
+      </View>
+    );
+  }
+
+  const question = questions[index];
 
   return (
-
     <View style={styles.container}>
+      <View style={styles.topBar}>
+        <Button
+          title=""
+          variant="back"
+          direction="left"
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+        />
+      </View>
 
-      <Text style={styles.counter}>
-        Pregunta {index + 1} de{" "}
-        {questions.length}
-      </Text>
+      <View style={styles.content}>
+        <Text style={styles.questionTitle}>{question.question}</Text>
 
-      <Text style={styles.question}>
-        {question.question}
-      </Text>
-
-      {currentAnswers.map(
-        (
-          answer,
-          index
-        ) => (
-
-          <TouchableOpacity
-            key={index}
-            style={styles.answer}
-            disabled={selected !== null}
-            onPress={() =>
-              handleAnswer(
-                answer
-              )
-            }
-          >
-
-            <Text>
-              {answer.text}
-            </Text>
-
-          </TouchableOpacity>
-
-        )
-      )}
-
-      {selected && (
-
-        <View style={styles.feedback}>
-
-          <Text>
-            {selected.feedback}
-          </Text>
-
-          <Text>
-            {question.explanation}
-          </Text>
-
-          <TouchableOpacity
-            style={styles.next}
-            onPress={
-              nextQuestion
-            }
-          >
-
-            <Text>
-
-              {index ===
-                questions.length - 1
-                ? "Finalizar"
-                : "Siguiente"}
-
-            </Text>
-
-          </TouchableOpacity>
-
+        <View style={styles.progressWrap}>
+          <View style={styles.progressBackground}>
+            <View style={[styles.progressFill, { width: `${progressWidth}%` }]} />
+          </View>
         </View>
 
-      )}
+        <View style={styles.optionsWrap}>
+          {currentAnswers.map((answer, optionIndex) => {
+            const isSelected = revealedAnswers.some((item) => item.text === answer.text);
+            const isWrongSelected = isSelected && !answer.correct;
+            const isCorrectSelected = isSelected && answer.correct;
 
+            return (
+              <Button
+                key={`${answer.text}-${optionIndex}`}
+                title={answer.text}
+                variant={
+                  isCorrectSelected
+                    ? "primary"
+                    : isWrongSelected
+                      ? "secondary"
+                      : "option"
+                }
+                selected={isSelected}
+                onPress={() => handleAnswer(answer)}
+                style={styles.optionButton}
+              />
+            );
+          })}
+        </View>
+
+        {hasCorrectAnswer && (
+          <View style={styles.feedbackCard}>
+            <Text style={styles.feedbackText}>{activeFeedback.feedback}</Text>
+            <Text style={styles.explanationText}>{question.explanation}</Text>
+
+            <Button
+              title={index === questions.length - 1 ? "Finalizar" : "Siguiente"}
+              variant="secondary"
+              onPress={nextQuestion}
+              style={styles.nextButton}
+            />
+          </View>
+        )}
+      </View>
     </View>
-
   );
-
 }
 
 const styles = StyleSheet.create({
-
   container: {
     flex: 1,
-    padding: 24,
-    justifyContent: "center",
+    backgroundColor: "#F2F2F2",
   },
-
+  topBar: {
+    paddingHorizontal: 24,
+    paddingTop: 14,
+    paddingBottom: 4,
+  },
+  backButton: {
+    alignSelf: "flex-start",
+  },
+  content: {
+    flex: 1,
+    justifyContent: "flex-start",
+    paddingHorizontal: 28,
+    paddingTop: 10,
+    paddingBottom: 18,
+  },
+  questionTitle: {
+    fontSize: 30,
+    lineHeight: 38,
+    fontWeight: "700",
+    color: "#1F1F1F",
+    textAlign: "center",
+    marginBottom: 12,
+  },
+  progressWrap: {
+    width: "100%",
+    marginBottom: 16,
+  },
+  progressBackground: {
+    height: 20,
+    borderRadius: 18,
+    backgroundColor: "#D7F5EC",
+    overflow: "hidden",
+    width: "100%",
+  },
+  progressFill: {
+    height: "100%",
+    borderRadius: 18,
+    backgroundColor: colors.primary,
+  },
+  optionsWrap: {
+    gap: 12,
+  },
+  optionButton: {
+    width: "100%",
+  },
+  feedbackCard: {
+    marginTop: 14,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 18,
+    padding: 14,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
+    elevation: 2,
+  },
+  feedbackText: {
+    fontSize: 18,
+    color: "#1F1F1F",
+    marginBottom: 8,
+    fontWeight: "600",
+  },
+  explanationText: {
+    fontSize: 14,
+    color: "#555",
+    marginBottom: 12,
+    lineHeight: 20,
+  },
+  nextButton: {
+    marginTop: 4,
+  },
   center: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
-
-  counter: {
-    fontSize: 18,
-    fontWeight: "600",
-    marginBottom: 16,
-  },
-
-  question: {
-    fontSize: 24,
-    marginBottom: 30,
-  },
-
-  answer: {
-    padding: 16,
-    borderRadius: 12,
-    borderWidth: 1,
-    marginBottom: 12,
-  },
-
-  feedback: {
-    marginTop: 30,
-  },
-
-  next: {
-    marginTop: 20,
-    padding: 16,
-    borderRadius: 12,
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
     alignItems: "center",
-    borderWidth: 1,
   },
-
 });
