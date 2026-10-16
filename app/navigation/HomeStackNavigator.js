@@ -54,6 +54,7 @@ export default function HomeStackNavigator() {
             <Stack.Screen
                 name="Questions"
                 component={Questions}
+                options={{ headerShown: false }}
             />
 
         </Stack.Navigator>

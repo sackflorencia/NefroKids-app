@@ -14,6 +14,8 @@ import ProgressController from "../../back/controllers/progressController";
 import { useUser } from "../context/UserContext";
 import Button from "../components/Button";
 import colors from "../styles/colors";
+import typography from "../styles/typography";
+
 
 export default function Questions() {
   useEffect(() => {
@@ -37,6 +39,7 @@ export default function Questions() {
   const [selected, setSelected] = useState(null);
   const [currentAnswers, setCurrentAnswers] = useState([]);
   const [revealedAnswers, setRevealedAnswers] = useState([]);
+  const [firstTryCorrectCount, setFirstTryCorrectCount] = useState(0);
 
   useEffect(() => {
     loadQuestions();
@@ -97,6 +100,12 @@ export default function Questions() {
       return;
     }
 
+    const isFirstAttempt = revealedAnswers.length === 0;
+
+    if (isFirstAttempt && answer.correct) {
+      setFirstTryCorrectCount((prev) => prev + 1);
+    }
+
     setRevealedAnswers((prev) => [...prev, answer]);
     setSelected(answer);
   }
@@ -121,6 +130,7 @@ export default function Questions() {
     await progressController.completeSection(user.childId, levelId, sectionId, {
       score,
       total: questions.length,
+      firstTryCorrectCount,
     });
 
     navigation.navigate("Levels");
@@ -151,14 +161,18 @@ export default function Questions() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.topBar}>
+      <View style={styles.header}>
         <Button
           title=""
           variant="back"
+          colorVariant="secondary"
           direction="left"
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
+          onPress={() => navigation.navigate("Levels")}
         />
+
+        <Text style={typography.title}>Niveles</Text>
+
+        <View style={styles.headerSpacer} />
       </View>
 
       <View style={styles.content}>
@@ -217,15 +231,27 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F2F2F2",
+    paddingTop: 50,
   },
-  topBar: {
-    paddingHorizontal: 24,
-    paddingTop: 14,
-    paddingBottom: 4,
-  },
-  backButton: {
-    alignSelf: "flex-start",
-  },
+  header: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      paddingHorizontal: 16,
+      paddingTop: 16,
+      paddingBottom: 8,
+      elevation: 4,
+      zIndex: 10,
+    },
+    headerTitle: {
+      fontSize: 18,
+      fontWeight: "700",
+      color: colors.textDark,
+    },
+    headerSpacer: {
+      width: 24,
+      height: 24,
+    },
   content: {
     flex: 1,
     justifyContent: "flex-start",

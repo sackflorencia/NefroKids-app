@@ -90,7 +90,7 @@ export default function CheckIn({ navigation, route }) {
       <CheckInSummary
         checkIn={todayCheckIn}
         viewOnly={viewOnly}
-        // siempre permitimos que el botón 'Modificar datos' abra el formulario
+        hasRecord={true}
         onEdit={() => setEditing(true)}
         onBack={() => navigation.navigate("Home")}
       />
@@ -104,9 +104,10 @@ export default function CheckIn({ navigation, route }) {
         checkIn={{
           general_mood: null,
           pain_location: null,
-          urine_color: "no_urine",
+          urine_color: null,
         }}
         viewOnly={true}
+        hasRecord={false}
         onEdit={undefined}
         onBack={() => navigation.navigate("Home")}
       />

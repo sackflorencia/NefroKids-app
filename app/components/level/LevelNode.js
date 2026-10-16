@@ -82,6 +82,7 @@ export default function LevelNode({
   number,
   state,
   sections = [],
+  stars = 0,
   onPress,
 }) {
   const isBlocked = state === "bloqueado";
@@ -102,6 +103,19 @@ export default function LevelNode({
         return colors.primaryShadow;
     }
   };
+
+  const totalStars = Math.min(
+    3,
+    Math.max(
+      0,
+      Number(stars) ||
+        (sections || []).reduce(
+          (sum, section) => sum + (Number(section?.stars) || 0),
+          0
+        )
+    )
+  );
+
   const backgroundColor = getNodeColor(state);
 
   return (
@@ -111,7 +125,6 @@ export default function LevelNode({
       disabled={isBlocked}
     >
       <View style={styles.wrapper}>
-
         <View
           style={[
             styles.node,
@@ -120,34 +133,22 @@ export default function LevelNode({
             },
           ]}
         >
-
           <Svg
             width={SIZE}
             height={SIZE}
             style={styles.arcsContainer}
             pointerEvents="none"
           >
-            {sections.map((section, index) => {
-
-              const anglePerSection =
-                360 / sections.length;
-
-              const gap = 8;
-
-              const startAngle =
-                index * anglePerSection - 90 + gap;
-
-              const endAngle =
-                (index + 1) * anglePerSection -
-                90 -
-                gap;
-
-              const color =
-                getColorByState(section.state);
+            {Array.from({ length: 3 }, (_, index) => {
+              const anglePerSection = 360 / 3;
+              const gap = 10;
+              const startAngle = index * anglePerSection - 90 + gap;
+              const endAngle = (index + 1) * anglePerSection - 90 - gap;
+              const isFilled = index < totalStars;
 
               return (
                 <Path
-                  key={section.id}
+                  key={`star-${index}`}
                   d={createArc(
                     CENTER,
                     CENTER,
@@ -155,7 +156,7 @@ export default function LevelNode({
                     startAngle,
                     endAngle
                   )}
-                  stroke={color}
+                  stroke={isFilled ? colors.primaryShadow : colors.secondaryShadow}
                   strokeWidth={8}
                   strokeLinecap="round"
                   fill="none"
@@ -164,10 +165,7 @@ export default function LevelNode({
             })}
           </Svg>
 
-          <Text style={styles.text}>
-            {number}
-          </Text>
-
+          <Text style={styles.text}>{number}</Text>
         </View>
 
         <View
@@ -176,16 +174,15 @@ export default function LevelNode({
             {
               backgroundColor:
                 state === "bloqueado"
-                  ? colors.primaryShadow
+                  ? colors.secondaryShadow
                   : colors.primaryShadow,
             },
           ]}
         />
-
       </View>
     </TouchableOpacity>
   );
-};
+}
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -226,5 +223,7 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 34,
     fontWeight: "700",
+    textAlign: "center",
+    includeFontPadding: false,
   },
 });

@@ -5,6 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import LevelNode from "../components/level/LevelNode";
 ///import SectionHeader from "../components/level/SectionHeader";
 import LevelPreview from "../components/level/LevelPreview";
+import Button from "../components/Button";
 
 import { useSQLiteContext } from "expo-sqlite";
 import ProgressController from "../../back/controllers/progressController";
@@ -12,6 +13,7 @@ import { useNavigation } from "@react-navigation/native"
 import colors from "../styles/colors";
 import { useUser } from "../context/UserContext";
 import * as ScreenOrientation from "expo-screen-orientation";
+import typography from "../styles/typography";
 
 
 export default function Levels() {
@@ -111,6 +113,20 @@ export default function Levels() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <View style={styles.header}>
+        <Button
+          title=""
+          variant="back"
+          colorVariant="secondary"
+          direction="left"
+          onPress={() => navigation.navigate("Home")}
+        />
+
+        <Text style={typography.title}>Niveles</Text>
+
+        <View style={styles.headerSpacer} />
+      </View>
+
       {/* <SectionHeader
         section={currentSection.section}
         title={currentSection.title}
@@ -151,6 +167,12 @@ export default function Levels() {
                       number={level.numero}
                       state={level.state}
                       sections={level.sections ?? []}
+                      stars={
+                        level.sections?.reduce(
+                          (sum, section) => sum + (Number(section?.stars) || 0),
+                          0
+                        ) || 0
+                      }
                       onPress={() => {
                         if (level.state !== "bloqueado") {
                           setSelectedLevel(level);
@@ -202,6 +224,25 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: colors.background || "#f7f8fc",
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 8,
+    elevation: 4,
+    zIndex: 10,
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: colors.textDark,
+  },
+  headerSpacer: {
+    width: 24,
+    height: 24,
   },
   mapContainer: {
     flex: 1,
@@ -261,5 +302,6 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     justifyContent: "flex-end",
+    paddingBottom: 80,
   },
 });

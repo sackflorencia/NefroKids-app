@@ -114,7 +114,8 @@ export default class SectionProgressController {
             progress.stars =
                 this.calculateStars(
                     data.score,
-                    data.total
+                    data.total,
+                    data.firstTryCorrectCount
                 );
 
             progress.xp_gained =
@@ -212,7 +213,8 @@ export default class SectionProgressController {
                         current.status ===
                         "completado"
                             ? "completed"
-                            : "available"
+                            : "available",
+                    stars: current.stars ?? 0
                 };
 
             }
@@ -266,25 +268,14 @@ export default class SectionProgressController {
 
     calculateStars(
         score,
-        total
+        total,
+        firstTryCorrectCount = 0
     ) {
 
-        if (score === total) {
-            return 3;
-        }
-
-        if (
-            score >=
-            Math.ceil(total * 0.7)
-        ) {
-            return 2;
-        }
-
-        if (score > 0) {
-            return 1;
-        }
-
-        return 0;
+        return Math.min(
+            3,
+            Math.max(0, Number(firstTryCorrectCount) || 0)
+        );
 
     }
 

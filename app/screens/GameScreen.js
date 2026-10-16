@@ -42,6 +42,20 @@ export default function GameScreen({ route }) {
 
   }, []);
 
+  useEffect(() => {
+    navigation.getParent()?.setOptions({
+      tabBarStyle: { display: "none" },
+      tabBarVisible: false,
+    });
+
+    return () => {
+      navigation.getParent()?.setOptions({
+        tabBarStyle: { display: "flex" },
+        tabBarVisible: true,
+      });
+    };
+  }, [navigation]);
+
   const sendStartLevel = () => {
 
     if (!webviewRef.current) {
@@ -84,6 +98,22 @@ export default function GameScreen({ route }) {
 
       console.log("RESULTADO completeSection:", result);
       console.log("DESPUÉS DE completeSection");
+
+      const nextQuestionSection =
+        Array.isArray(level?.sections)
+          ? level.sections.find(currentSection =>
+              currentSection.type === "quiz" &&
+              currentSection.id !== section.id
+            )
+          : null;
+
+      if (nextQuestionSection) {
+        navigation.replace("Questions", {
+          levelId: level.id,
+          sectionId: nextQuestionSection.id,
+        });
+        return;
+      }
 
       navigation.replace("Levels");
 

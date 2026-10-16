@@ -4,8 +4,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { MOODS, PAIN_LOCATIONS, URINE_COLORS, getLabel } from "../../helpers/CheckInHelper";
 import Button from "../Button";
 import colors from "../../styles/colors";
+import { useUser } from "../../context/UserContext";
 
-export default function CheckInSummary({ checkIn, viewOnly = false, onEdit, onBack }) {
+export default function CheckInSummary({ checkIn, viewOnly = false, onEdit, onBack, hasRecord = true }) {
+  const { mode } = useUser();
+
   // Parsear pain_location de JSON string a array
   let painArray = [];
   try {
@@ -18,10 +21,23 @@ export default function CheckInSummary({ checkIn, viewOnly = false, onEdit, onBa
     painArray = checkIn.pain_location ? [checkIn.pain_location] : [];
   }
   
-  const painLabels = painArray
-    .map(pain => getLabel(PAIN_LOCATIONS, pain))
-    .filter(Boolean)
-    .join(", ") || getLabel(PAIN_LOCATIONS, "none");
+  const emptyValue = "---------";
+  const painLabels = !hasRecord
+    ? emptyValue
+    : (painArray
+        .map(pain => getLabel(PAIN_LOCATIONS, pain))
+        .filter(Boolean)
+        .join(", ") || getLabel(PAIN_LOCATIONS, "none"));
+
+  const isParentMode = mode === "parent";
+
+  const titleText = (() => {
+    if (!hasRecord && isParentMode) return "El chico no hizo su check-in";
+    if (hasRecord && isParentMode) return "¡El chico hizo su check-in!";
+    return hasRecord ? "¡Hoy completaste tu check-in!" : "El chico no hizo su check-in";
+  })();
+
+  const shouldShowInfoBox = hasRecord && !isParentMode;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -36,33 +52,35 @@ export default function CheckInSummary({ checkIn, viewOnly = false, onEdit, onBa
       </View>
       <View style={styles.content}>
 
-        <Text style={styles.title}>¡Hoy completaste tu check-in!</Text>
+        <Text style={styles.title}>{titleText}</Text>
 
         <View style={styles.card}>
           <SummaryRow 
             label="Estado de ánimo" 
-            value={getLabel(MOODS, checkIn.general_mood)} 
+            value={hasRecord ? getLabel(MOODS, checkIn.general_mood) : emptyValue} 
             icon="😊"
           />
           <View style={styles.divider} />
           <SummaryRow 
             label="Dolor" 
-            value={painLabels || getLabel(PAIN_LOCATIONS, "none")} 
+            value={painLabels || emptyValue} 
             icon="🤕"
           />
           <View style={styles.divider} />
           <SummaryRow 
             label="Color de orina" 
-            value={getLabel(URINE_COLORS, checkIn.urine_color)} 
+            value={hasRecord ? getLabel(URINE_COLORS, checkIn.urine_color) : emptyValue} 
             icon="💧"
           />
         </View>
 
-        <View style={styles.infoBox}>
-          <Text style={styles.infoText}>
-            Excelente trabajo. Tus datos han sido guardados correctamente.
-          </Text>
-        </View>
+        {shouldShowInfoBox && (
+          <View style={styles.infoBox}>
+            <Text style={styles.infoText}>
+              Excelente trabajo. Tus datos han sido guardados correctamente.
+            </Text>
+          </View>
+        )}
 
       </View>
 
@@ -107,7 +125,9 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 24,
     paddingTop: 0,
+    justifyContent: "center",
     gap: 24,
+    alignItems: "center",
   },
   title: {
     fontSize: 26,
@@ -115,6 +135,7 @@ const styles = StyleSheet.create({
     color: colors.textDark,
     textAlign: "center",
     lineHeight: 35,
+    maxWidth: "100%",
   },
   card: {
     backgroundColor: "#fff",
@@ -126,6 +147,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.06,
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 4 },
+    width: "100%",
+    maxWidth: 500,
   },
   row: {
     paddingVertical: 14,
@@ -157,18 +180,23 @@ const styles = StyleSheet.create({
     padding: 16,
     borderBottomWidth: 4,
     borderBottomColor: colors.primaryShadow,
+    width: "100%",
+    maxWidth: 500,
   },
   infoText: {
     fontSize: 16,
     color: colors.textDark,
     fontWeight: "500",
     lineHeight: 22,
+    textAlign: "center",
   },
   footer: {
     paddingHorizontal: 24,
     paddingBottom: 36,
+    alignItems: "center",
   },
   button: {
     width: "100%",
+    maxWidth: 500,
   },
 });
