@@ -23,6 +23,8 @@ export default function Profile() {
     const db = useSQLiteContext();
     const { user, logout, loading: userLoading } = useUser();
 
+    const { mode } = useUser();
+
     const [profile, setProfile] = useState({
         child: null,
         tutors: []
@@ -129,7 +131,7 @@ export default function Profile() {
     const childName =
         profile.child?.full_name ||
         user?.fullName ||
-        "Perfil";
+        (mode === "child" ? "Tu perfil" : "Perfil");
 
     const primaryTutor =
         profile.tutors.find(
@@ -177,13 +179,13 @@ export default function Profile() {
                     </Text>
 
                     <Text style={styles.subtitle}>
-                        Perfil del niño
+                        {mode === "child" ? "Tu perfil" : "Perfil del niño"}
                     </Text>
                 </View>
 
                 <View style={styles.sectionCard}>
                     <Text style={styles.sectionTitle}>
-                        Datos del niño
+                        {mode === "child" ? "Tus datos" : "Datos del niño"}
                     </Text>
 
                     <View style={styles.infoRow}>
@@ -211,7 +213,7 @@ export default function Profile() {
 
                     <View style={styles.infoRow}>
                         <Text style={styles.infoLabel}>
-                            ¿Orina?
+                            {mode === "child" ? "¿Orino?" : "¿Orina?"}
                         </Text>
 
                         <Text style={styles.infoValue}>
@@ -223,82 +225,88 @@ export default function Profile() {
                     </View>
                 </View>
 
-                <View style={styles.sectionCard}>
-                    <Text style={styles.sectionTitle}>
-                        Tutores
-                    </Text>
+                {/* En modo niño solo mostramos el headerCard y los datos del niño */}
+                {mode !== "child" && (
+                    <>
+                        <View style={styles.sectionCard}>
+                            <Text style={styles.sectionTitle}>
+                                Tutores
+                            </Text>
 
-                    {profile.tutors.length === 0 ? (
-                        <Text style={styles.emptyText}>
-                            Todavía no hay tutores registrados.
-                        </Text>
-                    ) : (
-                        profile.tutors.map((tutor, index) => (
-                            <View
-                                key={tutor.id || index}
-                                style={styles.tutorCard}
-                            >
-                                <View style={styles.tutorHeader}>
-                                    <Text style={styles.tutorName}>
-                                        {tutor.full_name}
-                                    </Text>
+                            {profile.tutors.length === 0 ? (
+                                <Text style={styles.emptyText}>
+                                    Todavía no hay tutores registrados.
+                                </Text>
+                            ) : (
+                                profile.tutors.map((tutor, index) => (
+                                    <View
+                                        key={tutor.id || index}
+                                        style={styles.tutorCard}
+                                    >
+                                        <View style={styles.tutorHeader}>
+                                            <Text style={styles.tutorName}>
+                                                {tutor.full_name}
+                                            </Text>
 
-                                    {tutor.is_primary === 1 && (
-                                        <Text style={styles.primaryBadge}>
-                                            Principal
+                                            {tutor.is_primary === 1 && (
+                                                <Text style={styles.primaryBadge}>
+                                                    Principal
+                                                </Text>
+                                            )}
+                                        </View>
+
+                                        <Text style={styles.tutorMeta}>
+                                            {tutor.relationship ||
+                                                "Relación no especificada"}
                                         </Text>
-                                    )}
-                                </View>
 
-                                <Text style={styles.tutorMeta}>
-                                    {tutor.relationship ||
-                                        "Relación no especificada"}
+                                        <Text style={styles.tutorMeta}>
+                                            {tutor.email ||
+                                                "Email no disponible"}
+                                        </Text>
+
+                                        <Text style={styles.tutorMeta}>
+                                            {tutor.phone ||
+                                                "Teléfono no disponible"}
+                                        </Text>
+                                    </View>
+                                ))
+                            )}
+                        </View>
+
+                        <View style={styles.sectionCard}>
+                            <Text style={styles.sectionTitle}>
+                                Cuenta
+                            </Text>
+
+                            <View style={styles.infoRow}>
+                                <Text style={styles.infoLabel}>
+                                    Tutor activo
                                 </Text>
 
-                                <Text style={styles.tutorMeta}>
-                                    {tutor.email ||
-                                        "Email no disponible"}
-                                </Text>
-
-                                <Text style={styles.tutorMeta}>
-                                    {tutor.phone ||
-                                        "Teléfono no disponible"}
+                                <Text style={styles.infoValue}>
+                                    {primaryTutor?.full_name ||
+                                        user?.fullName ||
+                                        "No disponible"}
                                 </Text>
                             </View>
-                        ))
-                    )}
-                </View>
 
-                <View style={styles.sectionCard}>
-                    <Text style={styles.sectionTitle}>
-                        Cuenta
-                    </Text>
+                            <View style={styles.infoRow}>
+                                <Text style={styles.infoLabel}>
+                                    Email
+                                </Text>
 
-                    <View style={styles.infoRow}>
-                        <Text style={styles.infoLabel}>
-                            Tutor activo
-                        </Text>
+                                <Text style={styles.infoValue}>
+                                    {user?.email ||
+                                        primaryTutor?.email ||
+                                        "No disponible"}
+                                </Text>
+                            </View>
+                        </View>
 
-                        <Text style={styles.infoValue}>
-                            {primaryTutor?.full_name ||
-                                user?.fullName ||
-                                "No disponible"}
-                        </Text>
-                    </View>
-
-                    <View style={styles.infoRow}>
-                        <Text style={styles.infoLabel}>
-                            Email
-                        </Text>
-
-                        <Text style={styles.infoValue}>
-                            {user?.email ||
-                                primaryTutor?.email ||
-                                "No disponible"}
-                        </Text>
-                    </View>
-                </View>
-
+                        
+                    </>
+                )}
                 <Button
                     title="Cerrar sesión"
                     onPress={handleLogout}

@@ -7,6 +7,7 @@ import Button from "../components/Button";
 import SpeechBubble from "../components/speechBubble.js/SpeechBubble";
 import colors from "../styles/colors";
 import Header from "../components/header/Header";
+import { useUser } from "../context/UserContext";
 import * as ScreenOrientation from "expo-screen-orientation";
 
 import images from "../../assets/images";
@@ -27,6 +28,7 @@ const Home = () => {
   
     }, []);
   const navigation = useNavigation();
+  const { mode, enterChildMode, logout } = useUser();
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={colors.primary} barStyle="light-content" translucent={false} />
@@ -48,23 +50,46 @@ const Home = () => {
 
         {/* Buttons */}
         <View style={styles.buttons}>
-          <Button 
-            title="Contarte como estoy" 
-            variant="secondary" 
-            style={styles.button}
-            onPress={() => navigation.navigate("CheckIn")}
-          />
-          <Button 
-            title="Jugar" 
-            variant="secondary" 
-            style={styles.button}
-            onPress={() => navigation.navigate("Levels")}
-          />
-          <Button 
-            title="Informarme" 
-            variant="secondary" 
-            style={styles.button}
-          />
+          {mode === "parent" ? (
+            <>
+              <Button
+                title="¿Cómo está el chico?"
+                variant="secondary"
+                style={styles.button}
+                onPress={() => navigation.navigate("CheckIn", { viewOnly: true })}
+              />
+
+              <Button
+                title="Informarme"
+                variant="secondary"
+                style={styles.button}
+              />
+
+              <Button
+                title="Modo hijo"
+                variant="primary"
+                style={styles.button}
+                onPress={() => enterChildMode()}
+              />
+            </>
+          ) : (
+            <>
+              <Button
+                title="Jugar"
+                variant="secondary"
+                style={styles.button}
+                onPress={() => navigation.navigate("Levels")}
+              />
+
+              <Button
+                title="Contarte como estoy"
+                variant="secondary"
+                style={styles.button}
+                onPress={() => navigation.navigate("CheckIn")}
+              />
+              
+            </>
+          )}
         </View>
       </View>
     </SafeAreaView>

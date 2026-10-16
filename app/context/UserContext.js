@@ -16,6 +16,7 @@ export function UserProvider({ children }) {
     const db = useSQLiteContext();
 
     const [user, setUser] = useState(null);
+    const [mode, setMode] = useState("parent"); // 'parent' or 'child'
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -40,6 +41,8 @@ export function UserProvider({ children }) {
                             console.log("NO USER");
 
                             setUser(null);
+
+                            setMode("parent");
 
                             return;
                         }
@@ -88,6 +91,8 @@ export function UserProvider({ children }) {
                         );
 
                         setUser(localUser);
+                        // Al iniciar sesión, arrancamos en modo padre
+                        setMode("parent");
 
                     } catch (error) {
 
@@ -136,6 +141,13 @@ export function UserProvider({ children }) {
 
         // onAuthStateChanged se encargará
         // de poner user en null.
+    }
+
+
+    function enterChildMode() {
+        // Solo permitir entrar en modo hijo si hay un usuario logueado
+        if (!user) return;
+        setMode("child");
     }
 
 
@@ -212,6 +224,8 @@ export function UserProvider({ children }) {
         <UserContext.Provider
             value={{
                 user,
+                mode,
+                enterChildMode,
                 login,
                 logout,
                 loading,

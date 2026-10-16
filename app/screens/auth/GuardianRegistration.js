@@ -29,7 +29,8 @@ export default function GuardianRegistration({
     const {
         register,
         refreshUser,
-        user
+        user,
+        logout,
     } = useUser();
 
     const [registering, setRegistering] = useState(false);
@@ -264,22 +265,18 @@ export default function GuardianRegistration({
             );
 
             console.log(
-                "SIGN UP - 6: Antes de refreshUser()"
+                "SIGN UP - 6: Cierre de sesión para volver al Welcome"
             );
 
-            await refreshUser();
+            await logout();
+
+            navigation.reset({
+                index: 0,
+                routes: [{ name: "Welcome" }],
+            });
 
             console.log(
-                "SIGN UP - 7: refreshUser() TERMINÓ"
-            );
-
-            console.log(
-                "SIGN UP - UserContext DESPUÉS:",
-                user
-            );
-
-            console.log(
-                "SIGN UP - 8: REGISTRO COMPLETADO CORRECTAMENTE"
+                "SIGN UP - 7: REGISTRO COMPLETADO CORRECTAMENTE"
             );
 
             console.log(
@@ -526,7 +523,7 @@ export default function GuardianRegistration({
                                 ? "Creando cuenta..."
                                 : "Finalizar registro"
                         }
-                        onPress={handleNext}
+                        onPress={() => navigation.navigate("Welcome")}
                         style={styles.button}
                         disabled={registering}
                     />

@@ -15,6 +15,11 @@ export const URINE_COLORS = [
     color: "#8B4513"
   },
   {
+    value: "no_urine",
+    label: "---------",
+    color: "#FFFFFF"
+  },
+  {
     value: "pending",
     label: "⚪ Todavía no oriné",
     color: "#BDBDBD"
@@ -65,10 +70,18 @@ export const PAIN_LOCATIONS = [
 
 export function getLabel(options, value) {
 
-  return (
-    options.find(
-      item => item.value === value
-    )?.label ?? value
-  );
+  if (value === null || value === undefined || value === "") return "---";
+
+  const valStr = String(value);
+
+  const found = options.find((item) => {
+    try {
+      return String(item.value).toLowerCase() === valStr.toLowerCase();
+    } catch (e) {
+      return item.value === value;
+    }
+  });
+
+  return found?.label ?? valStr;
 
 }

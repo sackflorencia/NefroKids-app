@@ -5,7 +5,7 @@ import { MOODS, PAIN_LOCATIONS, URINE_COLORS, getLabel } from "../../helpers/Che
 import Button from "../Button";
 import colors from "../../styles/colors";
 
-export default function CheckInSummary({ checkIn, onEdit, onBack }) {
+export default function CheckInSummary({ checkIn, viewOnly = false, onEdit, onBack }) {
   // Parsear pain_location de JSON string a array
   let painArray = [];
   try {
@@ -67,12 +67,14 @@ export default function CheckInSummary({ checkIn, onEdit, onBack }) {
       </View>
 
       <View style={styles.footer}>
-        <Button 
-          title="Modificar datos" 
-          variant="secondary" 
-          onPress={onEdit} 
-          style={styles.button} 
-        />
+        {!viewOnly && onEdit && (
+          <Button 
+            title="Modificar datos" 
+            variant="secondary" 
+            onPress={onEdit} 
+            style={styles.button} 
+          />
+        )}
       </View>
 
     </SafeAreaView>

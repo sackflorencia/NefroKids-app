@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Home from "../screens/Home";
 import Levels from "../screens/Levels";
 import CheckIn from "../screens/CheckIn";
+import CheckInCongrats from "../screens/CheckInCongrats";
 import Review from "../screens/Review";
 import GameScreen from "../screens/GameScreen";
 import Questions from "../screens/Questions"
@@ -30,6 +31,12 @@ export default function HomeStackNavigator() {
             <Stack.Screen
                 name="CheckIn"
                 component={CheckIn}
+                options={{ headerShown: false }}
+            />
+
+            <Stack.Screen
+                name="CheckInCongrats"
+                component={CheckInCongrats}
                 options={{ headerShown: false }}
             />
 

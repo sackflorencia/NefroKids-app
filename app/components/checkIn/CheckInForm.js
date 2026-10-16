@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -7,6 +7,9 @@ import BodySelector from "./BodySelector";
 import ColorOptions from "./ColorOptions";
 import Button from "../Button";
 import colors from "../../styles/colors";
+import { useSQLiteContext } from "expo-sqlite";
+import { useUser } from "../../context/UserContext";
+import UserController from "../../../back/controllers/userController";
 
 const QUESTIONS = [
   { id: "mood",       type: "feeling", question: "¿Cómo te sentís hoy?" },
@@ -19,8 +22,38 @@ export default function CheckInForm({ onFinish }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState({});
   const [selectedValue, setSelectedValue] = useState(null);
+  const [child, setChild] = useState(null);
+
+  const db = useSQLiteContext();
+  const { user } = useUser();
 
   const currentQuestion = QUESTIONS[currentIndex];
+
+  // Preguntas visibles: si el niño NO orina, removemos la pregunta de color
+  const questions = child && child.urinates === 0
+    ? QUESTIONS.filter((q) => q.id !== "urineColor")
+    : QUESTIONS;
+
+  useEffect(() => {
+    async function loadChild() {
+      if (!user || !db) return;
+      try {
+        const controller = new UserController(db);
+        const c = await controller.getUserById(user.childId);
+        setChild(c || null);
+      } catch (e) {
+        setChild(null);
+      }
+    }
+    loadChild();
+  }, [user, db]);
+
+  // Mantener currentIndex válido si cambia la lista de preguntas
+  useEffect(() => {
+    if (currentIndex >= questions.length) {
+      setCurrentIndex(Math.max(0, questions.length - 1));
+    }
+  }, [questions.length]);
 
   function handleSelect(value) {
     setSelectedValue(value);
@@ -37,6 +70,8 @@ export default function CheckInForm({ onFinish }) {
   }
 
   async function handleNext() {
+    const currentQuestion = questions[currentIndex];
+
     // Validación: para preguntas de dolor, debe haber al menos una selección
     if (currentQuestion.id === "pain") {
       if (!selectedValue || (Array.isArray(selectedValue) && selectedValue.length === 0)) {
@@ -53,13 +88,17 @@ export default function CheckInForm({ onFinish }) {
 
     setAnswers(updatedAnswers);
 
-    const isLastQuestion = currentIndex === QUESTIONS.length - 1;
+    const isLastQuestion = currentIndex === questions.length - 1;
 
     if (isLastQuestion) {
+      // Si la pregunta de color fue removida por configuración (niño no orina),
+      // guardamos 'no_urine' automáticamente.
+      const urineColor = updatedAnswers.urineColor ?? (child && child.urinates === 0 ? 'no_urine' : undefined);
+
       await onFinish({
         general_mood:  updatedAnswers.mood,
         pain_location: JSON.stringify(updatedAnswers.pain || []), // Serializar array a JSON
-        urine_color:   updatedAnswers.urineColor,
+        urine_color:   urineColor,
       });
       return;
     }
@@ -69,14 +108,15 @@ export default function CheckInForm({ onFinish }) {
   }
 
   const isValid = () => {
-    if (currentQuestion.id === "pain") {
+    const cq = questions[currentIndex];
+    if (cq.id === "pain") {
       return Array.isArray(selectedValue) && selectedValue.length > 0;
     }
     return !!selectedValue;
   };
 
   const isFirstQuestion = currentIndex === 0;
-  const isLastQuestion = currentIndex === QUESTIONS.length - 1;
+  const isLastQuestion = currentIndex === questions.length - 1;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -95,24 +135,24 @@ export default function CheckInForm({ onFinish }) {
 
         {/* Pregunta */}
         <View style={styles.questionContainer}>
-          <Text style={styles.question}>{currentQuestion.question}</Text>
+          <Text style={styles.question}>{questions[currentIndex].question}</Text>
         </View>
 
         {/* Opciones */}
         <View style={styles.optionsContainer}>
-          {currentQuestion.type === "feeling" && (
+          {questions[currentIndex].type === "feeling" && (
             <FeelingSelector
               selected={selectedValue}
               onSelect={handleSelect}
             />
           )}
-          {currentQuestion.type === "body" && (
+          {questions[currentIndex].type === "body" && (
             <BodySelector
               selected={selectedValue}
               onSelect={handleSelect}
             />
           )}
-          {currentQuestion.type === "color" && (
+          {questions[currentIndex].type === "color" && (
             <ColorOptions
               selected={selectedValue}
               onSelect={handleSelect}

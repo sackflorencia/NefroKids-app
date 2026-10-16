@@ -18,7 +18,7 @@ import CheckInForm from "../components/checkIn/CheckInForm";
 import CheckInSummary from "../components/checkIn/CheckInSummary";
 import Button from "../components/Button";
 
-export default function CheckIn({ navigation }) {
+export default function CheckIn({ navigation, route }) {
 
   useEffect(() => {
     ScreenOrientation.lockAsync(
@@ -68,7 +68,8 @@ export default function CheckIn({ navigation }) {
 
     await loadTodayCheckIn();
 
-    setEditing(false);
+    // Mostrar pantalla de felicitación antes de ir a Home
+    navigation.navigate("CheckInCongrats");
   }
 
   if (loading) {
@@ -83,14 +84,33 @@ export default function CheckIn({ navigation }) {
 
   if (todayCheckIn && !editing) {
 
+    const viewOnly = route?.params?.viewOnly === true;
+
     return (
       <CheckInSummary
         checkIn={todayCheckIn}
+        viewOnly={viewOnly}
+        // siempre permitimos que el botón 'Modificar datos' abra el formulario
         onEdit={() => setEditing(true)}
         onBack={() => navigation.navigate("Home")}
       />
     );
 
+  }
+
+  if (!todayCheckIn && route?.params?.viewOnly === true && !editing) {
+    return (
+      <CheckInSummary
+        checkIn={{
+          general_mood: null,
+          pain_location: null,
+          urine_color: "no_urine",
+        }}
+        viewOnly={true}
+        onEdit={undefined}
+        onBack={() => navigation.navigate("Home")}
+      />
+    );
   }
 
   return (
