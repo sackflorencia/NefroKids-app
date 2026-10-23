@@ -354,7 +354,7 @@ export default function GuardianRegistration({
                 >
                     <Text style={styles.subtitle}>
                         Agregá al tutor que recibirá información
-                        médica del niño y podrá acceder a la
+                        médica del niño/a y podrá acceder a la
                         aplicación.
                     </Text>
 
@@ -488,7 +488,7 @@ export default function GuardianRegistration({
                             {index > 0 && (
                                 <View style={styles.fieldRow}>
                                     <Text style={styles.inputLabel}>
-                                        Relación con el niño
+                                        Relación con el niño/a
                                     </Text>
 
                                     <CustomInput

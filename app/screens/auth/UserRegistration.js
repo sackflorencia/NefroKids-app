@@ -96,7 +96,7 @@ export default function UserRegistration({ navigation }) {
 
                     {/* Sección Nombre */}
                     <View style={styles.section}>
-                        <Text style={styles.sectionLabel}>Nombre del niño</Text>
+                        <Text style={styles.sectionLabel}>Nombre del niño/a</Text>
                         <CustomInput
                             type="default"
                             placeholder="Escribe aquí"

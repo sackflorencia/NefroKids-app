@@ -29,7 +29,7 @@ export default function CheckInForm({ onFinish }) {
 
   const currentQuestion = QUESTIONS[currentIndex];
 
-  // Preguntas visibles: si el niño NO orina, removemos la pregunta de color
+  // Preguntas visibles: si el niño/a NO orina, removemos la pregunta de color
   const questions = child && child.urinates === 0
     ? QUESTIONS.filter((q) => q.id !== "urineColor")
     : QUESTIONS;
@@ -91,7 +91,7 @@ export default function CheckInForm({ onFinish }) {
     const isLastQuestion = currentIndex === questions.length - 1;
 
     if (isLastQuestion) {
-      // Si la pregunta de color fue removida por configuración (niño no orina),
+      // Si la pregunta de color fue removida por configuración (niño/a no orina),
       // guardamos 'no_urine' automáticamente.
       const urineColor = updatedAnswers.urineColor ?? (child && child.urinates === 0 ? 'no_urine' : undefined);
 

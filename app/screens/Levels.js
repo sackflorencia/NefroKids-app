@@ -122,7 +122,7 @@ export default function Levels() {
           onPress={() => navigation.navigate("Home")}
         />
 
-        <Text style={typography.title}>Niveles</Text>
+        <Text style={[typography.title, styles.title]}>Niveles</Text>
 
         <View style={styles.headerSpacer} />
       </View>
@@ -239,6 +239,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "700",
     color: colors.textDark,
+  },
+  title: {
+      color: colors.textDark,
+      textAlign: "center",
+      flex: 1,
   },
   headerSpacer: {
     width: 24,

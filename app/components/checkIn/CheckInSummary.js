@@ -32,9 +32,9 @@ export default function CheckInSummary({ checkIn, viewOnly = false, onEdit, onBa
   const isParentMode = mode === "parent";
 
   const titleText = (() => {
-    if (!hasRecord && isParentMode) return "El chico no hizo su check-in";
-    if (hasRecord && isParentMode) return "¡El chico hizo su check-in!";
-    return hasRecord ? "¡Hoy completaste tu check-in!" : "El chico no hizo su check-in";
+    if (!hasRecord && isParentMode) return "El chico/a no hizo su check-in";
+    if (hasRecord && isParentMode) return "¡El chico/a hizo su check-in!";
+    return hasRecord ? "¡Hoy completaste tu check-in!" : "El chico/a no hizo su check-in";
   })();
 
   const shouldShowInfoBox = hasRecord && !isParentMode;

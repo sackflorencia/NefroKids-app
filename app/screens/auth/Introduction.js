@@ -19,7 +19,7 @@ import LogoSlogan from "../../components/logo/logo";
 const SLIDES = [
   {
     title: "¡Hola, soy Riku!",
-    text: "Voy a ser tu compañero en esta aventura. \nTe voy a ayudar a seguir tu tratamiento paso a paso.",
+    text: "Voy a ser tu compañero en esta aventura. \n\nTe voy a ayudar a seguir tu tratamiento paso a paso.",
   },
   {
     title: "¡Aprender puede ser divertido!",

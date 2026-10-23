@@ -18,9 +18,9 @@ export default function MainNavigator() {
         tabBarInactiveTintColor: "#93A8A0",
         tabBarStyle: {
           position: "absolute",
-          bottom: 14,
           left: 16,
           right: 16,
+          bottom: 0,
           height: 78,
           borderRadius: 22,
           borderTopWidth: 0,

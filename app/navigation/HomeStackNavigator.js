@@ -7,7 +7,8 @@ import CheckIn from "../screens/CheckIn";
 import CheckInCongrats from "../screens/CheckInCongrats";
 import Review from "../screens/Review";
 import GameScreen from "../screens/GameScreen";
-import Questions from "../screens/Questions"
+import Questions from "../screens/Questions";
+import Info from "../screens/Info";
 
 const Stack = createNativeStackNavigator();
 
@@ -54,6 +55,12 @@ export default function HomeStackNavigator() {
             <Stack.Screen
                 name="Questions"
                 component={Questions}
+                options={{ headerShown: false }}
+            />
+
+            <Stack.Screen
+                name="Info"
+                component={Info}
                 options={{ headerShown: false }}
             />
 

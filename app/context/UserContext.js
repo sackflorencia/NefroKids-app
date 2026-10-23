@@ -145,7 +145,7 @@ export function UserProvider({ children }) {
 
 
     function enterChildMode() {
-        // Solo permitir entrar en modo hijo si hay un usuario logueado
+        // Solo permitir entrar en modo hijo/a si hay un usuario logueado
         if (!user) return;
         setMode("child");
     }

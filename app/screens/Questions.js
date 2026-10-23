@@ -170,7 +170,7 @@ export default function Questions() {
           onPress={() => navigation.navigate("Levels")}
         />
 
-        <Text style={typography.title}>Niveles</Text>
+        <Text style={[typography.title, styles.title]}>Niveles</Text>
 
         <View style={styles.headerSpacer} />
       </View>
@@ -266,6 +266,11 @@ const styles = StyleSheet.create({
     color: "#1F1F1F",
     textAlign: "center",
     marginBottom: 12,
+  },
+  title: {
+      color: colors.textDark,
+      textAlign: "center",
+      flex: 1,
   },
   progressWrap: {
     width: "100%",

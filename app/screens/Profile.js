@@ -179,13 +179,13 @@ export default function Profile() {
                     </Text>
 
                     <Text style={styles.subtitle}>
-                        {mode === "child" ? "Tu perfil" : "Perfil del niño"}
+                        {mode === "child" ? "Tu perfil" : "Perfil del niño/a"}
                     </Text>
                 </View>
 
                 <View style={styles.sectionCard}>
                     <Text style={styles.sectionTitle}>
-                        {mode === "child" ? "Tus datos" : "Datos del niño"}
+                        {mode === "child" ? "Tus datos" : "Datos del niño/a"}
                     </Text>
 
                     <View style={styles.infoRow}>
@@ -225,7 +225,7 @@ export default function Profile() {
                     </View>
                 </View>
 
-                {/* En modo niño solo mostramos el headerCard y los datos del niño */}
+                {/* En modo niño/a solo mostramos el headerCard y los datos del niño/a */}
                 {mode !== "child" && (
                     <>
                         <View style={styles.sectionCard}>

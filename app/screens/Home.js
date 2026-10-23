@@ -53,7 +53,7 @@ const Home = () => {
           {mode === "parent" ? (
             <>
               <Button
-                title="¿Cómo está el chico?"
+                title="¿Cómo está el chico/a?"
                 variant="secondary"
                 style={styles.button}
                 onPress={() => navigation.navigate("CheckIn", { viewOnly: true })}
@@ -63,10 +63,11 @@ const Home = () => {
                 title="Informarme"
                 variant="secondary"
                 style={styles.button}
+                onPress={() => navigation.navigate("Info")}
               />
 
               <Button
-                title="Modo hijo"
+                title="Modo hijo/a"
                 variant="primary"
                 style={styles.button}
                 onPress={() => enterChildMode()}
