@@ -19,7 +19,7 @@
         "ITSAppUsesNonExemptEncryption": false
       },
       "NSAppTransportSecurity": {
-          "NSAllowsArbitraryLoads": true
+        "NSAllowsArbitraryLoads": true
       },
       "NSLocalNetworkUsageDescription": "Permite cargar contenido local del juego"
     },
@@ -41,7 +41,8 @@
     },
     "plugins": [
       "expo-sqlite",
-      "@react-native-community/datetimepicker"
+      "@react-native-community/datetimepicker",
+      "expo-status-bar"
     ]
   }
 }
