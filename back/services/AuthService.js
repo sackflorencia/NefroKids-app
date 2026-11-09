@@ -7,6 +7,10 @@ import {
 
 import FirebaseService from "./FirebaseService";
 
+function normalizeEmail(email) {
+    return email.trim().toLowerCase();
+}
+
 function getAuthErrorMessage(error) {
 
     switch (error.code) {
@@ -59,7 +63,7 @@ export default class AuthService {
             const credential =
                 await createUserWithEmailAndPassword(
                     this.auth,
-                    email,
+                    normalizeEmail(email),
                     password
                 );
 
@@ -85,7 +89,7 @@ export default class AuthService {
             const credential =
                 await signInWithEmailAndPassword(
                     this.auth,
-                    email,
+                    normalizeEmail(email),
                     password
                 );
 

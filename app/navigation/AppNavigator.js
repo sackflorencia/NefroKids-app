@@ -1,32 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import AuthNavigator from "./AuthNavigator";
 import MainNavigator from "./MainNavigator";
-
-import AuthService from "../../back/services/AuthService";
+import { useUser } from "../context/UserContext";
 
 export default function AppNavigator() {
-
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-
-    const authService = new AuthService();
-
-    const unsubscribe =
-      authService.subscribeToAuthChanges(
-        (user) => {
-
-          setUser(user);
-          setLoading(false);
-
-        }
-      );
-
-    return unsubscribe;
-
-  }, []);
+  const { user, loading } = useUser();
 
   if (loading) {
     return null;

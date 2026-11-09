@@ -523,7 +523,7 @@ export default function GuardianRegistration({
                                 ? "Creando cuenta..."
                                 : "Finalizar registro"
                         }
-                        onPress={() => navigation.navigate("Welcome")}
+                        onPress={handleNext}
                         style={styles.button}
                         disabled={registering}
                     />
