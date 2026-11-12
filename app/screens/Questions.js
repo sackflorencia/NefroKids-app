@@ -4,6 +4,7 @@ import {
   Text,
   ActivityIndicator,
   StyleSheet,
+  ScrollView,
 } from "react-native";
 import { useSQLiteContext } from "expo-sqlite";
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -159,6 +160,7 @@ export default function Questions() {
 
   const question = questions[index];
 
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -175,18 +177,31 @@ export default function Questions() {
         <View style={styles.headerSpacer} />
       </View>
 
-      <View style={styles.content}>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
         <Text style={styles.questionTitle}>{question.question}</Text>
 
         <View style={styles.progressWrap}>
           <View style={styles.progressBackground}>
-            <View style={[styles.progressFill, { width: `${progressWidth}%` }]} />
+            <View
+              style={[
+                styles.progressFill,
+                { width: `${progressWidth}%` },
+              ]}
+            />
           </View>
         </View>
 
         <View style={styles.optionsWrap}>
           {currentAnswers.map((answer, optionIndex) => {
-            const isSelected = revealedAnswers.some((item) => item.text === answer.text);
+            const isSelected = revealedAnswers.some(
+              (item) => item.text === answer.text
+            );
+
             const isWrongSelected = isSelected && !answer.correct;
             const isCorrectSelected = isSelected && answer.correct;
 
@@ -211,8 +226,13 @@ export default function Questions() {
 
         {hasCorrectAnswer && (
           <View style={styles.feedbackCard}>
-            <Text style={styles.feedbackText}>{activeFeedback.feedback}</Text>
-            <Text style={styles.explanationText}>{question.explanation}</Text>
+            <Text style={styles.feedbackText}>
+              {activeFeedback.feedback}
+            </Text>
+
+            <Text style={styles.explanationText}>
+              {question.explanation}
+            </Text>
 
             <Button
               title={index === questions.length - 1 ? "Finalizar" : "Siguiente"}
@@ -222,7 +242,9 @@ export default function Questions() {
             />
           </View>
         )}
-      </View>
+
+        <View style={{ height: 20 }} />
+      </ScrollView>
     </View>
   );
 }
@@ -234,24 +256,24 @@ const styles = StyleSheet.create({
     paddingTop: 50,
   },
   header: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-      paddingHorizontal: 16,
-      paddingTop: 16,
-      paddingBottom: 8,
-      elevation: 4,
-      zIndex: 10,
-    },
-    headerTitle: {
-      fontSize: 18,
-      fontWeight: "700",
-      color: colors.textDark,
-    },
-    headerSpacer: {
-      width: 24,
-      height: 24,
-    },
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 8,
+    elevation: 4,
+    zIndex: 10,
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: colors.textDark,
+  },
+  headerSpacer: {
+    width: 24,
+    height: 24,
+  },
   content: {
     flex: 1,
     justifyContent: "flex-start",
@@ -268,9 +290,9 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   title: {
-      color: colors.textDark,
-      textAlign: "center",
-      flex: 1,
+    color: colors.textDark,
+    textAlign: "center",
+    flex: 1,
   },
   progressWrap: {
     width: "100%",
@@ -329,5 +351,15 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  scrollView: {
+    flex: 1,
+  },
+
+  scrollContent: {
+    paddingHorizontal: 28,
+    paddingTop: 10,
+    paddingBottom: 30,
+    flexGrow: 1,
   },
 });

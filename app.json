@@ -14,14 +14,11 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "sackflorencia.nefrokids",
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
-      },
-      "NSAppTransportSecurity": {
-        "NSAllowsArbitraryLoads": true
-      },
-      "NSLocalNetworkUsageDescription": "Permite cargar contenido local del juego"
+        "NSAppTransportSecurity": {
+          "NSAllowsArbitraryLoads": true
+        }
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -42,7 +39,8 @@
     "plugins": [
       "expo-sqlite",
       "@react-native-community/datetimepicker",
-      "expo-status-bar"
+      "expo-status-bar",
+      "expo-font"
     ]
   }
 }
